@@ -35,11 +35,17 @@ main{padding:.8rem}
 .bara{position:sticky;top:0;z-index:1;background:var(--hartie);border-bottom:1px solid var(--linie);padding:.35rem .4rem;display:flex;align-items:center;gap:.2rem;min-height:2.9rem}
 .bara .btn{background:none;border:0;color:var(--accent);padding:.4rem .5rem;font-size:1rem}
 .bara .titlu{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600}
-#cronometru{flex:none;font-variant-numeric:tabular-nums;font-weight:700;background:var(--activ);border-radius:8px;padding:.3rem .6rem;cursor:pointer}
-#cronometru.gata{background:var(--accent);color:#fff}
+#cronometre{position:fixed;left:0;right:0;bottom:0;z-index:6;display:flex;flex-wrap:wrap;gap:.4rem;padding:.5rem .8rem;background:var(--hartie);border-top:1px solid var(--linie)}
+.cron{border:1px solid var(--linie);background:var(--activ);border-radius:10px;padding:.3rem .7rem;font-weight:700;font-variant-numeric:tabular-nums;text-align:left;line-height:1.2}
+.cron small{display:block;font-size:.72rem;font-weight:400;opacity:.85}
+.cron.gata{background:var(--accent);border-color:var(--accent);color:#fff;animation:clipire 1s infinite}
+@keyframes clipire{50%{opacity:.5}}
+#timer-panou{position:fixed;left:0;right:0;bottom:0;z-index:7;background:var(--hartie);border-top:1px solid var(--linie);padding:.8rem;box-shadow:0 -6px 20px rgba(0,0,0,.12)}
+#timer-panou .chips{margin-top:0;margin-bottom:.6rem}
 .sari{position:sticky;top:2.9rem;z-index:1;display:flex;background:var(--hartie);border-bottom:1px solid var(--linie);padding:.1rem .4rem;overflow-x:auto;scrollbar-width:none}
 .sari button{background:none;border:0;padding:.4rem .6rem;color:var(--mut);font-size:.9rem;white-space:nowrap}
-article{padding:.8rem .8rem 4rem}
+article{padding:.8rem .8rem 6rem}
+main{padding-bottom:6rem}
 article.mare{font-size:1.15em}
 article.foarte-mare{font-size:1.3em}
 article h2{margin:.2rem 0 .6rem;font-size:1.5rem;line-height:1.25}
@@ -87,7 +93,7 @@ a{color:var(--accent)}
 </head>
 <body>
 <header><div>
-  <div class="cap"><h1>Cartea de rețete</h1><button class="chip" id="btn-cumparaturi" type="button">🛒 cumpărături <span id="nr-cumparaturi"></span></button></div>
+  <div class="cap"><h1>Cartea de rețete</h1><span><button class="chip" id="btn-cumparaturi" type="button" hidden>🛒 cumpărături <span id="nr-cumparaturi"></span></button> <button class="chip" id="btn-timer-lista" type="button" title="cronometru">⏱</button></span></div>
   <input id="cautare" type="search" placeholder="Caută după titlu sau ingredient" autocomplete="off">
   <div class="chips" id="stari">
     <span class="chip fix">în carte</span>
@@ -106,7 +112,7 @@ a{color:var(--accent)}
 </div></header>
 <main id="lista"></main>
 <section id="detaliu" class="panou" hidden>
-  <div class="bara"><button class="btn" id="inapoi" type="button">‹ Înapoi</button><span class="titlu" id="detaliu-titlu"></span><span id="cronometru" hidden title="atinge ca să oprești"></span><button class="btn" id="btn-text" type="button" title="text mai mare">Aa</button></div>
+  <div class="bara"><button class="btn" id="inapoi" type="button">‹ Înapoi</button><span class="titlu" id="detaliu-titlu"></span><button class="btn" id="btn-timer" type="button" title="cronometru">⏱</button><button class="btn" id="btn-text" type="button" title="text mai mare">Aa</button></div>
   <nav class="sari"><button type="button" data-tinta="s-ingrediente">Ingrediente</button><button type="button" data-tinta="s-pasi">Pași</button><button type="button" data-tinta="s-nutritie">Nutriție</button><button type="button" data-tinta="s-jurnal">Jurnal</button></nav>
   <article id="detaliu-continut"></article>
 </section>
@@ -114,6 +120,12 @@ a{color:var(--accent)}
   <div class="bara"><button class="btn" id="inapoi-cumparaturi" type="button">‹ Înapoi</button><span class="titlu">Cumpărături</span><button class="btn" id="goleste" type="button">golește</button></div>
   <article id="cumparaturi-continut"></article>
 </section>
+<div id="cronometre" hidden title="atinge un cronometru ca să-l oprești"></div>
+<div id="timer-panou" hidden>
+  <div class="chips" id="timer-presetari"></div>
+  <div class="portii"><input id="timer-minute" type="number" min="1" inputmode="numeric" placeholder="minute">
+    <button class="chip activ" id="timer-start" type="button">pornește</button><button class="chip" id="timer-inchide" type="button">închide</button></div>
+</div>
 <script>
 "use strict";
 // build.py înlocuiește marcajul de mai jos cu JSON-ul rețetelor (fără cele la gunoi).
@@ -219,30 +231,38 @@ function deseneazaDetaliu() {
     <p class="meta"><span>cost ${lei(n.cost)}/porție</span>${sursa(r.sursa) ? `<span>sursă: ${sursa(r.sursa)}</span>` : ""}</p>
     <h3 id="s-jurnal">Jurnal</h3>${jurnal}`;
   $("detaliu-continut").querySelectorAll("ol li").forEach((li, k) => li.classList.toggle("facut", facute.has(k)));
-  if (cronometru) { cronometru.btn = $("detaliu-continut").querySelectorAll("button.timp")[cronometru.idx]; cronometru.btn?.classList.add("activ"); }
+  cronometre.forEach(c => butonul(c)?.classList.add("activ"));
 }
 
-// Cronometru: unul singur, afișat în bara de sus; sună și vibrează la final.
-let cronometru = null, audio = null;
-function porneste(btn) {
-  opreste();
+// Cronometre: oricâte în paralel, într-o bară fixă jos, vizibilă pe orice ecran; sună și vibrează la final.
+let cronometre = [], tic = null, audio = null, nrCron = 0;
+const butonul = c => c.slug === curenta?.slug && c.idx >= 0 ? $("detaliu-continut").querySelectorAll("button.timp")[c.idx] : null;
+function porneste(secunde, eticheta, btn) {
   try { audio = audio || new (window.AudioContext || window.webkitAudioContext)(); } catch (e) {}
-  const idx = [...$("detaliu-continut").querySelectorAll("button.timp")].indexOf(btn);
-  cronometru = {btn, idx, sfarsit: Date.now() + btn.dataset.s * 1000, interval: setInterval(bate, 250)};
-  btn.classList.add("activ");
-  $("cronometru").hidden = false;
-  $("cronometru").classList.remove("gata");
+  cronometre.push({id: ++nrCron, eticheta, sfarsit: Date.now() + secunde * 1000, gata: false, slug: curenta?.slug,
+                   idx: btn ? [...$("detaliu-continut").querySelectorAll("button.timp")].indexOf(btn) : -1});
+  btn?.classList.add("activ");
+  if (!tic) tic = setInterval(bate, 500);
   bate();
 }
 function bate() {
-  const rest = Math.max(0, Math.round((cronometru.sfarsit - Date.now()) / 1000));
-  $("cronometru").textContent = rest ? `⏱ ${Math.floor(rest / 60)}:${String(rest % 60).padStart(2, "0")}` : "⏱ gata!";
-  if (!rest) { clearInterval(cronometru.interval); cronometru.interval = null; $("cronometru").classList.add("gata"); suna(); }
+  for (const c of cronometre) {
+    const rest = Math.max(0, Math.round((c.sfarsit - Date.now()) / 1000));
+    c.text = rest ? `${Math.floor(rest / 60)}:${String(rest % 60).padStart(2, "0")}` : "gata!";
+    if (!rest && !c.gata) { c.gata = true; suna(); }
+  }
+  $("cronometre").innerHTML = cronometre.map(c => `<button type="button" class="cron${c.gata ? " gata" : ""}" data-id="${c.id}">⏱ ${c.text}<small>${esc(c.eticheta)}</small></button>`).join("");
+  $("cronometre").hidden = !cronometre.length;
+  if (!cronometre.length) { clearInterval(tic); tic = null; }
 }
-function opreste() {
-  if (cronometru) { clearInterval(cronometru.interval); cronometru.btn?.classList.remove("activ"); cronometru = null; }
-  $("cronometru").hidden = true;
+function opreste(id) {
+  const c = cronometre.find(x => x.id === id);
+  if (!c) return;
+  butonul(c)?.classList.remove("activ");
+  cronometre = cronometre.filter(x => x !== c);
+  bate();
 }
+function aratuTimer(vizibil) { $("timer-panou").hidden = !vizibil; if (vizibil) { $("timer-minute").value = ""; $("timer-minute").focus(); } }
 function suna() {
   try { navigator.vibrate && navigator.vibrate([300, 150, 300, 150, 600]); } catch (e) {}
   if (!audio) return;
@@ -265,7 +285,7 @@ document.addEventListener("visibilitychange", () => { if (document.visibilitySta
 function aplicaMarimea() { $("detaliu-continut").className = ["", "mare", "foarte-mare"][marime] || ""; }
 
 // ---------- cumpărături ----------
-function numarCos() { const n = Object.keys(cos).length; $("nr-cumparaturi").textContent = n ? `(${n})` : ""; }
+function numarCos() { const n = Object.keys(cos).length; $("nr-cumparaturi").textContent = n ? `(${n})` : ""; $("btn-cumparaturi").hidden = !n; }
 function deseneazaCumparaturi() {
   const retete = Object.keys(cos).map(s => RETETE.find(r => r.slug === s)).filter(Boolean), total = {};
   for (const r of retete) {
@@ -284,7 +304,7 @@ function deseneazaCumparaturi() {
 function deschide(slug, inIstoric) {
   const r = RETETE.find(x => x.slug === slug);
   if (!r) return inchide();
-  if (r !== curenta) { curenta = r; portii = r.portii; bifate = new Set(); facute = new Set(); opreste(); }
+  if (r !== curenta) { curenta = r; portii = r.portii; bifate = new Set(); facute = new Set(); }
   $("detaliu-titlu").textContent = r.titlu;
   aplicaMarimea();
   deseneazaDetaliu();
@@ -321,7 +341,11 @@ $("detaliu-continut").addEventListener("click", e => {
     memorie.scrie("cos", cos); numarCos(); deseneazaDetaliu(); return;
   }
   const t = e.target.closest("button.timp");
-  if (t) { if (cronometru && cronometru.btn === t) opreste(); else porneste(t); return; }
+  if (t) {
+    const c = cronometre.find(x => butonul(x) === t);
+    if (c) opreste(c.id); else porneste(+t.dataset.s, `pas ${t.closest("li")?.value ?? ""} · ${t.textContent.replace("⏱ ", "")}`, t);
+    return;
+  }
   const li = e.target.closest("ol li");
   if (li) {
     const k = [...$("detaliu-continut").querySelectorAll("ol li")].indexOf(li);
@@ -353,7 +377,13 @@ $("goleste").addEventListener("click", () => { cos = {}; cumparate = new Set(); 
 $("btn-cumparaturi").addEventListener("click", () => deschideCumparaturi(true));
 $("inapoi-cumparaturi").addEventListener("click", inapoi);
 $("inapoi").addEventListener("click", inapoi);
-$("cronometru").addEventListener("click", opreste);
+$("cronometre").addEventListener("click", e => { const b = e.target.closest(".cron"); if (b) opreste(+b.dataset.id); });
+$("btn-timer").addEventListener("click", () => aratuTimer($("timer-panou").hidden));
+$("btn-timer-lista").addEventListener("click", () => aratuTimer($("timer-panou").hidden));
+$("timer-inchide").addEventListener("click", () => aratuTimer(false));
+$("timer-start").addEventListener("click", () => { const m = Math.round(Number($("timer-minute").value)); if (m > 0) { porneste(m * 60, `${m} min`); aratuTimer(false); } });
+$("timer-minute").addEventListener("keydown", e => { if (e.key === "Enter") $("timer-start").click(); });
+$("timer-presetari").addEventListener("click", e => { const b = e.target.closest("button[data-min]"); if (b) { porneste(+b.dataset.min * 60, `${b.dataset.min} min`); aratuTimer(false); } });
 $("btn-text").addEventListener("click", () => { marime = (marime + 1) % 3; memorie.scrie("marime", marime); aplicaMarimea(); });
 document.querySelector(".sari").addEventListener("click", e => {
   const b = e.target.closest("button[data-tinta]");
@@ -387,6 +417,7 @@ window.addEventListener("popstate", () => {  // înapoi/înainte în browser, sa
 chipuri("categorii", Object.keys(CATEGORII).filter(c => RETETE.some(r => r.categorie === c)).map(c => [c, CATEGORII[c]]), "", "cat");
 chipuri("taguri", [...new Set(RETETE.flatMap(r => r.tags))].sort((a, b) => a.localeCompare(b, "ro")).map(t => [t, "#" + t]), "", "tag");
 numarCos();
+$("timer-presetari").innerHTML = [1, 2, 3, 5, 8, 10, 15, 20, 30, 45].map(m => `<button class="chip" type="button" data-min="${m}">${m} min</button>`).join("");
 if (location.hash === "#cumparaturi") deschideCumparaturi(false);
 else if (RETETE.some(x => x.slug === location.hash.slice(1))) deschide(location.hash.slice(1), false); else inchide();
 </script>
