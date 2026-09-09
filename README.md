@@ -97,6 +97,10 @@ Calculată de `build.py` din ultima intrare în jurnal:
 
 Cartea arată implicit doar `carte`; `imbunatatire` și `test` se pot afișa cu un comutator; `gunoi` nu apare.
 
+## Cartea (`carte/index.html`)
+
+Un singur fișier, merge offline, nimic nu se editează din ea. Lista: căutare, comutatoare de stare, filtre (sortare, categorie, tag) și carduri cu timp, kcal, cost, ultima notă și „din timp”. Detaliul: cifrele mari sub titlu, bară de salt (Ingrediente · Pași · Nutriție · Jurnal), ingrediente pe grupuri cu scalare de porții, pași pe etape care se bifează și pornesc cronometre, note pliate, nutriție per porție și per 100 g, tot jurnalul. Cât e deschisă o rețetă, ecranul telefonului rămâne aprins (unde browserul permite), iar „Aa” mărește textul. „Cumpărături” adună ingredientele din rețetele alese, cu gramele însumate. Coșul, bifele lui și mărimea textului se țin doar în browserul telefonului; restul e efemer.
+
 ## Nutriție și cost
 
 Per porție = (Σ g × valoare / 100) / porții, din gramaje crude. Per 100 g = total / `greutate_gatita_g` × 100 dacă greutatea gătită e completată (cântărește mâncarea gata), altfel pe suma ingredientelor crude, etichetat „crud”. Afișare cu „≈”: kcal rotunjit la 10, macro la 1 g, fără zecimale; cost rotunjit la 0,5 lei. Ingredientele mici au marjă de ±5%, de aceea nu afișăm precizie falsă. Ingredient fără `pret_per_kg` → cost „—”. Prețurile din seed sunt estimări (marcate „preț estimat 2026” în `nota`); se corectează de pe bonuri când e cazul.

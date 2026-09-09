@@ -203,17 +203,16 @@ def pregateste(meta, corp, ingrediente):
     tags = list(dict.fromkeys(meta.get("tags") or []))
     if ocazie and "ocazie" not in tags:
         tags.append("ocazie")
-    ultima = {**j[-1], "data": data_valida(j[-1]["data"]).strftime("%Y-%m-%d")} if (j := meta.get("jurnal")) else None
+    jurnal = [{**j, "data": data_valida(j["data"]).strftime("%Y-%m-%d")} for j in meta.get("jurnal") or []]
     return {
         "slug": meta["slug"], "titlu": meta["titlu"], "categorie": meta["categorie"], "tags": tags, "sursa": meta["sursa"],
         "status": status, "versiune": meta["versiune"], "portii": meta["portii"], "din_timp": meta.get("din_timp") or "",
         "timp_activ_min": meta["timp_activ_min"], "timp_total_min": meta["timp_total_min"], "greutate_gatita_g": meta.get("greutate_gatita_g"),
-        "gust": ultima["gust"] if ultima else None, "efort": ultima["efort"] if ultima else None,
         "ingrediente": [{"id": i["id"], "nume": ingrediente[i["id"]]["nume"], "g": i["g"], "nota": str(i.get("nota") or ""),
                          "grup": str(i.get("grup") or ""), **{n: ingrediente[i["id"]][n] for n in NUTRIENTI + ("pret_per_kg",)}}
                         for i in meta["ingrediente"]],
         "nutritie": calculeaza_nutritie(meta, ingrediente),
-        "pasi_html": corp_in_html(corp), "ultima": ultima,
+        "pasi_html": corp_in_html(corp), "jurnal": jurnal,
     }
 
 def main(argv):
