@@ -20,7 +20,7 @@ STATUSURI = ("test", "imbunatatire", "carte", "gunoi")
 NUTRIENTI = ("kcal", "proteine", "carbo", "grasimi", "fibre")
 COLOANE_CSV = ["id", "nume", *NUTRIENTI, "pret_per_kg", "sursa", "nota"]
 OBLIGATORII = ("titlu", "slug", "categorie", "sursa", "portii", "timp_activ_min", "timp_total_min", "versiune", "ingrediente")
-RE_PAS = re.compile(r"^\d+[.)]\s+(.+)$")
+RE_PAS = re.compile(r"^(\d+)[.)]\s+(.+)$")
 RE_FRONTMATTER = re.compile(r"^---\r?\n(.*?)\r?\n---[ \t]*(?:\r?\n|$)(.*)$", re.S)
 
 
@@ -114,6 +114,8 @@ def valideaza_reteta(meta, corp, cale, ingrediente, erori):
         eroare("sursa trebuie să fie un URL, „claude” sau „propriu”")
     if not isinstance(tags, list) or not all(isinstance(t, str) and t.strip() for t in tags):
         eroare("tags trebuie să fie o listă de texte nevide")
+    if not isinstance(meta.get("din_timp") or "", str):
+        eroare("din_timp trebuie să fie text (ex. „marinare 4–6 h”)")
     for camp, minim in (("portii", 1), ("timp_activ_min", 0), ("timp_total_min", 0), ("versiune", 1), ("greutate_gatita_g", 1)):
         if meta.get(camp) is not None and not este_numar(meta[camp], minim, intreg=True):
             eroare(f"„{camp}” trebuie să fie un număr întreg ≥ {minim}")
@@ -180,11 +182,11 @@ def calculeaza_nutritie(meta, ingrediente):
     return rezultat
 
 def corp_in_html(corp):
-    """Pașii numerotați devin <ol>, liniile „## Titlu” devin <h3>, restul paragrafe. Fără alt markdown."""
+    """Pașii numerotați devin <ol> (cu numărul din fișier, ca etapele „## Titlu” să nu reia numerotarea), restul paragrafe."""
     html, pasi = [], []
     for linie in [l.strip() for l in corp.splitlines() if l.strip()] + [""]:  # rândurile goale nu rup lista
         if pas := RE_PAS.match(linie):
-            pasi.append(f"<li>{escape(pas.group(1))}</li>")
+            pasi.append(f'<li value="{pas.group(1)}">{escape(pas.group(2))}</li>')
             continue
         if pasi:
             html.append(f"<ol>{''.join(pasi)}</ol>")
@@ -203,21 +205,19 @@ def pregateste(meta, corp, ingrediente):
         tags.append("ocazie")
     ultima = {**j[-1], "data": data_valida(j[-1]["data"]).strftime("%Y-%m-%d")} if (j := meta.get("jurnal")) else None
     return {
-        "slug": meta["slug"], "titlu": meta["titlu"], "categorie": meta["categorie"], "tags": tags,
-        "sursa": meta["sursa"], "status": status, "versiune": meta["versiune"], "portii": meta["portii"],
-        "timp_activ_min": meta["timp_activ_min"], "timp_total_min": meta["timp_total_min"],
-        "greutate_gatita_g": meta.get("greutate_gatita_g"),  # dacă e completat, „per 100 g” din carte e pe gătit
+        "slug": meta["slug"], "titlu": meta["titlu"], "categorie": meta["categorie"], "tags": tags, "sursa": meta["sursa"],
+        "status": status, "versiune": meta["versiune"], "portii": meta["portii"], "din_timp": meta.get("din_timp") or "",
+        "timp_activ_min": meta["timp_activ_min"], "timp_total_min": meta["timp_total_min"], "greutate_gatita_g": meta.get("greutate_gatita_g"),
         "gust": ultima["gust"] if ultima else None, "efort": ultima["efort"] if ultima else None,
         "ingrediente": [{"id": i["id"], "nume": ingrediente[i["id"]]["nume"], "g": i["g"], "nota": str(i.get("nota") or ""),
-                         **{n: ingrediente[i["id"]][n] for n in NUTRIENTI + ("pret_per_kg",)}}
+                         "grup": str(i.get("grup") or ""), **{n: ingrediente[i["id"]][n] for n in NUTRIENTI + ("pret_per_kg",)}}
                         for i in meta["ingrediente"]],
         "nutritie": calculeaza_nutritie(meta, ingrediente),
         "pasi_html": corp_in_html(corp), "ultima": ultima,
     }
 
 def main(argv):
-    for flux in (sys.stdout, sys.stderr):
-        flux.reconfigure(encoding="utf-8")
+    [flux.reconfigure(encoding="utf-8") for flux in (sys.stdout, sys.stderr)]
     if set(argv) - {"--check"}:
         print(__doc__)
         return 2

@@ -47,7 +47,8 @@ tags: [rapid, pui]
 sursa: claude                  # url | claude | propriu
 portii: 4
 timp_activ_min: 20
-timp_total_min: 35
+timp_total_min: 35             # sesiunea de gătit, de la început până în farfurie; fără așteptările din din_timp
+din_timp: marinare 4–6 h       # opțional, text liber: ce trebuie făcut înainte de sesiunea de gătit; apare pe card
 versiune: 1
 status_manual:                 # gol = calculat din jurnal; altfel test | imbunatatire | carte | gunoi
 greutate_gatita_g:             # opțional: greutatea mâncării gata; dacă e completată, „per 100 g” din carte e pe gătit
@@ -57,6 +58,7 @@ ingrediente:
   - id: ulei_masline
     g: 13
     nota: 1 lingură
+    grup: Marinada             # opțional; în carte, lista de ingrediente se împarte pe grupuri
 jurnal:
   - data: 2026-09-08
     versiune: 1
@@ -66,6 +68,7 @@ jurnal:
     observatii: prea sărat, orezul puțin crud
     urmatoarea_data: jumătate din sare, +5 min la orez
 ---
+## Pregătire
 1. Încinge uleiul în tigaie, ~1 min, până unduiește.
 2. ...
 
@@ -73,7 +76,7 @@ jurnal:
 Ce nu e sigur: timpi, sare, temperatura cuptorului.
 ```
 
-`timp_total_min` include și așteptările (marinare, sărare, odihnă); cartea îl afișează în ore și minute. Toate cantitățile în grame. Nume de fișiere și id-uri: ASCII, fără diacritice. Conținutul: română cu diacritice. `sursa` e un URL complet (cu `http://` sau `https://`), `claude` sau `propriu`.
+Titlurile `## …` dintre pași grupează pașii pe etape; numerotarea continuă (se folosește numărul scris în fișier). În carte, pașii se bifează prin atingere, iar orice „8 minute” sau „30–60 de secunde” dintr-un pas pornește un cronometru cu sunet la final. Timpul total se afișează în ore și minute. Toate cantitățile în grame. Nume de fișiere și id-uri: ASCII, fără diacritice. Conținutul: română cu diacritice. `sursa` e un URL complet (cu `http://` sau `https://`), `claude` sau `propriu`.
 
 ## Scale
 

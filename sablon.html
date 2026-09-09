@@ -3,46 +3,55 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="color-scheme" content="light">
+<meta name="color-scheme" content="light dark">
 <title>Cartea de rețete</title>
 <style>
-:root{--fundal:#f6f3ec;--hartie:#fff;--text:#24211c;--mut:#736c60;--accent:#a8432a;--linie:#e4ded2}
+:root{--fundal:#f6f3ec;--hartie:#fff;--text:#24211c;--mut:#736c60;--accent:#a8432a;--linie:#e4ded2;--activ:#fbe9dc}
+@media (prefers-color-scheme: dark){:root{--fundal:#1b1917;--hartie:#272320;--text:#ebe6dd;--mut:#a69e91;--accent:#e58a6a;--linie:#3b3631;--activ:#43302a}}
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
-body{margin:0;font:16px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--fundal);color:var(--text)}
+body{margin:0;font:17px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--fundal);color:var(--text)}
 header{position:sticky;top:0;z-index:2;background:var(--hartie);border-bottom:1px solid var(--linie);padding:.6rem .8rem}
 header>div,main,article{max-width:720px;margin:0 auto}
 h1{margin:0 0 .5rem;font-size:1.25rem}
-input[type=search],select{width:100%;font:inherit;padding:.5rem .6rem;border:1px solid var(--linie);border-radius:8px;background:#fff;color:inherit}
+input[type=search],select{width:100%;font:inherit;font-size:1rem;padding:.5rem .6rem;border:1px solid var(--linie);border-radius:8px;background:var(--hartie);color:inherit}
 .filtre{display:grid;grid-template-columns:repeat(3,1fr);gap:.4rem;margin-top:.4rem}
 .comutatoare{display:flex;gap:1rem;margin-top:.5rem;font-size:.9rem;color:var(--mut)}
 .comutatoare label{display:flex;align-items:center;gap:.3rem}
 main{padding:.8rem}
 .card{display:block;background:var(--hartie);border:1px solid var(--linie);border-radius:12px;padding:.8rem .9rem;margin-bottom:.6rem;text-decoration:none;color:inherit}
-.card h2{margin:0 0 .3rem;font-size:1.05rem}
-.meta{font-size:.85rem;color:var(--mut);display:flex;flex-wrap:wrap;gap:.2rem .8rem;margin:0}
+.card h2{margin:0 0 .3rem;font-size:1.1rem}
+.meta{font-size:.9rem;color:var(--mut);display:flex;flex-wrap:wrap;gap:.2rem .8rem;margin:0}
 .status{font-size:.75rem;text-transform:uppercase;letter-spacing:.05em;color:var(--accent)}
 .gol{color:var(--mut);text-align:center;padding:2rem 0}
 #detaliu{position:fixed;inset:0;background:var(--fundal);overflow-y:auto;z-index:3;-webkit-overflow-scrolling:touch}
 .bara{position:sticky;top:0;z-index:1;background:var(--hartie);border-bottom:1px solid var(--linie);padding:.5rem .6rem;display:flex;align-items:center;gap:.4rem}
 .bara button{font:inherit;font-size:1rem;background:none;border:0;color:var(--accent);padding:.4rem .5rem;cursor:pointer}
-.bara span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bara span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1}
+#cronometru{flex:none;font-variant-numeric:tabular-nums;font-weight:600;background:var(--activ);border-radius:8px;padding:.3rem .6rem;cursor:pointer}
+#cronometru.gata{background:var(--accent);color:#fff}
 article{padding:.8rem .8rem 3rem}
-article h2{margin:.2rem 0 .4rem;font-size:1.35rem}
-h3{font-size:.8rem;margin:1.3rem 0 .4rem;color:var(--mut);text-transform:uppercase;letter-spacing:.05em}
+article h2{margin:.2rem 0 .4rem;font-size:1.4rem}
+article p{margin:.4rem 0}
+h3{font-size:.8rem;margin:1.4rem 0 .5rem;color:var(--mut);text-transform:uppercase;letter-spacing:.05em}
 .portii{display:flex;align-items:center;gap:.5rem;margin:.3rem 0 .6rem}
-.portii button{font:inherit;font-size:1.2rem;width:2.4rem;height:2.4rem;border:1px solid var(--linie);border-radius:50%;background:#fff;cursor:pointer}
-.portii input{width:3.6rem;text-align:center;font:inherit;padding:.4rem;border:1px solid var(--linie);border-radius:8px}
-.ingrediente{list-style:none;margin:0;padding:0;background:var(--hartie);border:1px solid var(--linie);border-radius:12px}
+.portii button{font:inherit;font-size:1.2rem;width:2.4rem;height:2.4rem;border:1px solid var(--linie);border-radius:50%;background:var(--hartie);color:inherit;cursor:pointer}
+.portii input{width:3.6rem;text-align:center;font:inherit;padding:.4rem;border:1px solid var(--linie);border-radius:8px;background:var(--hartie);color:inherit}
+.ingrediente{list-style:none;margin:0;padding:0;background:var(--hartie);border:1px solid var(--linie);border-radius:12px;overflow:hidden}
 .ingrediente li{display:flex;align-items:center;gap:.6rem;padding:.55rem .8rem;border-bottom:1px solid var(--linie)}
 .ingrediente li:last-child{border-bottom:0}
+.ingrediente li.grup{font-size:.75rem;text-transform:uppercase;letter-spacing:.05em;color:var(--accent);background:var(--fundal);padding:.4rem .8rem}
 .ingrediente input{width:1.2rem;height:1.2rem;margin:0;flex:none}
 .ingrediente .nume{flex:1}
 .ingrediente .nota{color:var(--mut);font-size:.85rem}
 .ingrediente .g{white-space:nowrap;font-variant-numeric:tabular-nums}
 .bifat .nume{text-decoration:line-through;color:var(--mut)}
-ol{padding-left:1.4rem;margin:0}
-ol li{margin-bottom:.7rem}
+ol{padding-left:1.7rem;margin:0}
+ol li{margin-bottom:.7rem;padding:.25rem .4rem;border-radius:8px;cursor:pointer}
+ol li::marker{font-weight:700;color:var(--accent)}
+ol li.facut{color:var(--mut);text-decoration:line-through}
+button.timp{font:inherit;font-size:.95em;background:var(--activ);border:1px solid var(--linie);border-radius:6px;padding:0 .4rem;color:inherit;cursor:pointer;white-space:nowrap}
+button.timp.activ{border-color:var(--accent);color:var(--accent);font-weight:600}
 .nutritie{display:grid;grid-template-columns:repeat(5,1fr);gap:.3rem;text-align:center;font-size:.8rem;color:var(--mut);background:var(--hartie);border:1px solid var(--linie);border-radius:12px;padding:.6rem .2rem}
 .nutritie b{display:block;font-size:1rem;color:var(--text)}
 .jurnal{background:var(--hartie);border:1px solid var(--linie);border-radius:12px;padding:.6rem .8rem}
@@ -71,7 +80,7 @@ a{color:var(--accent)}
 </div></header>
 <main id="lista"></main>
 <section id="detaliu" hidden>
-  <div class="bara"><button id="inapoi" type="button">‹ Înapoi</button><span id="detaliu-titlu"></span></div>
+  <div class="bara"><button id="inapoi" type="button">‹ Înapoi</button><span id="detaliu-titlu"></span><span id="cronometru" hidden title="atinge ca să oprești"></span></div>
   <article id="detaliu-continut"></article>
 </section>
 <script>
@@ -88,8 +97,12 @@ const lei = c => c == null ? "—" : "≈" + String(c).replace(".", ",") + " lei
 const durata = m => m >= 60 ? `${Math.floor(m / 60)} h${m % 60 ? " " + m % 60 + " min" : ""}` : `${m} min`;
 const sursa = s => /^https?:\/\//.test(s)
   ? `<a href="${esc(s)}" target="_blank" rel="noopener">${esc(s.split("/")[2] || s)}</a>` : esc(s);
+// Orice „8 minute” / „3–4 minute” / „30–60 de secunde” dintr-un pas devine buton de cronometru (prima cifră).
+const RE_TIMP = /(\d+)(?:[–-]\d+)?\s*(?:de\s+)?(minute|minut|secunde|secundă)\b/g;
+const cuCronometre = html => html.replace(RE_TIMP, (m, n, u) =>
+  `<button type="button" class="timp" data-s="${+n * (u.startsWith("sec") ? 1 : 60)}">⏱ ${m}</button>`);
 
-// Nutriția per porție, recalculată din valorile per 100 g, exact în ordinea și cu rotunjirile din build.py.
+// Nutriția per porție și per 100 g, recalculată din valorile per 100 g, exact în ordinea și cu rotunjirile din build.py.
 // Se calculează din gramajele originale: per porție nu depinde de numărul de porții (scalarea e proporțională).
 function nutritie(r) {
   const t = {kcal: 0, proteine: 0, carbo: 0, grasimi: 0, fibre: 0}, suta = {};
@@ -126,29 +139,34 @@ function arataLista() {
   $("lista").innerHTML = lista.length ? lista.map(r => `<a class="card" href="#${esc(r.slug)}" data-slug="${esc(r.slug)}">
     <div class="status">${STATUSURI[r.status] ?? esc(r.status)}</div><h2>${esc(r.titlu)}</h2>
     <p class="meta"><span>gust ${r.gust ?? "—"}</span><span>efort ${r.efort ?? "—"}</span><span>${durata(r.timp_total_min)}</span>
-    <span>≈${r.nutritie.kcal} kcal/porție</span><span>${lei(r.nutritie.cost)}/porție</span></p></a>`).join("")
+    <span>≈${r.nutritie.kcal} kcal/porție</span><span>${lei(r.nutritie.cost)}/porție</span>
+    ${r.din_timp ? `<span>din timp: ${esc(r.din_timp)}</span>` : ""}</p></a>`).join("")
     : `<p class="gol">${RETETE.length ? "Nicio rețetă pentru filtrele alese." : "Cartea e goală deocamdată."}</p>`;
 }
 
-let curenta = null, portii = 0, bifate = new Set();
+let curenta = null, portii = 0, bifate = new Set(), facute = new Set();
 
 function deseneazaDetaliu() {
   const r = curenta, f = portii / r.portii, n = nutritie(r), u = r.ultima;
+  let grup = "";
+  const ingr = r.ingrediente.map((i, k) => (i.grup && i.grup !== grup ? `<li class="grup">${esc(grup = i.grup)}</li>` : "")
+    + `<li class="${bifate.has(k) ? "bifat" : ""}"><input type="checkbox" data-k="${k}" ${bifate.has(k) ? "checked" : ""}>
+      <span class="nume">${esc(i.nume)}${i.nota && f === 1 ? ` <span class="nota">(${esc(i.nota)})</span>` : ""}</span>
+      <span class="g">${Math.max(1, Math.round(i.g * f))} g</span></li>`).join("");
   $("detaliu-continut").innerHTML = `
     <div class="status">${STATUSURI[r.status] ?? esc(r.status)} · ${CATEGORII[r.categorie] ?? esc(r.categorie)} · v${r.versiune}</div>
     <h2>${esc(r.titlu)}</h2>
     <p class="meta"><span>gust ${r.gust ?? "—"}</span><span>efort ${r.efort ?? "—"}</span>
       <span>${durata(r.timp_activ_min)} activ · ${durata(r.timp_total_min)} total</span>
+      ${r.din_timp ? `<span>din timp: ${esc(r.din_timp)}</span>` : ""}
       ${r.tags.length ? `<span>${r.tags.map(t => "#" + esc(t)).join(" ")}</span>` : ""}</p>
     <h3>Ingrediente</h3>
     <div class="portii"><button type="button" data-d="-1" aria-label="mai puține porții">−</button>
       <input id="portii" type="number" min="1" inputmode="numeric" value="${portii}">
       <button type="button" data-d="1" aria-label="mai multe porții">+</button><span>porții</span></div>
-    <ul class="ingrediente">${r.ingrediente.map((i, k) => `<li class="${bifate.has(k) ? "bifat" : ""}">
-      <input type="checkbox" data-k="${k}" ${bifate.has(k) ? "checked" : ""}>
-      <span class="nume">${esc(i.nume)}${i.nota && f === 1 ? ` <span class="nota">(${esc(i.nota)})</span>` : ""}</span>
-      <span class="g">${Math.max(1, Math.round(i.g * f))} g</span></li>`).join("")}</ul>
-    <h3>Pași</h3>${r.pasi_html}
+    <ul class="ingrediente">${ingr}</ul>
+    <h3>Pași <small style="text-transform:none;letter-spacing:0">(atinge un pas ca să-l bifezi, atinge un timp ca să pornești cronometrul)</small></h3>
+    ${cuCronometre(r.pasi_html)}
     <h3>Nutriție per porție</h3>
     <div class="nutritie"><div><b>≈${n.kcal}</b>kcal</div><div><b>≈${n.proteine} g</b>proteine</div>
       <div><b>≈${n.carbo} g</b>carbo</div><div><b>≈${n.grasimi} g</b>grăsimi</div><div><b>≈${n.fibre} g</b>fibre</div></div>
@@ -160,6 +178,43 @@ function deseneazaDetaliu() {
     ${u ? `<div class="jurnal"><p><b>${esc(u.data)}</b> · v${u.versiune} · gust ${u.gust} · efort ${u.efort}${u.executie === "greseala_mea" ? " · greșeala mea" : ""}</p>
       ${u.observatii ? `<p>${esc(u.observatii)}</p>` : ""}${u.urmatoarea_data ? `<p><b>Data viitoare:</b> ${esc(u.urmatoarea_data)}</p>` : ""}</div>`
       : `<p class="jurnal">Încă negătită.</p>`}`;
+  $("detaliu-continut").querySelectorAll("ol li").forEach((li, k) => li.classList.toggle("facut", facute.has(k)));
+  if (cronometru) { cronometru.btn = $("detaliu-continut").querySelectorAll("button.timp")[cronometru.idx]; cronometru.btn?.classList.add("activ"); }
+}
+
+// Cronometru: unul singur, afișat în bara de sus; sună și vibrează la final.
+let cronometru = null, audio = null;
+function porneste(btn) {
+  opreste();
+  try { audio = audio || new (window.AudioContext || window.webkitAudioContext)(); } catch (e) {}
+  const idx = [...$("detaliu-continut").querySelectorAll("button.timp")].indexOf(btn);
+  cronometru = {btn, idx, sfarsit: Date.now() + btn.dataset.s * 1000, interval: setInterval(bate, 250)};
+  btn.classList.add("activ");
+  $("cronometru").hidden = false;
+  $("cronometru").classList.remove("gata");
+  bate();
+}
+function bate() {
+  const rest = Math.max(0, Math.round((cronometru.sfarsit - Date.now()) / 1000));
+  $("cronometru").textContent = rest ? `⏱ ${Math.floor(rest / 60)}:${String(rest % 60).padStart(2, "0")}` : "⏱ gata!";
+  if (!rest) { clearInterval(cronometru.interval); cronometru.interval = null; $("cronometru").classList.add("gata"); suna(); }
+}
+function opreste() {
+  if (cronometru) { clearInterval(cronometru.interval); cronometru.btn?.classList.remove("activ"); cronometru = null; }
+  $("cronometru").hidden = true;
+}
+function suna() {
+  try { navigator.vibrate && navigator.vibrate([300, 150, 300, 150, 600]); } catch (e) {}
+  if (!audio) return;
+  try {
+    audio.resume && audio.resume();
+    [0, 0.45, 0.9].forEach(t => {
+      const o = audio.createOscillator(), g = audio.createGain();
+      o.connect(g); g.connect(audio.destination); o.frequency.value = 880;
+      g.gain.setValueAtTime(0.25, audio.currentTime + t); g.gain.exponentialRampToValueAtTime(0.001, audio.currentTime + t + 0.35);
+      o.start(audio.currentTime + t); o.stop(audio.currentTime + t + 0.35);
+    });
+  } catch (e) {}
 }
 
 // Navigarea nu depinde de URL: unele vizualizatoare (fișier deschis ca data:) nu permit schimbarea lui.
@@ -167,7 +222,7 @@ function deseneazaDetaliu() {
 function deschide(slug, inIstoric) {
   const r = RETETE.find(x => x.slug === slug);
   if (!r) return inchide();
-  if (r !== curenta) { curenta = r; portii = r.portii; bifate = new Set(); }
+  if (r !== curenta) { curenta = r; portii = r.portii; bifate = new Set(); facute = new Set(); opreste(); }
   $("detaliu-titlu").textContent = r.titlu;
   deseneazaDetaliu();
   $("detaliu").hidden = false;
@@ -183,7 +238,15 @@ function inchide() {
 
 $("detaliu-continut").addEventListener("click", e => {
   const b = e.target.closest("button[data-d]");
-  if (b) { portii = Math.max(1, portii + Number(b.dataset.d)); deseneazaDetaliu(); }
+  if (b) { portii = Math.max(1, portii + Number(b.dataset.d)); deseneazaDetaliu(); return; }
+  const t = e.target.closest("button.timp");
+  if (t) { if (cronometru && cronometru.btn === t) opreste(); else porneste(t); return; }
+  const li = e.target.closest("ol li");
+  if (li) {
+    const k = [...$("detaliu-continut").querySelectorAll("ol li")].indexOf(li);
+    if (facute.has(k)) facute.delete(k); else facute.add(k);
+    li.classList.toggle("facut", facute.has(k));
+  }
 });
 $("detaliu-continut").addEventListener("change", e => {
   const el = e.target;
@@ -194,6 +257,7 @@ $("detaliu-continut").addEventListener("change", e => {
     el.closest("li").classList.toggle("bifat", el.checked);
   }
 });
+$("cronometru").addEventListener("click", opreste);
 $("lista").addEventListener("click", e => {
   const a = e.target.closest("a.card");
   if (a) { e.preventDefault(); deschide(a.dataset.slug, true); }
