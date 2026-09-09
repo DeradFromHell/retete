@@ -50,7 +50,7 @@ timp_activ_min: 20
 timp_total_min: 35
 versiune: 1
 status_manual:                 # gol = calculat din jurnal; altfel test | imbunatatire | carte | gunoi
-greutate_gatita_g:             # opțional, nefolosit în v1
+greutate_gatita_g:             # opțional: greutatea mâncării gata; dacă e completată, „per 100 g” din carte e pe gătit
 ingrediente:
   - id: piept_pui              # trebuie să existe în ingrediente.csv
     g: 500
@@ -73,7 +73,7 @@ jurnal:
 Ce nu e sigur: timpi, sare, temperatura cuptorului.
 ```
 
-Toate cantitățile în grame. Nume de fișiere și id-uri: ASCII, fără diacritice. Conținutul: română cu diacritice. `sursa` e un URL complet (cu `http://` sau `https://`), `claude` sau `propriu`.
+`timp_total_min` include și așteptările (marinare, sărare, odihnă); cartea îl afișează în ore și minute. Toate cantitățile în grame. Nume de fișiere și id-uri: ASCII, fără diacritice. Conținutul: română cu diacritice. `sursa` e un URL complet (cu `http://` sau `https://`), `claude` sau `propriu`.
 
 ## Scale
 
@@ -96,6 +96,6 @@ Cartea arată implicit doar `carte`; `imbunatatire` și `test` se pot afișa cu 
 
 ## Nutriție și cost
 
-Per porție = (Σ g × valoare / 100) / porții, din gramaje crude. Afișare cu „≈”: kcal rotunjit la 10, macro la 1 g, fără zecimale; cost rotunjit la 0,5 lei. Ingredientele mici au marjă de ±5%, de aceea nu afișăm precizie falsă. Ingredient fără `pret_per_kg` → cost „—”. Prețurile din seed sunt estimări (marcate „preț estimat 2026” în `nota`); se corectează de pe bonuri când e cazul.
+Per porție = (Σ g × valoare / 100) / porții, din gramaje crude. Per 100 g = total / `greutate_gatita_g` × 100 dacă greutatea gătită e completată (cântărește mâncarea gata), altfel pe suma ingredientelor crude, etichetat „crud”. Afișare cu „≈”: kcal rotunjit la 10, macro la 1 g, fără zecimale; cost rotunjit la 0,5 lei. Ingredientele mici au marjă de ±5%, de aceea nu afișăm precizie falsă. Ingredient fără `pret_per_kg` → cost „—”. Prețurile din seed sunt estimări (marcate „preț estimat 2026” în `nota`); se corectează de pe bonuri când e cazul.
 
 `ingrediente.csv`: coloanele `id,nume,kcal,proteine,carbo,grasimi,fibre,pret_per_kg,sursa,nota`, valori per 100 g crud. `sursa` e obligatorie: „eticheta <brand>” sau „USDA FDC <id>”. Fără sursă nu se adaugă rândul. Ingredient necunoscut într-o rețetă = build-ul eșuează. Nutriția nu se ghicește niciodată.

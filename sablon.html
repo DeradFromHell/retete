@@ -85,21 +85,28 @@ const norm = s => String(s ?? "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLow
 const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;"})[c]);
 const rot = (x, pas = 1) => Math.floor(x / pas + 0.5) * pas;  // aceleași operații ca rotunjeste() din build.py
 const lei = c => c == null ? "—" : "≈" + String(c).replace(".", ",") + " lei";
+const durata = m => m >= 60 ? `${Math.floor(m / 60)} h${m % 60 ? " " + m % 60 + " min" : ""}` : `${m} min`;
 const sursa = s => /^https?:\/\//.test(s)
   ? `<a href="${esc(s)}" target="_blank" rel="noopener">${esc(s.split("/")[2] || s)}</a>` : esc(s);
 
 // Nutriția per porție, recalculată din valorile per 100 g, exact în ordinea și cu rotunjirile din build.py.
 // Se calculează din gramajele originale: per porție nu depinde de numărul de porții (scalarea e proporțională).
 function nutritie(r) {
-  const t = {kcal: 0, proteine: 0, carbo: 0, grasimi: 0, fibre: 0};
-  let cost = 0, complet = true;
+  const t = {kcal: 0, proteine: 0, carbo: 0, grasimi: 0, fibre: 0}, suta = {};
+  let cost = 0, complet = true, crud = 0;
   for (const i of r.ingrediente) {
+    crud += i.g;
     for (const n in t) t[n] += i.g * i[n] / 100;
     if (i.pret_per_kg == null) complet = false; else cost += i.g / 1000 * i.pret_per_kg;
   }
-  for (const n in t) t[n] = rot(t[n] / r.portii, n === "kcal" ? 10 : 1);
+  // per 100 g: pe greutatea gătită dacă e completată în rețetă, altfel pe suma ingredientelor crude
+  const baza = r.greutate_gatita_g || crud;
+  for (const n in t) {
+    suta[n] = rot(t[n] / baza * 100, n === "kcal" ? 10 : 1);
+    t[n] = rot(t[n] / r.portii, n === "kcal" ? 10 : 1);
+  }
   t.cost = complet ? rot(cost / r.portii, 0.5) : null;
-  return t;
+  return {...t, suta, pe_gatit: !!r.greutate_gatita_g};
 }
 
 function filtrate() {
@@ -116,14 +123,14 @@ function filtrate() {
 
 function arataLista() {
   const lista = filtrate();
-  $("lista").innerHTML = lista.length ? lista.map(r => `<a class="card" href="#${esc(r.slug)}">
+  $("lista").innerHTML = lista.length ? lista.map(r => `<a class="card" href="#${esc(r.slug)}" data-slug="${esc(r.slug)}">
     <div class="status">${STATUSURI[r.status] ?? esc(r.status)}</div><h2>${esc(r.titlu)}</h2>
-    <p class="meta"><span>gust ${r.gust ?? "—"}</span><span>efort ${r.efort ?? "—"}</span><span>${r.timp_total_min} min</span>
+    <p class="meta"><span>gust ${r.gust ?? "—"}</span><span>efort ${r.efort ?? "—"}</span><span>${durata(r.timp_total_min)}</span>
     <span>≈${r.nutritie.kcal} kcal/porție</span><span>${lei(r.nutritie.cost)}/porție</span></p></a>`).join("")
     : `<p class="gol">${RETETE.length ? "Nicio rețetă pentru filtrele alese." : "Cartea e goală deocamdată."}</p>`;
 }
 
-let curenta = null, portii = 0, bifate = new Set(), listaVazuta = false;
+let curenta = null, portii = 0, bifate = new Set();
 
 function deseneazaDetaliu() {
   const r = curenta, f = portii / r.portii, n = nutritie(r), u = r.ultima;
@@ -131,7 +138,7 @@ function deseneazaDetaliu() {
     <div class="status">${STATUSURI[r.status] ?? esc(r.status)} · ${CATEGORII[r.categorie] ?? esc(r.categorie)} · v${r.versiune}</div>
     <h2>${esc(r.titlu)}</h2>
     <p class="meta"><span>gust ${r.gust ?? "—"}</span><span>efort ${r.efort ?? "—"}</span>
-      <span>${r.timp_activ_min} min activ · ${r.timp_total_min} min total</span>
+      <span>${durata(r.timp_activ_min)} activ · ${durata(r.timp_total_min)} total</span>
       ${r.tags.length ? `<span>${r.tags.map(t => "#" + esc(t)).join(" ")}</span>` : ""}</p>
     <h3>Ingrediente</h3>
     <div class="portii"><button type="button" data-d="-1" aria-label="mai puține porții">−</button>
@@ -145,6 +152,9 @@ function deseneazaDetaliu() {
     <h3>Nutriție per porție</h3>
     <div class="nutritie"><div><b>≈${n.kcal}</b>kcal</div><div><b>≈${n.proteine} g</b>proteine</div>
       <div><b>≈${n.carbo} g</b>carbo</div><div><b>≈${n.grasimi} g</b>grăsimi</div><div><b>≈${n.fibre} g</b>fibre</div></div>
+    <h3>Nutriție per 100 g ${n.pe_gatit ? "(gătit)" : "(crud, din ingrediente)"}</h3>
+    <div class="nutritie"><div><b>≈${n.suta.kcal}</b>kcal</div><div><b>≈${n.suta.proteine} g</b>proteine</div>
+      <div><b>≈${n.suta.carbo} g</b>carbo</div><div><b>≈${n.suta.grasimi} g</b>grăsimi</div><div><b>≈${n.suta.fibre} g</b>fibre</div></div>
     <p class="meta"><span>cost ${lei(n.cost)}/porție</span><span>sursă: ${sursa(r.sursa)}</span></p>
     <h3>Ultima intrare din jurnal</h3>
     ${u ? `<div class="jurnal"><p><b>${esc(u.data)}</b> · v${u.versiune} · gust ${u.gust} · efort ${u.efort}${u.executie === "greseala_mea" ? " · greșeala mea" : ""}</p>
@@ -152,22 +162,23 @@ function deseneazaDetaliu() {
       : `<p class="jurnal">Încă negătită.</p>`}`;
 }
 
-function ruteaza() {
-  const slug = location.hash.slice(1);  // slug-urile sunt ASCII (a-z, 0-9, -), nu au nevoie de decodare
-  const r = slug && RETETE.find(x => x.slug === slug);
-  if (r) {
-    if (r !== curenta) { curenta = r; portii = r.portii; bifate = new Set(); }
-    $("detaliu-titlu").textContent = r.titlu;
-    deseneazaDetaliu();
-    $("detaliu").hidden = false;
-    $("detaliu").scrollTop = 0;
-    document.body.style.overflow = "hidden";
-  } else {
-    $("detaliu").hidden = true;
-    document.body.style.overflow = "";
-    listaVazuta = true;
-    arataLista();
-  }
+// Navigarea nu depinde de URL: unele vizualizatoare (fișier deschis ca data:) nu permit schimbarea lui.
+// Unde se poate, punem și o intrare în istoric, ca butonul „înapoi” al telefonului să închidă detaliul.
+function deschide(slug, inIstoric) {
+  const r = RETETE.find(x => x.slug === slug);
+  if (!r) return inchide();
+  if (r !== curenta) { curenta = r; portii = r.portii; bifate = new Set(); }
+  $("detaliu-titlu").textContent = r.titlu;
+  deseneazaDetaliu();
+  $("detaliu").hidden = false;
+  $("detaliu").scrollTop = 0;
+  document.body.style.overflow = "hidden";
+  if (inIstoric) try { history.pushState({slug}, "", "#" + slug); } catch (e) { /* fără istoric, mergem oricum */ }
+}
+function inchide() {
+  $("detaliu").hidden = true;
+  document.body.style.overflow = "";
+  arataLista();
 }
 
 $("detaliu-continut").addEventListener("click", e => {
@@ -183,15 +194,22 @@ $("detaliu-continut").addEventListener("change", e => {
     el.closest("li").classList.toggle("bifat", el.checked);
   }
 });
-$("inapoi").addEventListener("click", () => { if (listaVazuta) history.back(); else location.hash = ""; });
+$("lista").addEventListener("click", e => {
+  const a = e.target.closest("a.card");
+  if (a) { e.preventDefault(); deschide(a.dataset.slug, true); }
+});
+$("inapoi").addEventListener("click", () => { if (history.state && history.state.slug) history.back(); else inchide(); });
+window.addEventListener("popstate", () => {  // înapoi/înainte în browser, sau hash schimbat manual
+  const slug = (history.state && history.state.slug) || location.hash.slice(1);
+  if (RETETE.some(x => x.slug === slug)) deschide(slug, false); else inchide();
+});
 for (const id of ["cautare", "categorie", "tag", "sortare", "arata-imbunatatire", "arata-test"])
   $(id).addEventListener("input", arataLista);
 for (const c of Object.keys(CATEGORII).filter(c => RETETE.some(r => r.categorie === c)))
   $("categorie").insertAdjacentHTML("beforeend", `<option value="${c}">${CATEGORII[c]}</option>`);
 for (const t of [...new Set(RETETE.flatMap(r => r.tags))].sort((a, b) => a.localeCompare(b, "ro")))
   $("tag").insertAdjacentHTML("beforeend", `<option value="${esc(t)}">#${esc(t)}</option>`);
-window.addEventListener("hashchange", ruteaza);
-ruteaza();
+if (RETETE.some(x => x.slug === location.hash.slice(1))) deschide(location.hash.slice(1), false); else inchide();
 </script>
 </body>
 </html>

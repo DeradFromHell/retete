@@ -114,8 +114,8 @@ def valideaza_reteta(meta, corp, cale, ingrediente, erori):
         eroare("sursa trebuie să fie un URL, „claude” sau „propriu”")
     if not isinstance(tags, list) or not all(isinstance(t, str) and t.strip() for t in tags):
         eroare("tags trebuie să fie o listă de texte nevide")
-    for camp, minim in (("portii", 1), ("timp_activ_min", 0), ("timp_total_min", 0), ("versiune", 1)):
-        if camp in meta and not este_numar(meta[camp], minim, intreg=True):
+    for camp, minim in (("portii", 1), ("timp_activ_min", 0), ("timp_total_min", 0), ("versiune", 1), ("greutate_gatita_g", 1)):
+        if meta.get(camp) is not None and not este_numar(meta[camp], minim, intreg=True):
             eroare(f"„{camp}” trebuie să fie un număr întreg ≥ {minim}")
     if (este_numar(meta.get("timp_activ_min")) and este_numar(meta.get("timp_total_min"))
             and meta["timp_total_min"] < meta["timp_activ_min"]):
@@ -206,9 +206,9 @@ def pregateste(meta, corp, ingrediente):
         "slug": meta["slug"], "titlu": meta["titlu"], "categorie": meta["categorie"], "tags": tags,
         "sursa": meta["sursa"], "status": status, "versiune": meta["versiune"], "portii": meta["portii"],
         "timp_activ_min": meta["timp_activ_min"], "timp_total_min": meta["timp_total_min"],
+        "greutate_gatita_g": meta.get("greutate_gatita_g"),  # dacă e completat, „per 100 g” din carte e pe gătit
         "gust": ultima["gust"] if ultima else None, "efort": ultima["efort"] if ultima else None,
-        "ingrediente": [{"id": i["id"], "nume": ingrediente[i["id"]]["nume"], "g": i["g"],
-                         "nota": str(i.get("nota") or ""),
+        "ingrediente": [{"id": i["id"], "nume": ingrediente[i["id"]]["nume"], "g": i["g"], "nota": str(i.get("nota") or ""),
                          **{n: ingrediente[i["id"]][n] for n in NUTRIENTI + ("pret_per_kg",)}}
                         for i in meta["ingrediente"]],
         "nutritie": calculeaza_nutritie(meta, ingrediente),
