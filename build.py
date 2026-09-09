@@ -193,8 +193,8 @@ def corp_in_html(corp):
             pasi = []
         if titlu := re.match(r"#+\s+(.+)$", linie):
             html.append(f"<h3>{escape(titlu.group(1))}</h3>")
-        elif linie:
-            html.append(f"<p>{escape(linie)}</p>")
+        elif linie:  # „- text” devine punct de listă (marcat prin CSS), restul paragraf
+            html.append(f'<p class="p">{escape(linie[2:])}</p>' if linie.startswith("- ") else f"<p>{escape(linie)}</p>")
     return "".join(html)
 
 def pregateste(meta, corp, ingrediente):

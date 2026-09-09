@@ -33,6 +33,8 @@ main{padding:.8rem}
 article{padding:.8rem .8rem 3rem}
 article h2{margin:.2rem 0 .4rem;font-size:1.4rem}
 article p{margin:.4rem 0}
+article p.p{padding-left:1.1rem;text-indent:-1.1rem}
+article p.p::before{content:"• ";color:var(--accent)}
 h3{font-size:.8rem;margin:1.4rem 0 .5rem;color:var(--mut);text-transform:uppercase;letter-spacing:.05em}
 .portii{display:flex;align-items:center;gap:.5rem;margin:.3rem 0 .6rem}
 .portii button{font:inherit;font-size:1.2rem;width:2.4rem;height:2.4rem;border:1px solid var(--linie);border-radius:50%;background:var(--hartie);color:inherit;cursor:pointer}
@@ -166,7 +168,7 @@ function deseneazaDetaliu() {
       <button type="button" data-d="1" aria-label="mai multe porții">+</button><span>porții</span></div>
     <ul class="ingrediente">${ingr}</ul>
     <h3>Pași <small style="text-transform:none;letter-spacing:0">(atinge un pas ca să-l bifezi, atinge un timp ca să pornești cronometrul)</small></h3>
-    ${cuCronometre(r.pasi_html)}
+    ${r.pasi_html.replace(/<ol>[\s\S]*?<\/ol>/g, cuCronometre)}
     <h3>Nutriție per porție</h3>
     <div class="nutritie"><div><b>≈${n.kcal}</b>kcal</div><div><b>≈${n.proteine} g</b>proteine</div>
       <div><b>≈${n.carbo} g</b>carbo</div><div><b>≈${n.grasimi} g</b>grăsimi</div><div><b>≈${n.fibre} g</b>fibre</div></div>
