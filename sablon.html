@@ -6,97 +6,136 @@
 <meta name="color-scheme" content="light dark">
 <title>Cartea de rețete</title>
 <style>
-:root{--fundal:#f5f1e8;--hartie:#fffdf8;--text:#24211c;--mut:#7a7264;--accent:#a8432a;--linie:#e3dccd;--activ:#fbe9dc}
-@media (prefers-color-scheme: dark){:root{--fundal:#1b1917;--hartie:#272320;--text:#ebe6dd;--mut:#a69e91;--accent:#e58a6a;--linie:#3b3631;--activ:#43302a}}
+:root{--fundal:#f6f0e4;--hartie:#fffdf8;--text:#1f1a14;--mut:#7d7365;--linie:#e4dccb;--accent:#b3462b;--activ:#f9e6d8;
+  --verde:#2f6b4f;--verde-fundal:#e3efe6;--ambra:#a8720f;--ambra-fundal:#f8ecd2;--gri:#8a8174;--gri-fundal:#ece7de;--umbra:0 1px 2px rgba(60,40,20,.06),0 6px 18px rgba(60,40,20,.06)}
+@media (prefers-color-scheme: dark){:root{--fundal:#171411;--hartie:#221e19;--text:#efe8dc;--mut:#a89e8f;--linie:#38312a;--accent:#e58a6a;--activ:#3f2a22;
+  --verde:#7cc79d;--verde-fundal:#1f3b2d;--ambra:#e2b04e;--ambra-fundal:#3d2f12;--gri:#a39a8c;--gri-fundal:#2e2924;--umbra:0 1px 2px rgba(0,0,0,.3),0 8px 20px rgba(0,0,0,.25)}}
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
 body{margin:0;font:17px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--fundal);color:var(--text)}
 button{font:inherit;color:inherit;cursor:pointer}
-header{position:sticky;top:0;z-index:2;background:var(--hartie);border-bottom:1px solid var(--linie);padding:.5rem .8rem .6rem}
+h1,h2,.serif{font-family:ui-serif,Georgia,"Noto Serif","Times New Roman",serif;font-weight:700;letter-spacing:-.01em}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
+/* antet listă */
+header{position:sticky;top:0;z-index:2;background:var(--fundal);padding:.7rem .9rem .6rem;border-bottom:1px solid var(--linie)}
 header>div,main,article{max-width:720px;margin:0 auto}
-.cap{display:flex;align-items:center;justify-content:space-between;gap:.5rem;margin-bottom:.45rem}
-h1{margin:0;font-size:1.2rem}
-input[type=search]{width:100%;font:inherit;font-size:1rem;padding:.5rem .7rem;border:1px solid var(--linie);border-radius:10px;background:var(--fundal);color:inherit}
-.chips{display:flex;flex-wrap:wrap;gap:.35rem;margin-top:.45rem;align-items:center}
+.cap{display:flex;align-items:flex-end;justify-content:space-between;gap:.5rem;margin-bottom:.55rem}
+h1{margin:0;font-size:1.7rem;line-height:1.1}
+h1 small{display:block;font:500 .78rem/1.3 system-ui,sans-serif;color:var(--mut);letter-spacing:.04em;text-transform:uppercase;margin-top:.15rem}
+input[type=search]{width:100%;font:inherit;font-size:1rem;padding:.55rem .8rem;border:1px solid var(--linie);border-radius:12px;background:var(--hartie);color:inherit}
+.chips{display:flex;flex-wrap:wrap;gap:.35rem;margin-top:.5rem;align-items:center}
 .chips.linie{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}
 .chips.linie::-webkit-scrollbar{display:none}
-.chip{border:1px solid var(--linie);background:var(--hartie);border-radius:999px;padding:.25rem .7rem;font-size:.9rem;white-space:nowrap}
-.chip.activ{background:var(--accent);border-color:var(--accent);color:#fff}
-.chip.fix{background:var(--activ);border-color:var(--activ);cursor:default}
+.chip{border:1px solid var(--linie);background:var(--hartie);border-radius:999px;padding:.28rem .75rem;font-size:.88rem;white-space:nowrap;transition:transform .12s}
+.chip:active{transform:scale(.95)}
+.chip.activ{background:var(--text);border-color:var(--text);color:var(--fundal)}
+.chip.fix{background:var(--verde-fundal);border-color:transparent;color:var(--verde);font-weight:600;cursor:default}
+.chip.actiune{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600}
 .eticheta{font-size:.72rem;color:var(--mut);text-transform:uppercase;letter-spacing:.05em;margin-right:.2rem;white-space:nowrap}
-main{padding:.8rem}
-.card{display:block;position:relative;background:var(--hartie);border:1px solid var(--linie);border-radius:14px;padding:.8rem .9rem;margin-bottom:.7rem;text-decoration:none;color:inherit}
-.card h2{margin:0 0 .35rem;font-size:1.15rem;padding-right:5.5rem;line-height:1.3}
-.card .stare{position:absolute;top:.75rem;right:.8rem;font-size:.68rem;text-transform:uppercase;letter-spacing:.05em;color:var(--accent);border:1px solid var(--accent);border-radius:999px;padding:.1rem .5rem}
-.meta{font-size:.9rem;color:var(--mut);display:flex;flex-wrap:wrap;gap:.15rem .8rem;margin:0}
-.meta b{color:var(--text);font-weight:600}
-.gol{color:var(--mut);text-align:center;padding:2rem 1rem}
+/* carduri */
+main{padding:.9rem .9rem 6rem}
+.card{display:grid;grid-template-columns:3.4rem 1fr;gap:.8rem;position:relative;background:var(--hartie);border-radius:16px;padding:.85rem .9rem .85rem .85rem;margin-bottom:.75rem;text-decoration:none;color:inherit;box-shadow:var(--umbra);border-left:5px solid var(--cat,var(--accent));transition:transform .12s}
+.card:active{transform:scale(.985)}
+.initiala{width:3.4rem;height:3.4rem;border-radius:12px;background:var(--cat,var(--accent));color:#fff;display:flex;align-items:center;justify-content:center;font-size:1.7rem;line-height:1}
+.card h2{margin:0 0 .3rem;font-size:1.28rem;line-height:1.2;padding-right:4.6rem}
+.pastile{display:flex;flex-wrap:wrap;gap:.3rem .45rem;margin:.1rem 0 .3rem}
+.pastile span{font-size:.84rem;background:var(--fundal);border-radius:8px;padding:.1rem .5rem;white-space:nowrap}
+.pastile b{font-weight:700}
+.gust{font-size:.86rem;color:var(--mut);display:flex;flex-wrap:wrap;gap:.1rem .6rem;align-items:center}
+.puncte{letter-spacing:.06em;font-size:.8rem}
+.puncte b{color:var(--accent)}
+.dintimp-mic{font-size:.84rem;color:var(--ambra);margin-top:.25rem}
+.stare{position:absolute;top:.75rem;right:.8rem;font-size:.66rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;border-radius:999px;padding:.18rem .55rem}
+.stare.verde{background:var(--verde-fundal);color:var(--verde)}
+.stare.ambra{background:var(--ambra-fundal);color:var(--ambra)}
+.stare.gri{background:var(--gri-fundal);color:var(--gri)}
+.gol{color:var(--mut);text-align:center;padding:3rem 1rem;font-size:1rem}
+/* panouri */
 .panou{position:fixed;inset:0;background:var(--fundal);overflow-y:auto;z-index:3;-webkit-overflow-scrolling:touch}
-.bara{position:sticky;top:0;z-index:1;background:var(--hartie);border-bottom:1px solid var(--linie);padding:.35rem .4rem;display:flex;align-items:center;gap:.2rem;min-height:2.9rem}
-.bara .btn{background:none;border:0;color:var(--accent);padding:.4rem .5rem;font-size:1rem}
-.bara .titlu{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600}
-#cronometre{position:fixed;left:0;right:0;bottom:0;z-index:6;display:flex;flex-wrap:wrap;gap:.4rem;padding:.5rem .8rem;background:var(--hartie);border-top:1px solid var(--linie)}
-.cron{border:1px solid var(--linie);background:var(--activ);border-radius:10px;padding:.3rem .7rem;font-weight:700;font-variant-numeric:tabular-nums;text-align:left;line-height:1.2}
-.cron small{display:block;font-size:.72rem;font-weight:400;opacity:.85}
-.cron.gata{background:var(--accent);border-color:var(--accent);color:#fff;animation:clipire 1s infinite}
-@keyframes clipire{50%{opacity:.5}}
-#timer-panou{position:fixed;left:0;right:0;bottom:0;z-index:7;background:var(--hartie);border-top:1px solid var(--linie);padding:.8rem;box-shadow:0 -6px 20px rgba(0,0,0,.12)}
-#timer-panou .chips{margin-top:0;margin-bottom:.6rem}
-.sari{position:sticky;top:2.9rem;z-index:1;display:flex;background:var(--hartie);border-bottom:1px solid var(--linie);padding:.1rem .4rem;overflow-x:auto;scrollbar-width:none}
-.sari button{background:none;border:0;padding:.4rem .6rem;color:var(--mut);font-size:.9rem;white-space:nowrap}
-article{padding:.8rem .8rem 6rem}
-main{padding-bottom:6rem}
+.panou:not([hidden]){animation:intra .22s ease-out}
+@keyframes intra{from{transform:translateX(28px)}}
+.bara{position:sticky;top:0;z-index:1;background:var(--fundal);border-bottom:1px solid var(--linie);padding:.35rem .4rem;display:flex;align-items:center;gap:.2rem;min-height:2.9rem}
+.bara .btn{background:none;border:0;color:var(--accent);padding:.4rem .5rem;font-size:1rem;font-weight:600}
+.bara .titlu{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600;font-size:.95rem}
+.sari{position:sticky;top:2.9rem;z-index:1;display:flex;background:var(--fundal);border-bottom:1px solid var(--linie);padding:.1rem .4rem;overflow-x:auto;scrollbar-width:none}
+.sari button{background:none;border:0;padding:.45rem .65rem;color:var(--mut);font-size:.88rem;font-weight:600;letter-spacing:.02em;white-space:nowrap}
+article{padding:.9rem .9rem 6rem}
 article.mare{font-size:1.15em}
 article.foarte-mare{font-size:1.3em}
-article h2{margin:.2rem 0 .6rem;font-size:1.5rem;line-height:1.25}
-.cifre{display:grid;grid-template-columns:repeat(4,1fr);gap:.4rem;margin:.6rem 0}
-.cifre div{background:var(--hartie);border:1px solid var(--linie);border-radius:12px;padding:.5rem .2rem;text-align:center;font-size:.72rem;color:var(--mut)}
-.cifre b{display:block;font-size:1.15rem;color:var(--text);font-variant-numeric:tabular-nums;line-height:1.2}
-.dintimp{background:var(--activ);border-radius:12px;padding:.5rem .8rem;margin:.5rem 0}
-h3{font-size:.8rem;margin:1.5rem 0 .5rem;color:var(--mut);text-transform:uppercase;letter-spacing:.06em;scroll-margin-top:5.8rem}
-h4{font-size:.95rem;margin:1rem 0 .5rem;color:var(--accent)}
-.indiciu{font-size:.85rem;color:var(--mut);margin:-.2rem 0 .6rem}
-.portii{display:flex;align-items:center;gap:.5rem;margin:.3rem 0 .6rem;flex-wrap:wrap}
-.portii button.rotund{font-size:1.2rem;width:2.4rem;height:2.4rem;border:1px solid var(--linie);border-radius:50%;background:var(--hartie)}
-.portii input{width:3.6rem;text-align:center;font:inherit;padding:.4rem;border:1px solid var(--linie);border-radius:8px;background:var(--hartie);color:inherit}
+.antet{display:grid;grid-template-columns:3.6rem 1fr;gap:.8rem;align-items:start;margin:.3rem 0 .8rem}
+.antet .initiala{width:3.6rem;height:3.6rem;font-size:1.9rem}
+article h2{margin:0;font-size:1.7rem;line-height:1.15}
+.stari-mici{display:flex;flex-wrap:wrap;gap:.3rem;margin-top:.4rem}
+.stari-mici .stare{position:static}
+.stari-mici .tag{font-size:.78rem;color:var(--mut);border:1px solid var(--linie);border-radius:999px;padding:.18rem .55rem}
+.cifre{display:flex;justify-content:space-around;border-top:1px solid var(--linie);border-bottom:1px solid var(--linie);padding:.65rem 0;margin:.8rem 0}
+.cifre div{text-align:center;font-size:.7rem;color:var(--mut);text-transform:uppercase;letter-spacing:.05em}
+.cifre b{display:block;font-size:1.3rem;color:var(--text);font-variant-numeric:tabular-nums;line-height:1.15;letter-spacing:-.01em;text-transform:none}
+.dintimp{background:var(--ambra-fundal);color:var(--ambra);border-radius:12px;padding:.55rem .85rem;margin:.6rem 0;font-weight:600}
+.dintimp small{display:block;font-weight:400;color:var(--text);opacity:.85}
+.gatit{font-size:.9rem;color:var(--mut);margin:.4rem 0 0}
+h3{font-family:ui-serif,Georgia,"Noto Serif",serif;font-size:1.25rem;margin:1.7rem 0 .6rem;color:var(--text);scroll-margin-top:5.9rem;display:flex;align-items:baseline;gap:.5rem}
+h3::after{content:"";flex:1;border-bottom:1px solid var(--linie);transform:translateY(-.3em)}
+h3 small{font:400 .78rem/1 system-ui,sans-serif;color:var(--mut)}
+h4{font-size:.78rem;text-transform:uppercase;letter-spacing:.08em;margin:1.1rem 0 .6rem;color:var(--accent)}
+.indiciu{font-size:.84rem;color:var(--mut);margin:-.3rem 0 .7rem}
+.portii{display:flex;align-items:center;gap:.5rem;margin:.3rem 0 .7rem;flex-wrap:wrap}
+.portii button.rotund{font-size:1.25rem;width:2.4rem;height:2.4rem;border:1px solid var(--linie);border-radius:50%;background:var(--hartie)}
+.portii input{width:3.6rem;text-align:center;font:inherit;padding:.4rem;border:1px solid var(--linie);border-radius:10px;background:var(--hartie);color:inherit}
 .portii .chip{margin-left:auto}
-.ingrediente{list-style:none;margin:0;padding:0;background:var(--hartie);border:1px solid var(--linie);border-radius:12px;overflow:hidden}
-.ingrediente li{display:flex;align-items:center;gap:.6rem;padding:.55rem .8rem;border-bottom:1px solid var(--linie)}
+.ingrediente{list-style:none;margin:0;padding:0;background:var(--hartie);border-radius:14px;overflow:hidden;box-shadow:var(--umbra)}
+.ingrediente li{display:flex;align-items:center;gap:.7rem;padding:.6rem .9rem;border-bottom:1px solid var(--linie)}
 .ingrediente li:last-child{border-bottom:0}
-.ingrediente li.grup{font-size:.75rem;text-transform:uppercase;letter-spacing:.05em;color:var(--accent);background:var(--fundal);padding:.4rem .8rem}
-.ingrediente input{width:1.25rem;height:1.25rem;margin:0;flex:none}
+.ingrediente li.grup{font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--cat,var(--accent));background:var(--fundal);padding:.45rem .9rem;font-weight:700}
+.ingrediente input{width:1.3rem;height:1.3rem;margin:0;flex:none;accent-color:var(--verde)}
+.ingrediente input:checked{animation:pop .2s}
+@keyframes pop{50%{transform:scale(1.35)}}
 .ingrediente .nume{flex:1}
 .ingrediente .din{display:block;font-size:.8rem;color:var(--mut)}
 .ingrediente .cant{text-align:right;line-height:1.2}
-.ingrediente .cant b{font-variant-numeric:tabular-nums;white-space:nowrap}
+.ingrediente .cant b{font-variant-numeric:tabular-nums;white-space:nowrap;font-size:1.05em}
 .ingrediente .cant small{display:block;color:var(--mut);font-size:.8rem;max-width:9rem}
 .bifat .nume{text-decoration:line-through;color:var(--mut)}
 ol{list-style:none;padding:0;margin:0}
-ol li{display:flex;gap:.7rem;background:var(--hartie);border:1px solid var(--linie);border-radius:12px;padding:.7rem .8rem;margin-bottom:.6rem;cursor:pointer}
-ol li::before{content:attr(value);font-size:1.4rem;font-weight:700;color:var(--accent);min-width:1.4rem;line-height:1.2}
-ol li.facut{color:var(--mut);background:var(--fundal)}
-ol li.facut::before{content:"✓";color:var(--mut)}
-button.timp{font-size:.95em;background:var(--activ);border:1px solid var(--linie);border-radius:6px;padding:0 .4rem;white-space:nowrap}
-button.timp.activ{border-color:var(--accent);color:var(--accent);font-weight:600}
-details.note{margin-top:1rem;background:var(--hartie);border:1px solid var(--linie);border-radius:12px;padding:.4rem .8rem}
-details.note summary{cursor:pointer;font-weight:600;padding:.3rem 0}
-details.note p{margin:.4rem 0}
+ol li{position:relative;background:var(--hartie);border-radius:14px;padding:.8rem .9rem .8rem 3.5rem;margin-bottom:.6rem;cursor:pointer;box-shadow:var(--umbra);line-height:1.5}
+ol li::before{content:attr(value);position:absolute;left:.8rem;top:.75rem;width:2rem;height:2rem;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.95rem;font-family:ui-serif,Georgia,serif}
+ol li.facut{color:var(--mut);background:transparent;box-shadow:none;border:1px dashed var(--linie)}
+ol li.facut::before{content:"✓";background:var(--verde)}
+button.timp{font-size:.92em;background:var(--activ);border:0;border-radius:8px;padding:.05rem .5rem;white-space:nowrap;color:var(--accent);font-weight:600}
+button.timp.activ{background:var(--accent);color:#fff}
+details.note{margin-top:1rem;background:var(--hartie);border-radius:14px;padding:.5rem .9rem;box-shadow:var(--umbra)}
+details.note summary{cursor:pointer;font-weight:600;padding:.35rem 0}
+details.note p{margin:.45rem 0}
 p.p{padding-left:1.1rem;text-indent:-1.1rem}
 p.p::before{content:"• ";color:var(--accent)}
-.nutritie{display:grid;grid-template-columns:repeat(5,1fr);gap:.3rem;text-align:center;font-size:.8rem;color:var(--mut);background:var(--hartie);border:1px solid var(--linie);border-radius:12px;padding:.6rem .2rem;margin-bottom:.5rem}
-.nutritie b{display:block;font-size:1rem;color:var(--text)}
-.intrare{background:var(--hartie);border:1px solid var(--linie);border-radius:12px;padding:.6rem .8rem;margin-bottom:.5rem}
+.nutritie{display:grid;grid-template-columns:repeat(5,1fr);gap:.3rem;text-align:center;font-size:.72rem;color:var(--mut);text-transform:uppercase;letter-spacing:.04em;background:var(--hartie);border-radius:14px;padding:.7rem .2rem;margin-bottom:.5rem;box-shadow:var(--umbra)}
+.nutritie b{display:block;font-size:1.05rem;color:var(--text);text-transform:none;letter-spacing:0;font-variant-numeric:tabular-nums}
+.meta{font-size:.88rem;color:var(--mut);display:flex;flex-wrap:wrap;gap:.15rem .8rem;margin:.3rem 0}
+.intrare{background:var(--hartie);border-radius:14px;padding:.65rem .9rem;margin-bottom:.5rem;box-shadow:var(--umbra);border-left:4px solid var(--verde)}
+.intrare.greseala{border-left-color:var(--ambra)}
 .intrare p{margin:.25rem 0}
+.intrare .cand{font-size:.8rem;color:var(--mut);text-transform:uppercase;letter-spacing:.05em}
+/* cronometre */
+#cronometre{position:fixed;left:0;right:0;bottom:0;z-index:6;display:flex;flex-wrap:wrap;gap:.45rem;padding:.55rem .9rem;background:var(--hartie);border-top:1px solid var(--linie);box-shadow:0 -6px 20px rgba(0,0,0,.08)}
+.cron{position:relative;overflow:hidden;border:0;background:var(--activ);border-radius:12px;padding:.4rem .8rem .5rem;font-weight:700;font-variant-numeric:tabular-nums;text-align:left;line-height:1.2;font-size:1.05rem;color:var(--accent)}
+.cron small{display:block;font-size:.7rem;font-weight:500;color:var(--text);opacity:.8}
+.cron i{position:absolute;left:0;bottom:0;height:4px;background:var(--accent);width:var(--p,0%);transition:width .5s linear}
+.cron.gata{background:var(--accent);color:#fff;animation:clipire 1s infinite}
+.cron.gata small{color:#fff}
+@keyframes clipire{50%{opacity:.55}}
+#timer-panou{position:fixed;left:0;right:0;bottom:0;z-index:7;background:var(--hartie);border-radius:18px 18px 0 0;padding:.9rem;box-shadow:0 -8px 30px rgba(0,0,0,.18)}
+#timer-panou .chips{margin-top:0;margin-bottom:.7rem}
+#timer-panou h3{margin:0 0 .6rem;font-size:1.1rem}
 a{color:var(--accent)}
 [hidden]{display:none!important}
 </style>
 </head>
 <body>
 <header><div>
-  <div class="cap"><h1>Cartea de rețete</h1><span><button class="chip" id="btn-cumparaturi" type="button" hidden>🛒 cumpărături <span id="nr-cumparaturi"></span></button> <button class="chip" id="btn-timer-lista" type="button" title="cronometru">⏱</button></span></div>
+  <div class="cap"><h1>Cartea de rețete<small id="nr-retete"></small></h1><span><button class="chip" id="btn-cumparaturi" type="button" hidden>🛒 cumpărături <span id="nr-cumparaturi"></span></button> <button class="chip" id="btn-timer-lista" type="button" title="cronometru">⏱</button></span></div>
   <input id="cautare" type="search" placeholder="Caută după titlu sau ingredient" autocomplete="off">
   <div class="chips" id="stari">
-    <span class="chip fix">în carte</span>
+    <span class="chip fix">✓ în carte</span>
     <button class="chip" type="button" data-stare="imbunatatire">de îmbunătățit</button>
     <button class="chip" type="button" data-stare="test">în test</button>
     <button class="chip" type="button" id="btn-filtre">filtre ▾</button>
@@ -122,16 +161,18 @@ a{color:var(--accent)}
 </section>
 <div id="cronometre" hidden title="atinge un cronometru ca să-l oprești"></div>
 <div id="timer-panou" hidden>
+  <h3>Cronometru</h3>
   <div class="chips" id="timer-presetari"></div>
   <div class="portii"><input id="timer-minute" type="number" min="1" inputmode="numeric" placeholder="minute">
-    <button class="chip activ" id="timer-start" type="button">pornește</button><button class="chip" id="timer-inchide" type="button">închide</button></div>
+    <button class="chip actiune" id="timer-start" type="button">pornește</button><button class="chip" id="timer-inchide" type="button">închide</button></div>
 </div>
 <script>
 "use strict";
 // build.py înlocuiește marcajul de mai jos cu JSON-ul rețetelor (fără cele la gunoi).
 const RETETE = /*@RETETE@*/[];
 const CATEGORII = {"mic-dejun": "mic dejun", "pranz-cina": "prânz / cină", "garnitura": "garnitură", "desert": "desert", "sos": "sos"};
-const STATUSURI = {carte: "În carte", imbunatatire: "De îmbunătățit", test: "În test"};
+const CULORI = {"mic-dejun": "#d29a2c", "pranz-cina": "#b3462b", "garnitura": "#6e8f3c", "desert": "#a95a8a", "sos": "#4a79a6"};
+const STARI = {carte: ["În carte", "verde"], imbunatatire: ["De îmbunătățit", "ambra"], test: ["În test", "gri"]};
 const $ = id => document.getElementById(id);
 const norm = s => String(s ?? "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
 const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;"})[c]);
@@ -140,6 +181,9 @@ const lei = c => c == null ? "—" : "≈" + String(c).replace(".", ",") + " lei
 const durata = m => m >= 60 ? `${Math.floor(m / 60)} h${m % 60 ? " " + m % 60 + " min" : ""}` : `${m} min`;
 const ultima = r => r.jurnal[r.jurnal.length - 1] || null;
 const acum = d => { const z = Math.floor((Date.now() - new Date(d)) / 864e5); return z <= 0 ? "azi" : z === 1 ? "ieri" : z < 60 ? `acum ${z} zile` : `acum ${Math.round(z / 30)} luni`; };
+const puncte = g => `<span class="puncte"><b>${"●".repeat(g)}</b>${"○".repeat(10 - g)}</span>`;
+const stare = r => `<span class="stare ${STARI[r.status]?.[1] ?? "gri"}">${STARI[r.status]?.[0] ?? esc(r.status)}</span>`;
+const initiala = r => `<div class="initiala serif" aria-hidden="true">${esc(String(r.titlu).replace(/^TEST\S*\s*/i, "").trim().charAt(0).toUpperCase())}</div>`;
 const sursa = s => /^https?:\/\//.test(s) ? `<a href="${esc(s)}" target="_blank" rel="noopener">${esc(s.split("/")[2] || s)}</a>` : "";
 // Starea proprie a paginii (coș de cumpărături, ce e bifat în el, mărimea textului) stă doar în browserul telefonului.
 const memorie = {
@@ -185,13 +229,17 @@ function filtrate() {
 }
 function arataLista() {
   const lista = filtrate();
-  $("lista").innerHTML = lista.length ? lista.map(r => { const u = ultima(r); return `<a class="card" href="#${esc(r.slug)}" data-slug="${esc(r.slug)}">
-    ${r.status !== "carte" ? `<span class="stare">${STATUSURI[r.status] ?? esc(r.status)}</span>` : ""}
-    <h2>${esc(r.titlu)}</h2>
-    <p class="meta"><span><b>${durata(r.timp_total_min)}</b></span><span><b>≈${r.nutritie.kcal}</b> kcal/porție</span><span>${lei(r.nutritie.cost)}/porție</span>
-    ${u ? `<span>gust <b>${u.gust}</b> · efort <b>${u.efort}</b></span><span>gătită ${acum(u.data)}</span>` : "<span>negătită încă</span>"}
-    ${r.din_timp ? `<span>din timp: ${esc(r.din_timp)}</span>` : ""}</p></a>`; }).join("")
+  $("lista").innerHTML = lista.length ? lista.map(r => { const u = ultima(r); return `<a class="card" href="#${esc(r.slug)}" data-slug="${esc(r.slug)}" style="--cat:${CULORI[r.categorie] || "var(--accent)"}">
+    ${initiala(r)}
+    <div>${r.status !== "carte" ? stare(r) : ""}
+      <h2>${esc(r.titlu)}</h2>
+      <div class="pastile"><span>⏱ <b>${durata(r.timp_total_min)}</b></span><span>🔥 <b>≈${r.nutritie.kcal}</b> kcal</span><span>${lei(r.nutritie.cost)}</span></div>
+      <div class="gust">${u ? `${puncte(u.gust)}<span>gust ${u.gust} · efort ${u.efort}</span><span>gătită ${acum(u.data)}</span>` : "<span>negătită încă</span>"}</div>
+      ${r.din_timp ? `<div class="dintimp-mic">⏳ din timp: ${esc(r.din_timp)}</div>` : ""}
+    </div></a>`; }).join("")
     : `<p class="gol">${RETETE.length ? "Nicio rețetă pentru filtrele alese." : "Cartea e goală deocamdată."}</p>`;
+  const inCarte = RETETE.filter(r => r.status === "carte").length;
+  $("nr-retete").textContent = `${inCarte} în carte · ${RETETE.length} în total`;
 }
 function chipuri(id, valori, ales, cheie) {
   const cont = $(id);
@@ -209,14 +257,16 @@ function deseneazaDetaliu() {
     + `<li class="${bifate.has(k) ? "bifat" : ""}"><input type="checkbox" data-k="${k}" ${bifate.has(k) ? "checked" : ""}>
       <span class="nume">${esc(i.nume)}</span><span class="cant"><b>${Math.max(1, Math.round(i.g * f))} g</b>${i.nota && f === 1 ? `<small>${esc(i.nota)}</small>` : ""}</span></li>`).join("");
   const [pasi, note] = r.pasi_html.split("<h3>Note</h3>");
-  const jurnal = r.jurnal.length ? [...r.jurnal].reverse().map(j => `<div class="intrare"><p><b>${esc(j.data)}</b> · v${j.versiune} · gust <b>${j.gust}</b> · efort <b>${j.efort}</b>${j.executie === "greseala_mea" ? " · greșeala mea" : ""}</p>
+  const jurnal = r.jurnal.length ? [...r.jurnal].reverse().map(j => `<div class="intrare${j.executie === "greseala_mea" ? " greseala" : ""}"><p class="cand">${esc(j.data)} · v${j.versiune}${j.executie === "greseala_mea" ? " · greșeala mea" : ""}</p>
+    <p>${puncte(j.gust)} <b>gust ${j.gust}</b> · efort ${j.efort}</p>
     ${j.observatii ? `<p>${esc(j.observatii)}</p>` : ""}${j.urmatoarea_data ? `<p><b>Data viitoare:</b> ${esc(j.urmatoarea_data)}</p>` : ""}</div>`).join("") : `<p class="gol">Încă negătită.</p>`;
+  $("detaliu-continut").style.setProperty("--cat", CULORI[r.categorie] || "var(--accent)");
   $("detaliu-continut").innerHTML = `
-    <h2>${esc(r.titlu)}</h2>
+    <div class="antet">${initiala(r)}<div><h2>${esc(r.titlu)}</h2>
+      <div class="stari-mici">${stare(r)}<span class="tag">${CATEGORII[r.categorie] ?? esc(r.categorie)}</span>${r.tags.map(t => `<span class="tag">#${esc(t)}</span>`).join("")}</div></div></div>
     <div class="cifre"><div><b>${durata(r.timp_total_min)}</b>total</div><div><b>${durata(r.timp_activ_min)}</b>activ</div><div><b>${r.portii}</b>porții</div><div><b>≈${n.kcal}</b>kcal/porție</div></div>
-    ${r.din_timp ? `<p class="dintimp">⏳ Din timp: ${esc(r.din_timp)}</p>` : ""}
-    <p class="meta">${u ? `<span>gust <b>${u.gust}</b> · efort <b>${u.efort}</b> · gătită ${acum(u.data)}</span>` : "<span>negătită încă</span>"}
-      ${r.status !== "carte" ? `<span>${STATUSURI[r.status] ?? esc(r.status)}</span>` : ""}${r.tags.length ? `<span>${r.tags.map(t => "#" + esc(t)).join(" ")}</span>` : ""}</p>
+    ${r.din_timp ? `<p class="dintimp">⏳ Din timp<small>${esc(r.din_timp)}</small></p>` : ""}
+    <p class="gatit">${u ? `${puncte(u.gust)} gust ${u.gust} · efort ${u.efort} · gătită ${acum(u.data)}` : "negătită încă"}</p>
     <h3 id="s-ingrediente">Ingrediente</h3>
     <div class="portii"><button class="rotund" type="button" data-d="-1" aria-label="mai puține porții">−</button>
       <input id="portii" type="number" min="1" inputmode="numeric" value="${portii}">
@@ -226,8 +276,8 @@ function deseneazaDetaliu() {
     <h3 id="s-pasi">Pași</h3><p class="indiciu">Atinge un pas ca să-l bifezi. Atinge un timp ca să pornești cronometrul.</p>
     ${pasi.replace(/<h3>/g, "<h4>").replace(/<\/h3>/g, "</h4>").replace(/<ol>[\s\S]*?<\/ol>/g, cuCronometre)}
     ${note ? `<details class="note"><summary>Note (${(note.match(/<p/g) || []).length})</summary>${note}</details>` : ""}
-    <h3 id="s-nutritie">Nutriție per porție</h3>${grila(n)}
-    <h3>Nutriție per 100 g ${n.pe_gatit ? "(gătit)" : "(crud, din ingrediente)"}</h3>${grila(n.suta)}
+    <h3 id="s-nutritie">Nutriție <small>per porție</small></h3>${grila(n)}
+    <h3>Nutriție <small>per 100 g ${n.pe_gatit ? "gătit" : "crud, din ingrediente"}</small></h3>${grila(n.suta)}
     <p class="meta"><span>cost ${lei(n.cost)}/porție</span>${sursa(r.sursa) ? `<span>sursă: ${sursa(r.sursa)}</span>` : ""}</p>
     <h3 id="s-jurnal">Jurnal</h3>${jurnal}`;
   $("detaliu-continut").querySelectorAll("ol li").forEach((li, k) => li.classList.toggle("facut", facute.has(k)));
@@ -239,7 +289,7 @@ let cronometre = [], tic = null, audio = null, nrCron = 0;
 const butonul = c => c.slug === curenta?.slug && c.idx >= 0 ? $("detaliu-continut").querySelectorAll("button.timp")[c.idx] : null;
 function porneste(secunde, eticheta, btn) {
   try { audio = audio || new (window.AudioContext || window.webkitAudioContext)(); } catch (e) {}
-  cronometre.push({id: ++nrCron, eticheta, sfarsit: Date.now() + secunde * 1000, gata: false, slug: curenta?.slug,
+  cronometre.push({id: ++nrCron, eticheta, durata: secunde, sfarsit: Date.now() + secunde * 1000, gata: false, slug: curenta?.slug,
                    idx: btn ? [...$("detaliu-continut").querySelectorAll("button.timp")].indexOf(btn) : -1});
   btn?.classList.add("activ");
   if (!tic) tic = setInterval(bate, 500);
@@ -249,9 +299,10 @@ function bate() {
   for (const c of cronometre) {
     const rest = Math.max(0, Math.round((c.sfarsit - Date.now()) / 1000));
     c.text = rest ? `${Math.floor(rest / 60)}:${String(rest % 60).padStart(2, "0")}` : "gata!";
+    c.p = Math.min(100, Math.round(100 - rest / c.durata * 100));
     if (!rest && !c.gata) { c.gata = true; suna(); }
   }
-  $("cronometre").innerHTML = cronometre.map(c => `<button type="button" class="cron${c.gata ? " gata" : ""}" data-id="${c.id}">⏱ ${c.text}<small>${esc(c.eticheta)}</small></button>`).join("");
+  $("cronometre").innerHTML = cronometre.map(c => `<button type="button" class="cron${c.gata ? " gata" : ""}" data-id="${c.id}" style="--p:${c.p}%">⏱ ${c.text}<small>${esc(c.eticheta)}</small><i></i></button>`).join("");
   $("cronometre").hidden = !cronometre.length;
   if (!cronometre.length) { clearInterval(tic); tic = null; }
 }
