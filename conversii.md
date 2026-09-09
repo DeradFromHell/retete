@@ -2,6 +2,8 @@
 
 Tabel de referință pentru scrierea rețetelor, nu pentru script. Toate cantitățile din `retete/` se scriu în grame; cantitatea originală („1 lingură”) merge în câmpul `nota`. Măsurile sunt rase (fără vârf). Marja acceptată pentru ingredientele mici (ulei, sare, condimente): ±5%.
 
+Setul din bucătărie: lingura = 15 ml, lingurița = 5 ml (lingurița de 7,5 ml umplută cam două treimi).
+
 ## Lichide și grăsimi
 
 | Măsură | g |
@@ -18,6 +20,9 @@ Tabel de referință pentru scrierea rețetelor, nu pentru script. Toate cantit�
 | 1 lingură smântână / iaurt | 15 |
 | 1 lingură pastă de tomate (bulion) | 16 |
 | 1 lingură miere | 21 |
+| 1 lingură sos de soia | 16 |
+| 1 lingură sos teriyaki | 18 |
+| 1 spray scurt de ulei | 2 |
 
 ## Uscate
 
@@ -37,6 +42,8 @@ Tabel de referință pentru scrierea rețetelor, nu pentru script. Toate cantit�
 | 1 cană mălai | 125 |
 | 1 lingură pesmet | 7 |
 | 1 cană pesmet | 110 |
+| 1 linguriță amidon de porumb | 3 |
+| 1 linguriță / 1 lingură semințe de susan | 3 / 9 |
 
 ## Condimente și verdețuri
 
@@ -47,6 +54,8 @@ Tabel de referință pentru scrierea rețetelor, nu pentru script. Toate cantit�
 | 1 linguriță cimbru / oregano uscat | 1 |
 | 1 foaie de dafin | ~0,2 (în rețetă se trece 1 g, oricâte foi) |
 | 1 cățel usturoi | 4 |
+| 1 linguriță ghimbir proaspăt ras | 4 |
+| 1 fir ceapă verde | 15 |
 | 1 legătură pătrunjel / mărar | 30 |
 | 1 lingură verdeață tocată | 4 |
 
