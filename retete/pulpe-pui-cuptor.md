@@ -6,7 +6,8 @@ tags: [pui, cuptor]
 sursa: propriu
 portii: 3
 timp_activ_min: 15
-timp_total_min: 90
+timp_total_min: 65
+din_timp: sărare 40 min până la câteva ore înainte
 versiune: 1
 status_manual:
 greutate_gatita_g:
@@ -34,13 +35,20 @@ ingrediente:
     nota: 3 linguri (2–4), pentru glazurat
 jurnal:
 ---
+## Din timp
 1. Cu 40 de minute până la câteva ore înainte: sărează pulpele peste tot, inclusiv sub piele dacă poți strecura degetul, și lasă-le pe o farfurie, cu pielea în sus, descoperite, la frigider. Sarea trage umezeala din piele; piele uscată înseamnă piele crocantă. Fără pasul ăsta iese moale și palidă, indiferent ce faci după.
+
+## Cuptorul și condimentarea
 2. Pune tava cu grătarul de sârmă în cuptor și încălzește la 200 °C, 10–15 minute, până e complet încins. Toarnă apă cât un deget în tavă, sub grătar: grăsimea care picură pe tavă goală fumegă, cu apă nu.
 3. Șterge umezeala vizibilă de pe piele (fără să tamponezi insistent, ca la piept) și freacă pielea cu piper, boia dulce și boia afumată; spray scurt de ulei deasupra. Fără sare (ai pus deja) și fără usturoi granulat (se arde sub glazură).
+
+## Gătit
 4. Spray de ulei pe grătarul încins, pulpele deasupra cu pielea în sus și cu spațiu între ele; dacă se ating, fac abur și nu se rumenesc acolo.
 5. 35 de minute: nu le atingi, nu le întorci, nu le acoperi, până pielea e aurie și întinsă.
 6. Scoate, pensulează pielea cu sos teriyaki și pune-le înapoi 4 minute, până sosul se lipește de piele.
 7. Mai pensulează o dată și mai lasă 4 minute, până glazura e lucioasă și maro-aurie; total ~43 de minute.
+
+## Verificare
 8. Gata când pielea e maro-auriu lucios și, la înțepat lângă os, zeama iese limpede, nu roz.
 9. Dacă nu sunt gata: încă 8–10 minute, acoperite lejer cu folie (altfel zahărul din sos se arde); scoate folia în ultimele 3 minute.
 

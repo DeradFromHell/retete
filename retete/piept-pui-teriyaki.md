@@ -6,78 +6,104 @@ tags: [pui, air-fryer, glazura]
 sursa: propriu
 portii: 2
 timp_activ_min: 35
-timp_total_min: 330
+timp_total_min: 45
+din_timp: marinare 4–6 h (minimum 2, maximum 8)
 versiune: 1
 status_manual:
 greutate_gatita_g:
 ingrediente:
   - id: piept_pui
     g: 500
+    grup: Carnea
   - id: sos_soia
     g: 48
-    nota: 3 linguri, marinadă
+    nota: 3 linguri
+    grup: Marinada (se aruncă după)
   - id: miere
     g: 21
-    nota: 1 lingură, marinadă
+    nota: 1 lingură
+    grup: Marinada (se aruncă după)
   - id: otet_mere
     g: 15
-    nota: 1 lingură, marinadă
+    nota: 1 lingură
+    grup: Marinada (se aruncă după)
   - id: ghimbir
     g: 8
-    nota: 2 lingurițe ras, marinadă
+    nota: 2 lingurițe, ras
+    grup: Marinada (se aruncă după)
   - id: usturoi
     g: 12
-    nota: 3 căței rași, marinadă
+    nota: 3 căței, rași
+    grup: Marinada (se aruncă după)
   - id: ulei_susan
     g: 4.5
-    nota: 1 linguriță, marinadă
+    nota: 1 linguriță
+    grup: Marinada (se aruncă după)
   - id: piper
     g: 1
-    nota: după gust, marinadă
+    nota: după gust
+    grup: Marinada (se aruncă după)
   - id: sos_soia
     g: 48
-    nota: 3 linguri, glazură
+    nota: 3 linguri
+    grup: Glazura
   - id: miere
     g: 21
-    nota: 1 lingură, glazură
+    nota: 1 lingură
+    grup: Glazura
   - id: otet_mere
     g: 15
-    nota: 1 lingură, glazură
+    nota: 1 lingură
+    grup: Glazura
   - id: ghimbir
     g: 4
-    nota: 1 linguriță ras, glazură
+    nota: 1 linguriță, ras
+    grup: Glazura
   - id: usturoi
     g: 4
-    nota: 1 cățel ras, glazură
+    nota: 1 cățel, ras
+    grup: Glazura
   - id: amidon_porumb
     g: 3
-    nota: 1 linguriță, glazură
+    nota: 1 linguriță
+    grup: Glazura
   - id: apa
     g: 30
     nota: 2 linguri apă rece, pentru amidon
+    grup: Glazura
   - id: ulei_floarea_soarelui
     g: 2
     nota: spray scurt pe grătar
+    grup: La gătit și la servit
   - id: seminte_susan
     g: 3
-    nota: 1 linguriță, prăjite, la servit (estimare, după gust)
+    nota: 1 linguriță, prăjite (estimare, după gust)
+    grup: La gătit și la servit
   - id: ceapa_verde
     g: 30
-    nota: 2 fire, tăiate, la servit (estimare, după gust)
+    nota: 2 fire, tăiate (estimare, după gust)
+    grup: La gătit și la servit
 jurnal:
 ---
-1. Cu 4–6 ore înainte: dacă pieptul e gros, bate-l ușor sau crestează-l, ca să aibă grosime uniformă; contează mai mult decât timpul de marinare.
+## Cu 4–6 ore înainte
+1. Dacă pieptul e gros, bate-l ușor sau crestează-l, ca să aibă grosime uniformă; contează mai mult decât timpul de marinare.
 2. Amestecă într-un bol ingredientele marinadei: sos de soia, miere, oțet, ghimbir, usturoi, ulei de susan, piper.
 3. Pune carnea într-o pungă, toarnă marinada, întoarce punga de câteva ori, scoate aerul și închide. La frigider minimum 2 ore, ideal 4–6, maximum 8; peste, soia sărează prea tare și carnea devine cauciucată.
+
+## La gătit
 4. Preîncălzește air fryer-ul la 190 °C, 3–4 minute gol, până simți aer fierbinte când tragi sertarul.
 5. Scoate carnea din marinadă și tamponeaz-o bine cu prosop de hârtie; marinada se aruncă. Suprafață uscată înseamnă rumenire, suprafață udă înseamnă abur.
 6. Spray scurt de ulei pe grătarul încins și carnea deasupra: 8 minute, până prinde culoare pe fața de sus.
 7. Întoarce și mai lasă 3 minute, până e rumenită pe margini.
-8. În paralel, din minutul 8 (când întorci pieptul), glazura: într-o crăticioară mică pune sos de soia, miere, oțet, ghimbir și usturoi (fără amidon), la foc mediu, amestecând, până dă în clocot; lasă să clocotească 2 minute.
+
+## Glazura, în paralel
+8. Din minutul 8 (când întorci pieptul): într-o crăticioară mică pune sos de soia, miere, oțet, ghimbir și usturoi (fără amidon), la foc mediu, amestecând, până dă în clocot; lasă să clocotească 2 minute.
 9. Separat, într-o ceșcuță, amestecă amidonul cu cele 2 linguri de apă rece până e complet omogen, fără cocoloașe.
 10. Toarnă amidonul în crăticioara care clocotește, amestecând continuu: în 30–60 de secunde se îngroașă și îmbracă lingura.
 11. Dacă rămâne apoasă, nu a clocotit destul: trebuie bule vizibile, nu doar abur. Mai adaugă o linguriță de amidon dizolvat în apă rece și adu din nou la clocot puternic; alternativ, fierbe 3–4 minute fără capac, până se reduce și se îngroașă singură.
 12. Ia glazura de pe foc; se mai îngroașă pe măsură ce se răcește.
+
+## Finalizare
 13. La minutul 11, scoate pieptul, pensulează-l cu glazură și pune-l înapoi 2 minute, până glazura devine lucioasă și se lipește de carne; total în air fryer ~13 minute.
 14. Scoate, mai pensulează o dată deasupra și lasă-l să se odihnească 5 minute înainte să-l tai.
 15. Presară semințele de susan prăjite și ceapa verde tăiată.
