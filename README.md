@@ -28,7 +28,7 @@ Cerințe: Python 3 și PyYAML (`pip install pyyaml`). Nimic altceva. Pe Windows,
 
 **Rețetă nouă.** Claude propune 2–3 surse testate (sau o rețetă clasică, `sursa: claude`), eu aleg. Claude o scrie în schemă, convertește totul în grame cu `conversii.md` (cantitatea originală merge în `nota`), adaugă ingredientele lipsă în `ingrediente.csv` cu sursă, rulează `--check`, commit `reteta <slug> v1`.
 
-**După gătit.** Scriu o singură propoziție: „piept-pui-orez: gust 7, efort 3, prea sărat, data viitoare jumătate sare”. Dacă am greșit eu, spun „greșeala mea: am ars ceapa”. Claude adaugă intrarea în jurnal cu `executie` corect, rulează build, commit `<slug> v1: gust 7 efort 3`. Dacă propoziția e completă, nu pune întrebări.
+**După gătit.** Scriu o singură propoziție: „piept-pui-orez: gust 7, efort 3, prea sărat, data viitoare jumătate sare”. Dacă am greșit eu, spun „greșeala mea: am ars ceapa”. Claude adaugă intrarea în jurnal cu `executie` corect, rulează build, commit `<slug> v1: gust 7 efort 3` și `git push`, ca telefonul să vadă cartea nouă. Dacă propoziția e completă, nu pune întrebări.
 
 **Versiune nouă.** Se aplică `urmatoarea_data` din ultima intrare, se incrementează `versiune`, se modifică ingredientele și pașii în același fișier; git păstrează istoricul. Commit `<slug> v2`.
 
@@ -99,7 +99,7 @@ Cartea arată implicit doar `carte`; `imbunatatire` și `test` se pot afișa cu 
 
 ## Cartea (`carte/index.html`)
 
-Un singur fișier, merge offline, nimic nu se editează din ea. Lista: căutare, comutatoare de stare, filtre (sortare, categorie, tag) și carduri cu timp, kcal, cost, ultima notă și „din timp”. Detaliul: cifrele mari sub titlu, bară de salt (Ingrediente · Pași · Nutriție · Jurnal), ingrediente pe grupuri cu scalare de porții, pași pe etape care se bifează și pornesc cronometre, note pliate, nutriție per porție și per 100 g, tot jurnalul. Cât e deschisă o rețetă, ecranul telefonului rămâne aprins (unde browserul permite), iar „Aa” mărește textul. Cronometre: ⏱ din bară (presetări sau minute la alegere) sau atingerea unui timp din pas; oricâte în paralel, într-o bară jos, pe orice ecran; atingerea unuia îl oprește. „+ cumpărături” din rețetă adună ingredientele rețetelor alese, cu gramele însumate; butonul 🛒 din antet apare doar când coșul are ceva. Coșul, bifele lui și mărimea textului se țin doar în browserul telefonului; restul e efemer.
+Pe telefon: https://deradfromhell.github.io/retete/carte/ (GitHub Pages din acest repo; se actualizează la fiecare `git push`, în 1–2 minute). Un singur fișier, merge offline, nimic nu se editează din ea. Lista: căutare, comutatoare de stare, filtre (sortare, categorie, tag) și carduri cu timp, kcal, cost, ultima notă și „din timp”. Detaliul: cifrele mari sub titlu, bară de salt (Ingrediente · Pași · Nutriție · Jurnal), ingrediente pe grupuri cu scalare de porții, pași pe etape care se bifează și pornesc cronometre, note pliate, nutriție per porție și per 100 g, tot jurnalul. Cât e deschisă o rețetă, ecranul telefonului rămâne aprins (unde browserul permite), iar „Aa” mărește textul. Cronometre: ⏱ din bară (presetări sau minute la alegere) sau atingerea unui timp din pas; oricâte în paralel, într-o bară jos, pe orice ecran; atingerea unuia îl oprește. „+ cumpărături” din rețetă adună ingredientele rețetelor alese, cu gramele însumate; butonul 🛒 din antet apare doar când coșul are ceva. Coșul, bifele lui și mărimea textului se țin doar în browserul telefonului; restul e efemer.
 
 ## Nutriție și cost
 
