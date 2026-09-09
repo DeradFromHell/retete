@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="ro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>Cartea de rețete</title>
+<style>
+:root{--fundal:#f6f3ec;--hartie:#fff;--text:#24211c;--mut:#736c60;--accent:#a8432a;--linie:#e4ded2}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;font:16px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--fundal);color:var(--text)}
+header{position:sticky;top:0;z-index:2;background:var(--hartie);border-bottom:1px solid var(--linie);padding:.6rem .8rem}
+header>div,main,article{max-width:720px;margin:0 auto}
+h1{margin:0 0 .5rem;font-size:1.25rem}
+input[type=search],select{width:100%;font:inherit;padding:.5rem .6rem;border:1px solid var(--linie);border-radius:8px;background:#fff;color:inherit}
+.filtre{display:grid;grid-template-columns:repeat(3,1fr);gap:.4rem;margin-top:.4rem}
+.comutatoare{display:flex;gap:1rem;margin-top:.5rem;font-size:.9rem;color:var(--mut)}
+.comutatoare label{display:flex;align-items:center;gap:.3rem}
+main{padding:.8rem}
+.card{display:block;background:var(--hartie);border:1px solid var(--linie);border-radius:12px;padding:.8rem .9rem;margin-bottom:.6rem;text-decoration:none;color:inherit}
+.card h2{margin:0 0 .3rem;font-size:1.05rem}
+.meta{font-size:.85rem;color:var(--mut);display:flex;flex-wrap:wrap;gap:.2rem .8rem;margin:0}
+.status{font-size:.75rem;text-transform:uppercase;letter-spacing:.05em;color:var(--accent)}
+.gol{color:var(--mut);text-align:center;padding:2rem 0}
+#detaliu{position:fixed;inset:0;background:var(--fundal);overflow-y:auto;z-index:3;-webkit-overflow-scrolling:touch}
+.bara{position:sticky;top:0;z-index:1;background:var(--hartie);border-bottom:1px solid var(--linie);padding:.5rem .6rem;display:flex;align-items:center;gap:.4rem}
+.bara button{font:inherit;font-size:1rem;background:none;border:0;color:var(--accent);padding:.4rem .5rem;cursor:pointer}
+.bara span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+article{padding:.8rem .8rem 3rem}
+article h2{margin:.2rem 0 .4rem;font-size:1.35rem}
+h3{font-size:.8rem;margin:1.3rem 0 .4rem;color:var(--mut);text-transform:uppercase;letter-spacing:.05em}
+.portii{display:flex;align-items:center;gap:.5rem;margin:.3rem 0 .6rem}
+.portii button{font:inherit;font-size:1.2rem;width:2.4rem;height:2.4rem;border:1px solid var(--linie);border-radius:50%;background:#fff;cursor:pointer}
+.portii input{width:3.6rem;text-align:center;font:inherit;padding:.4rem;border:1px solid var(--linie);border-radius:8px}
+.ingrediente{list-style:none;margin:0;padding:0;background:var(--hartie);border:1px solid var(--linie);border-radius:12px}
+.ingrediente li{display:flex;align-items:center;gap:.6rem;padding:.55rem .8rem;border-bottom:1px solid var(--linie)}
+.ingrediente li:last-child{border-bottom:0}
+.ingrediente input{width:1.2rem;height:1.2rem;margin:0;flex:none}
+.ingrediente .nume{flex:1}
+.ingrediente .nota{color:var(--mut);font-size:.85rem}
+.ingrediente .g{white-space:nowrap;font-variant-numeric:tabular-nums}
+.bifat .nume{text-decoration:line-through;color:var(--mut)}
+ol{padding-left:1.4rem;margin:0}
+ol li{margin-bottom:.7rem}
+.nutritie{display:grid;grid-template-columns:repeat(5,1fr);gap:.3rem;text-align:center;font-size:.8rem;color:var(--mut);background:var(--hartie);border:1px solid var(--linie);border-radius:12px;padding:.6rem .2rem}
+.nutritie b{display:block;font-size:1rem;color:var(--text)}
+.jurnal{background:var(--hartie);border:1px solid var(--linie);border-radius:12px;padding:.6rem .8rem}
+.jurnal p{margin:.25rem 0}
+a{color:var(--accent)}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<header><div>
+  <h1>Cartea de rețete</h1>
+  <input id="cautare" type="search" placeholder="Caută după titlu sau ingredient" autocomplete="off">
+  <div class="filtre">
+    <select id="categorie" aria-label="Categorie"><option value="">Categorie</option></select>
+    <select id="tag" aria-label="Tag"><option value="">Tag</option></select>
+    <select id="sortare" aria-label="Sortare">
+      <option value="gust">Gust ↓</option>
+      <option value="efort">Efort ↑</option>
+      <option value="timp">Timp total ↑</option>
+    </select>
+  </div>
+  <div class="comutatoare">
+    <label><input type="checkbox" id="arata-imbunatatire"> de îmbunătățit</label>
+    <label><input type="checkbox" id="arata-test"> în test</label>
+  </div>
+</div></header>
+<main id="lista"></main>
+<section id="detaliu" hidden>
+  <div class="bara"><button id="inapoi" type="button">‹ Înapoi</button><span id="detaliu-titlu"></span></div>
+  <article id="detaliu-continut"></article>
+</section>
+<script>
+"use strict";
+// build.py înlocuiește marcajul de mai jos cu JSON-ul rețetelor (fără cele la gunoi).
+const RETETE = [];
+const CATEGORII = {"mic-dejun": "Mic dejun", "pranz-cina": "Prânz / cină", "garnitura": "Garnitură", "desert": "Desert", "sos": "Sos"};
+const STATUSURI = {carte: "În carte", imbunatatire: "De îmbunătățit", test: "În test"};
+const $ = id => document.getElementById(id);
+const norm = s => String(s ?? "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;"})[c]);
+const rot = (x, pas = 1) => Math.floor(x / pas + 0.5) * pas;  // aceleași operații ca rotunjeste() din build.py
+const lei = c => c == null ? "—" : "≈" + String(c).replace(".", ",") + " lei";
+const sursa = s => /^https?:\/\//.test(s)
+  ? `<a href="${esc(s)}" target="_blank" rel="noopener">${esc(s.split("/")[2] || s)}</a>` : esc(s);
+
+// Nutriția per porție, recalculată din valorile per 100 g, exact în ordinea și cu rotunjirile din build.py.
+// Se calculează din gramajele originale: per porție nu depinde de numărul de porții (scalarea e proporțională).
+function nutritie(r) {
+  const t = {kcal: 0, proteine: 0, carbo: 0, grasimi: 0, fibre: 0};
+  let cost = 0, complet = true;
+  for (const i of r.ingrediente) {
+    for (const n in t) t[n] += i.g * i[n] / 100;
+    if (i.pret_per_kg == null) complet = false; else cost += i.g / 1000 * i.pret_per_kg;
+  }
+  for (const n in t) t[n] = rot(t[n] / r.portii, n === "kcal" ? 10 : 1);
+  t.cost = complet ? rot(cost / r.portii, 0.5) : null;
+  return t;
+}
+
+function filtrate() {
+  const q = norm($("cautare").value.trim()), cat = $("categorie").value, tag = $("tag").value;
+  const stari = new Set(["carte"]);
+  if ($("arata-imbunatatire").checked) stari.add("imbunatatire");
+  if ($("arata-test").checked) stari.add("test");
+  const cheie = {gust: r => -(r.gust ?? -1), efort: r => r.efort ?? 99, timp: r => r.timp_total_min}[$("sortare").value];
+  return RETETE.filter(r => stari.has(r.status)
+      && (!cat || r.categorie === cat) && (!tag || r.tags.includes(tag))
+      && (!q || norm(r.titlu).includes(q) || r.ingrediente.some(i => norm(i.nume).includes(q))))
+    .sort((a, b) => cheie(a) - cheie(b) || String(a.titlu).localeCompare(String(b.titlu), "ro"));
+}
+
+function arataLista() {
+  const lista = filtrate();
+  $("lista").innerHTML = lista.length ? lista.map(r => `<a class="card" href="#${esc(r.slug)}">
+    <div class="status">${STATUSURI[r.status] ?? esc(r.status)}</div><h2>${esc(r.titlu)}</h2>
+    <p class="meta"><span>gust ${r.gust ?? "—"}</span><span>efort ${r.efort ?? "—"}</span><span>${r.timp_total_min} min</span>
+    <span>≈${r.nutritie.kcal} kcal/porție</span><span>${lei(r.nutritie.cost)}/porție</span></p></a>`).join("")
+    : `<p class="gol">${RETETE.length ? "Nicio rețetă pentru filtrele alese." : "Cartea e goală deocamdată."}</p>`;
+}
+
+let curenta = null, portii = 0, bifate = new Set(), listaVazuta = false;
+
+function deseneazaDetaliu() {
+  const r = curenta, f = portii / r.portii, n = nutritie(r), u = r.ultima;
+  $("detaliu-continut").innerHTML = `
+    <div class="status">${STATUSURI[r.status] ?? esc(r.status)} · ${CATEGORII[r.categorie] ?? esc(r.categorie)} · v${r.versiune}</div>
+    <h2>${esc(r.titlu)}</h2>
+    <p class="meta"><span>gust ${r.gust ?? "—"}</span><span>efort ${r.efort ?? "—"}</span>
+      <span>${r.timp_activ_min} min activ · ${r.timp_total_min} min total</span>
+      ${r.tags.length ? `<span>${r.tags.map(t => "#" + esc(t)).join(" ")}</span>` : ""}</p>
+    <h3>Ingrediente</h3>
+    <div class="portii"><button type="button" data-d="-1" aria-label="mai puține porții">−</button>
+      <input id="portii" type="number" min="1" inputmode="numeric" value="${portii}">
+      <button type="button" data-d="1" aria-label="mai multe porții">+</button><span>porții</span></div>
+    <ul class="ingrediente">${r.ingrediente.map((i, k) => `<li class="${bifate.has(k) ? "bifat" : ""}">
+      <input type="checkbox" data-k="${k}" ${bifate.has(k) ? "checked" : ""}>
+      <span class="nume">${esc(i.nume)}${i.nota && f === 1 ? ` <span class="nota">(${esc(i.nota)})</span>` : ""}</span>
+      <span class="g">${Math.max(1, Math.round(i.g * f))} g</span></li>`).join("")}</ul>
+    <h3>Pași</h3>${r.pasi_html}
+    <h3>Nutriție per porție</h3>
+    <div class="nutritie"><div><b>≈${n.kcal}</b>kcal</div><div><b>≈${n.proteine} g</b>proteine</div>
+      <div><b>≈${n.carbo} g</b>carbo</div><div><b>≈${n.grasimi} g</b>grăsimi</div><div><b>≈${n.fibre} g</b>fibre</div></div>
+    <p class="meta"><span>cost ${lei(n.cost)}/porție</span><span>sursă: ${sursa(r.sursa)}</span></p>
+    <h3>Ultima intrare din jurnal</h3>
+    ${u ? `<div class="jurnal"><p><b>${esc(u.data)}</b> · v${u.versiune} · gust ${u.gust} · efort ${u.efort}${u.executie === "greseala_mea" ? " · greșeala mea" : ""}</p>
+      ${u.observatii ? `<p>${esc(u.observatii)}</p>` : ""}${u.urmatoarea_data ? `<p><b>Data viitoare:</b> ${esc(u.urmatoarea_data)}</p>` : ""}</div>`
+      : `<p class="jurnal">Încă negătită.</p>`}`;
+}
+
+function ruteaza() {
+  const slug = location.hash.slice(1);  // slug-urile sunt ASCII (a-z, 0-9, -), nu au nevoie de decodare
+  const r = slug && RETETE.find(x => x.slug === slug);
+  if (r) {
+    if (r !== curenta) { curenta = r; portii = r.portii; bifate = new Set(); }
+    $("detaliu-titlu").textContent = r.titlu;
+    deseneazaDetaliu();
+    $("detaliu").hidden = false;
+    $("detaliu").scrollTop = 0;
+    document.body.style.overflow = "hidden";
+  } else {
+    $("detaliu").hidden = true;
+    document.body.style.overflow = "";
+    listaVazuta = true;
+    arataLista();
+  }
+}
+
+$("detaliu-continut").addEventListener("click", e => {
+  const b = e.target.closest("button[data-d]");
+  if (b) { portii = Math.max(1, portii + Number(b.dataset.d)); deseneazaDetaliu(); }
+});
+$("detaliu-continut").addEventListener("change", e => {
+  const el = e.target;
+  if (el.id === "portii") { portii = Math.max(1, Math.round(Number(el.value)) || 1); deseneazaDetaliu(); }
+  else if (el.dataset.k !== undefined) {
+    const k = Number(el.dataset.k);
+    if (el.checked) bifate.add(k); else bifate.delete(k);
+    el.closest("li").classList.toggle("bifat", el.checked);
+  }
+});
+$("inapoi").addEventListener("click", () => { if (listaVazuta) history.back(); else location.hash = ""; });
+for (const id of ["cautare", "categorie", "tag", "sortare", "arata-imbunatatire", "arata-test"])
+  $(id).addEventListener("input", arataLista);
+for (const c of Object.keys(CATEGORII).filter(c => RETETE.some(r => r.categorie === c)))
+  $("categorie").insertAdjacentHTML("beforeend", `<option value="${c}">${CATEGORII[c]}</option>`);
+for (const t of [...new Set(RETETE.flatMap(r => r.tags))].sort((a, b) => a.localeCompare(b, "ro")))
+  $("tag").insertAdjacentHTML("beforeend", `<option value="${esc(t)}">#${esc(t)}</option>`);
+window.addEventListener("hashchange", ruteaza);
+ruteaza();
+</script>
+</body>
+</html>
