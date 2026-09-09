@@ -90,5 +90,7 @@ jurnal:
 - Tamponează carnea slabă (piept) înainte de air fryer: umezeala face abur, iar aburul înseamnă fără crustă.
 - Acidul (lămâie, oțet) în cantitate mare, pe termen lung, strică textura pieptului; în glazură, la final, e în regulă.
 - Dacă le faci împreună cu pulpele la cuptor, cronologia serii e în rețeta „pulpe-pui-cuptor”.
+- Merge cu (sugestii): orez simplu fiert, care absoarbe glazura; orez cu legume în tigaie, cum faci deja; broccoli sau fasole verde sotată; salată de castraveți cu oțet de mere și puțin susan.
+- Păstrare și reîncălzire (sugestii): la frigider, în cutie închisă, 3–4 zile; glazura rămasă, separat, până la o săptămână. Reîncălzește bucata întreagă (feliată se usucă) în air fryer la 160 °C, 3–4 minute, până e fierbinte la mijloc, sau la microunde 1–1,5 minute cu o lingură de apă și capac. Rece, feliat subțire, merge în salată sau sandvici.
 - Nutriție (observația lui Claude): marinada se aruncă, dar e numărată integral, ≈80 kcal/porție (mai ales mierea și uleiul de susan); fără ea, porția ar avea ≈380 kcal, nu 460. Sosul de soia e valoarea generică USDA; pentru exact, de pe eticheta sticlei. Susanul și ceapa verde de la servit sunt cantități estimate.
 - Indiciile senzoriale de la pașii 6, 7, 10 și 13 sunt propuse de Claude, nu din experiența ta; corectează-le după prima gătire.
