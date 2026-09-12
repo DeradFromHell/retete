@@ -20,6 +20,8 @@ Setul din bucătărie: lingura = 15 ml, lingurița = 5 ml (lingurița de 7,5 ml 
 | 1 lingură smântână / iaurt | 15 |
 | 1 lingură pastă de tomate (bulion) | 16 |
 | 1 lingură miere | 21 |
+| 1 lingură (15 ml) sos de soia | 16 |
+| 10 ml ulei spray | 9 |
 | 1 lingură sos de soia | 16 |
 | 1 lingură sos teriyaki | 18 |
 | 1 spray scurt de ulei | 2 |
@@ -50,6 +52,7 @@ Setul din bucătărie: lingura = 15 ml, lingurița = 5 ml (lingurița de 7,5 ml 
 | Măsură | g |
 |---|---|
 | 1 linguriță piper măcinat | 2,3 |
+| 1 linguriță piper alb măcinat | 2,4 |
 | 1 linguriță boia | 2,3 |
 | 1 linguriță cimbru / oregano uscat | 1 |
 | 1 foaie de dafin | ~0,2 (în rețetă se trece 1 g, oricâte foi) |
