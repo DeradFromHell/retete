@@ -114,7 +114,7 @@ details.note summary{cursor:pointer;font-weight:600;padding:.35rem 0}
 details.note p{margin:.45rem 0}
 p.p{padding-left:1.1rem;text-indent:-1.1rem}
 p.p::before{content:"• ";color:var(--accent)}
-.nutritie{display:grid;grid-template-columns:repeat(5,1fr);gap:.3rem;text-align:center;font-size:.72rem;color:var(--mut);text-transform:uppercase;letter-spacing:.04em;background:var(--hartie);border-radius:14px;padding:.7rem .2rem;margin-bottom:.5rem;box-shadow:var(--umbra)}
+.nutritie{display:grid;grid-template-columns:repeat(3,1fr);row-gap:.6rem;gap:.3rem;text-align:center;font-size:.72rem;color:var(--mut);text-transform:uppercase;letter-spacing:.04em;background:var(--hartie);border-radius:14px;padding:.7rem .2rem;margin-bottom:.5rem;box-shadow:var(--umbra)}
 .nutritie b{display:block;font-size:1.05rem;color:var(--text);text-transform:none;letter-spacing:0;font-variant-numeric:tabular-nums}
 .meta{font-size:.88rem;color:var(--mut);display:flex;flex-wrap:wrap;gap:.15rem .8rem;margin:.3rem 0}
 .intrare{background:var(--hartie);border-radius:14px;padding:.65rem .9rem;margin-bottom:.5rem;box-shadow:var(--umbra);border-left:4px solid var(--verde)}
@@ -209,8 +209,10 @@ const cuCronometre = html => html.replace(RE_TIMP, (m, n, u) =>
 
 // Nutriția per porție și per 100 g, recalculată din valorile per 100 g, exact în ordinea și cu rotunjirile din build.py.
 // Se calculează din gramajele originale: per porție nu depinde de numărul de porții (scalarea e proporțională).
+const PAS = {kcal: 10, sare: 0.1};  // rotunjiri la afișare, ca în build.py: kcal la 10, sare la 0,1 g, restul la 1 g
+const gsare = v => String(v.toFixed(1)).replace(".", ",");
 function nutritie(r) {
-  const t = {kcal: 0, proteine: 0, carbo: 0, grasimi: 0, fibre: 0}, suta = {};
+  const t = {kcal: 0, proteine: 0, carbo: 0, grasimi: 0, fibre: 0, sare: 0}, suta = {};
   let cost = 0, complet = true, crud = 0;
   for (const i of r.ingrediente) {
     crud += i.g;
@@ -219,14 +221,14 @@ function nutritie(r) {
   }
   const baza = r.greutate_gatita_g || crud;  // per 100 g: pe greutatea gătită dacă e completată, altfel pe ingredientele crude
   for (const n in t) {
-    suta[n] = rot(t[n] / baza * 100, n === "kcal" ? 10 : 1);
-    t[n] = rot(t[n] / r.portii, n === "kcal" ? 10 : 1);
+    suta[n] = rot(t[n] / baza * 100, PAS[n] || 1);
+    t[n] = rot(t[n] / r.portii, PAS[n] || 1);
   }
   t.cost = complet ? rot(cost / r.portii, 0.5) : null;
   return {...t, suta, pe_gatit: !!r.greutate_gatita_g};
 }
 const grila = n => `<div class="nutritie"><div><b>≈${n.kcal}</b>kcal</div><div><b>≈${n.proteine} g</b>proteine</div>
-  <div><b>≈${n.carbo} g</b>carbo</div><div><b>≈${n.grasimi} g</b>grăsimi</div><div><b>≈${n.fibre} g</b>fibre</div></div>`;
+  <div><b>≈${n.carbo} g</b>carbo</div><div><b>≈${n.grasimi} g</b>grăsimi</div><div><b>≈${n.fibre} g</b>fibre</div><div><b>≈${gsare(n.sare)} g</b>sare</div></div>`;
 
 // ---------- lista ----------
 const filtru = {stari: new Set(["carte"]), sort: "gust", cat: "", tag: ""};
@@ -244,7 +246,7 @@ function arataLista() {
     ${initiala(r)}
     <div>${r.status !== "carte" ? stare(r) : ""}
       <h2>${esc(r.titlu)}</h2>
-      <div class="pastile"><span>⏱ <b>${durata(r.timp_total_min)}</b></span><span>🔥 <b>≈${r.nutritie.kcal}</b> kcal</span><span>${lei(r.nutritie.cost)}</span></div>
+      <div class="pastile"><span>⏱ <b>${durata(r.timp_total_min)}</b></span><span>🔥 <b>≈${r.nutritie.kcal}</b> kcal</span><span>🧂 <b>≈${gsare(r.nutritie.sare)} g</b></span><span>${lei(r.nutritie.cost)}</span></div>
       <div class="gust">${u ? `${puncte(u.gust)}<span>gust ${u.gust} · efort ${u.efort}</span><span>gătită ${acum(u.data)}</span>` : "<span>negătită încă</span>"}</div>
       ${r.din_timp ? `<div class="dintimp-mic">⏳ din timp: ${esc(r.din_timp)}</div>` : ""}
     </div></a>`; }).join("")
@@ -277,7 +279,7 @@ function deseneazaDetaliu() {
       <div class="stari-mici">${stare(r)}<span class="tag">${CATEGORII[r.categorie] ?? esc(r.categorie)}</span>${r.tags.map(t => `<span class="tag">#${esc(t)}</span>`).join("")}</div></div></div>
     <div class="poza-mare" id="poza-mare" hidden><img src="${pozaUrl(r.slug)}" alt="${esc(r.titlu)}" onload="this.parentNode.hidden=false" onerror="this.remove()"></div>
     <div class="poza-actiuni"><button class="chip" id="btn-poza" type="button">📷 poză</button><small id="poza-stare"></small></div>
-    <div class="cifre"><div><b>${durata(r.timp_total_min)}</b>total</div><div><b>${durata(r.timp_activ_min)}</b>activ</div><div><b>${r.portii}</b>porții</div><div><b>≈${n.kcal}</b>kcal/porție</div></div>
+    <div class="cifre"><div><b>${durata(r.timp_total_min)}</b>total</div><div><b>${durata(r.timp_activ_min)}</b>activ</div><div><b>${r.portii}</b>porții</div><div><b>≈${n.kcal}</b>kcal/porție</div><div><b>≈${gsare(n.sare)} g</b>sare/porție</div></div>
     ${r.din_timp ? `<p class="dintimp">⏳ Din timp<small>${esc(r.din_timp)}</small></p>` : ""}
     <p class="gatit">${u ? `${puncte(u.gust)} gust ${u.gust} · efort ${u.efort} · gătită ${acum(u.data)}` : "negătită încă"}</p>
     <h3 id="s-ingrediente">Ingrediente</h3>

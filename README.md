@@ -109,6 +109,8 @@ Pe telefon: https://deradfromhell.github.io/retete/carte/ (GitHub Pages din aces
 
 ## Nutriție și cost
 
-Per porție = (Σ g × valoare / 100) / porții, din gramaje crude. Per 100 g = total / `greutate_gatita_g` × 100 dacă greutatea gătită e completată (cântărește mâncarea gata), altfel pe suma ingredientelor crude, etichetat „crud”. Afișare cu „≈”: kcal rotunjit la 10, macro la 1 g, fără zecimale; cost rotunjit la 0,5 lei. Ingredientele mici au marjă de ±5%, de aceea nu afișăm precizie falsă. Ingredient fără `pret_per_kg` → cost „—”. Prețurile din seed sunt estimări (marcate „preț estimat 2026” în `nota`); se corectează de pe bonuri când e cazul.
+Per porție = (Σ g × valoare / 100) / porții, din gramaje crude. Per 100 g = total / `greutate_gatita_g` × 100 dacă greutatea gătită e completată (cântărește mâncarea gata), altfel pe suma ingredientelor crude, etichetat „crud”. Afișare cu „≈”: kcal rotunjit la 10, macro la 1 g, sare la 0,1 g (singura cu zecimală, pentru că 2 g și 2,5 g diferă); cost rotunjit la 0,5 lei.
 
-`ingrediente.csv`: coloanele `id,nume,kcal,proteine,carbo,grasimi,fibre,pret_per_kg,sursa,nota`, valori per 100 g crud. `sursa` e obligatorie: „eticheta <brand>” sau „USDA FDC <id>”. Fără sursă nu se adaugă rândul. Ingredient necunoscut într-o rețetă = build-ul eșuează. Nutriția nu se ghicește niciodată.
+Sarea (g/100 g, ca pe etichete) vine de pe etichetă sau, la rândurile USDA, din sodiu × 2,5. Reper: sub 6 g pe zi înseamnă sub ~2 g la o masă principală. Ingredientele mici au marjă de ±5%, de aceea nu afișăm precizie falsă. Ingredient fără `pret_per_kg` → cost „—”. Prețurile din seed sunt estimări (marcate „preț estimat 2026” în `nota`); se corectează de pe bonuri când e cazul.
+
+`ingrediente.csv`: coloanele `id,nume,kcal,proteine,carbo,grasimi,fibre,sare,pret_per_kg,sursa,nota`, valori per 100 g crud. `sursa` e obligatorie: „eticheta <brand>” sau „USDA FDC <id>”. Fără sursă nu se adaugă rândul. Ingredient necunoscut într-o rețetă = build-ul eșuează. Nutriția nu se ghicește niciodată.

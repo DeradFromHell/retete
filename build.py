@@ -16,7 +16,8 @@ FISIER_CARTE = RADACINA / "carte" / "index.html"
 MARCAJ_SABLON = "/*@RETETE@*/[]"
 CATEGORII = ("mic-dejun", "pranz-cina", "garnitura", "desert", "sos")
 STATUSURI = ("test", "imbunatatire", "carte", "gunoi")
-NUTRIENTI = ("kcal", "proteine", "carbo", "grasimi", "fibre")
+NUTRIENTI = ("kcal", "proteine", "carbo", "grasimi", "fibre", "sare")
+PAS = {"kcal": 10, "sare": 0.1}  # rotunjire la afișare: kcal la 10, sare la 0,1 g, restul la 1 g
 COLOANE_CSV = ["id", "nume", *NUTRIENTI, "pret_per_kg", "sursa", "nota"]
 OBLIGATORII = ("titlu", "slug", "categorie", "sursa", "portii", "timp_activ_min", "timp_total_min", "versiune", "ingrediente")
 RE_PAS = re.compile(r"^(\d+)[.)]\s+(.+)$")
@@ -41,7 +42,7 @@ def data_valida(v):
 
 def rotunjeste(x, pas=1):
     """Rotunjire „jumătate în sus” la multiplu de pas; aceleași operații ca rot() din sablon.html."""
-    r = math.floor(x / pas + 0.5) * pas
+    r = round(math.floor(x / pas + 0.5) * pas, 6)
     return int(r) if r == int(r) else r
 
 def citeste_ingrediente(erori):
@@ -167,7 +168,7 @@ def calculeaza_status(meta):
     return "imbunatatire", False
 
 def calculeaza_nutritie(meta, ingrediente):
-    """Per porție, din gramaje crude: kcal la 10, macro la 1 g, cost la 0,5 lei (None dacă lipsește un preț)."""
+    """Per porție, din gramaje crude: kcal la 10, sare la 0,1 g, restul la 1 g, cost la 0,5 lei (None dacă lipsește un preț)."""
     total = dict.fromkeys(NUTRIENTI, 0.0)
     cost, cost_complet = 0.0, True
     for ing in meta["ingrediente"]:
@@ -176,7 +177,7 @@ def calculeaza_nutritie(meta, ingrediente):
             total[n] += ing["g"] * valori[n] / 100
         cost_complet = cost_complet and valori["pret_per_kg"] is not None
         cost += ing["g"] / 1000 * (valori["pret_per_kg"] or 0)
-    rezultat = {n: rotunjeste(total[n] / meta["portii"], 10 if n == "kcal" else 1) for n in NUTRIENTI}
+    rezultat = {n: rotunjeste(total[n] / meta["portii"], PAS.get(n, 1)) for n in NUTRIENTI}
     rezultat["cost"] = rotunjeste(cost / meta["portii"], 0.5) if cost_complet else None
     return rezultat
 
