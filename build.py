@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """Validează rețetele din retete/, calculează nutriția și generează carte/index.html. Reguli: README.md.
-    python build.py --check   doar validare (raportează toate erorile odată)
-    python build.py           validare + calcul + generare"""
+    python build.py [--check]   cu --check doar validează (raportează toate erorile odată)"""
 import csv, io, json, math, re, sys
 from datetime import date
 from html import escape
@@ -226,6 +225,9 @@ def main(argv):
         meta, corp = citeste_reteta(cale, erori)
         if meta is not None and valideaza_reteta(meta, corp, cale, ingrediente, erori):
             retete.append((meta, corp))
+    for poza in (DIR_RETETE / "poze").glob("*"):  # poza unei rețete = retete/poze/<slug>.jpg; cartea o încarcă singură
+        if poza.suffix != ".jpg" or not (DIR_RETETE / f"{poza.stem}.md").is_file():
+            erori.append(f"retete/poze/{poza.name}: trebuie să se numească <slug>.jpg, pentru o rețetă existentă")
     if erori:
         print(f"{len(erori)} erori, nimic generat:\n  - " + "\n  - ".join(erori))
         return 1
@@ -238,8 +240,8 @@ def main(argv):
     sablon = FISIER_SABLON.read_text(encoding="utf-8") if FISIER_SABLON.is_file() else ""
     if MARCAJ_SABLON not in sablon:
         sys.exit(f"sablon.html: lipsește fișierul sau marcajul {MARCAJ_SABLON}")
-    json_text = json.dumps(vizibile, ensure_ascii=False, default=str)
-    json_text = json_text.replace("</", "<\\/").replace("<!--", "<\\!--")  # interzise literal într-un <script>; în JS „\/” = „/”
+    # „</” și „<!--” sunt interzise literal într-un <script>; în JS „<\/” înseamnă același text
+    json_text = json.dumps(vizibile, ensure_ascii=False, default=str).replace("</", "<\\/").replace("<!--", "<\\!--")
     FISIER_CARTE.parent.mkdir(exist_ok=True)
     FISIER_CARTE.write_text(sablon.replace(MARCAJ_SABLON, json_text), encoding="utf-8")
     print(f"Scris carte/index.html: {len(vizibile)} rețete afișabile, {len(date_carte) - len(vizibile)} la gunoi.")

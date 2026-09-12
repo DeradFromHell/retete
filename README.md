@@ -78,6 +78,12 @@ Ce nu e sigur: timpi, sare, temperatura cuptorului.
 
 Titlurile `## …` dintre pași grupează pașii pe etape; numerotarea continuă (se folosește numărul scris în fișier). În carte, pașii se bifează prin atingere, iar orice „8 minute” sau „30–60 de secunde” dintr-un pas pornește un cronometru cu sunet la final. Timpul total se afișează în ore și minute. Toate cantitățile în grame. Nume de fișiere și id-uri: ASCII, fără diacritice. Conținutul: română cu diacritice. `sursa` e un URL complet (cu `http://` sau `https://`), `claude` sau `propriu`.
 
+## Poze
+
+Poza unei rețete e fișierul `retete/poze/<slug>.jpg`; dacă există, cartea o arată pe card și în detaliu, altfel rămâne inițiala. Build-ul refuză pozele care nu corespund unei rețete.
+
+Din telefon: în rețetă, „📷 poză” alege sau face o poză, o micșorează (~1200 px) și o trimite direct în repo, ca un commit, prin API-ul GitHub. Prima dată cere un token personal, pe care îl faci o singură dată pe github.com: Settings → Developer settings → Personal access tokens → Fine-grained tokens → Generate new token; „Repository access”: Only select repositories → `retete`; „Permissions” → Repository → Contents: Read and write; expirare la alegere (la expirare, faci altul). Token-ul rămâne doar în browserul telefonului; dacă e refuzat, cartea îl cere din nou. Poza apare pe loc pe telefonul tău și în 1–2 minute pe celelalte, după ce GitHub Pages publică commit-ul.
+
 ## Scale
 
 **Gust (1–10):** 5 = mâncabil, nu repet · 7 = bun, dar aș schimba ceva · 8 = l-aș face din nou exact așa · 10 = l-aș servi la oaspeți.
