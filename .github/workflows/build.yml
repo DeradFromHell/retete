@@ -1,0 +1,34 @@
+# Regenerează carte/index.html după orice schimbare în rețete, ingrediente, șablon sau build.py
+# (inclusiv intrările de jurnal și pozele trimise din telefon). Commit-ul robotului nu redeclanșează workflow-ul.
+name: build carte
+on:
+  push:
+    branches: [master]
+    paths: [retete/**, ingrediente.csv, sablon.html, build.py]
+  workflow_dispatch:
+permissions:
+  contents: write
+  pages: write
+concurrency:
+  group: build-carte
+  cancel-in-progress: false
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install pyyaml
+      - run: python build.py
+      - name: commit carte/index.html dacă s-a schimbat
+        run: |
+          git config user.name "build.py"
+          git config user.email "build@users.noreply.github.com"
+          git add carte/index.html
+          if git diff --cached --quiet; then echo "cartea era deja la zi"; else git commit -m "carte regenerata" && git push; fi
+      - name: cere GitHub Pages să republice
+        run: 'curl -s -X POST -H "Authorization: Bearer $GITHUB_TOKEN" -H "Accept: application/vnd.github+json" https://api.github.com/repos/${{ github.repository }}/pages/builds || true'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -32,7 +32,7 @@ ingrediente:
     grup: Pane
   - id: albus_pasteurizat
     g: 150
-    nota: Optisana, Lidl
+    nota: 150 ml
     grup: Pane
   - id: pesmet_panko
     g: 90

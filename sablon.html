@@ -14,6 +14,7 @@
 html{-webkit-text-size-adjust:100%}
 body{margin:0;font:17px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--fundal);color:var(--text)}
 button{font:inherit;color:inherit;cursor:pointer}
+input,textarea{font:inherit;color:inherit}
 h1,h2,.serif{font-family:ui-serif,Georgia,"Noto Serif","Times New Roman",serif;font-weight:700;letter-spacing:-.01em}
 @media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
 /* antet listă */
@@ -22,7 +23,8 @@ header>div,main,article{max-width:720px;margin:0 auto}
 .cap{display:flex;align-items:flex-end;justify-content:space-between;gap:.5rem;margin-bottom:.55rem}
 h1{margin:0;font-size:1.7rem;line-height:1.1}
 h1 small{display:block;font:500 .78rem/1.3 system-ui,sans-serif;color:var(--mut);letter-spacing:.04em;text-transform:uppercase;margin-top:.15rem}
-input[type=search]{width:100%;font:inherit;font-size:1rem;padding:.55rem .8rem;border:1px solid var(--linie);border-radius:12px;background:var(--hartie);color:inherit}
+input[type=search],input[type=text],input[type=date],textarea{width:100%;font-size:1rem;padding:.55rem .8rem;border:1px solid var(--linie);border-radius:12px;background:var(--hartie);color:inherit}
+textarea{min-height:4.2rem;resize:vertical}
 .chips{display:flex;flex-wrap:wrap;gap:.35rem;margin-top:.5rem;align-items:center}
 .chips.linie{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}
 .chips.linie::-webkit-scrollbar{display:none}
@@ -31,6 +33,7 @@ input[type=search]{width:100%;font:inherit;font-size:1rem;padding:.55rem .8rem;b
 .chip.activ{background:var(--text);border-color:var(--text);color:var(--fundal)}
 .chip.fix{background:var(--verde-fundal);border-color:transparent;color:var(--verde);font-weight:600;cursor:default}
 .chip.actiune{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600}
+.chip.mare{font-size:1.05rem;padding:.55rem 1.1rem}
 .eticheta{font-size:.72rem;color:var(--mut);text-transform:uppercase;letter-spacing:.05em;margin-right:.2rem;white-space:nowrap}
 /* carduri */
 main{padding:.9rem .9rem 6rem}
@@ -39,10 +42,6 @@ main{padding:.9rem .9rem 6rem}
 .initiala{position:relative;overflow:hidden;width:3.4rem;height:3.4rem;border-radius:12px;background:var(--cat,var(--accent));color:#fff;display:flex;align-items:center;justify-content:center;font-size:1.7rem;line-height:1}
 .initiala img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:none}
 .initiala.cu-poza img{display:block}
-.poza-mare{margin:.2rem 0 .9rem;border-radius:16px;overflow:hidden;box-shadow:var(--umbra);aspect-ratio:4/3;background:var(--hartie)}
-.poza-mare img{width:100%;height:100%;object-fit:cover;display:block}
-.poza-actiuni{display:flex;gap:.4rem;align-items:center;flex-wrap:wrap;margin:-.3rem 0 .8rem}
-.poza-actiuni small{color:var(--mut);font-size:.82rem}
 .card h2{margin:0 0 .3rem;font-size:1.28rem;line-height:1.2;padding-right:4.6rem}
 .pastile{display:flex;flex-wrap:wrap;gap:.3rem .45rem;margin:.1rem 0 .3rem}
 .pastile span{font-size:.84rem;background:var(--fundal);border-radius:8px;padding:.1rem .5rem;white-space:nowrap}
@@ -74,7 +73,11 @@ article h2{margin:0;font-size:1.7rem;line-height:1.15}
 .stari-mici{display:flex;flex-wrap:wrap;gap:.3rem;margin-top:.4rem}
 .stari-mici .stare{position:static}
 .stari-mici .tag{font-size:.78rem;color:var(--mut);border:1px solid var(--linie);border-radius:999px;padding:.18rem .55rem}
-.cifre{display:flex;justify-content:space-around;border-top:1px solid var(--linie);border-bottom:1px solid var(--linie);padding:.65rem 0;margin:.8rem 0}
+.poza-mare{margin:.2rem 0 .9rem;border-radius:16px;overflow:hidden;box-shadow:var(--umbra);aspect-ratio:4/3;background:var(--hartie)}
+.poza-mare img{width:100%;height:100%;object-fit:cover;display:block}
+.poza-actiuni{display:flex;gap:.4rem;align-items:center;flex-wrap:wrap;margin:-.3rem 0 .8rem}
+.poza-actiuni small,.mesaj{color:var(--mut);font-size:.82rem}
+.cifre{display:flex;justify-content:space-around;flex-wrap:wrap;gap:.4rem;border-top:1px solid var(--linie);border-bottom:1px solid var(--linie);padding:.65rem 0;margin:.8rem 0}
 .cifre div{text-align:center;font-size:.7rem;color:var(--mut);text-transform:uppercase;letter-spacing:.05em}
 .cifre b{display:block;font-size:1.3rem;color:var(--text);font-variant-numeric:tabular-nums;line-height:1.15;letter-spacing:-.01em;text-transform:none}
 .dintimp{background:var(--ambra-fundal);color:var(--ambra);border-radius:12px;padding:.55rem .85rem;margin:.6rem 0;font-weight:600}
@@ -87,14 +90,14 @@ h4{font-size:.78rem;text-transform:uppercase;letter-spacing:.08em;margin:1.1rem 
 .indiciu{font-size:.84rem;color:var(--mut);margin:-.3rem 0 .7rem}
 .portii{display:flex;align-items:center;gap:.5rem;margin:.3rem 0 .7rem;flex-wrap:wrap}
 .portii button.rotund{font-size:1.25rem;width:2.4rem;height:2.4rem;border:1px solid var(--linie);border-radius:50%;background:var(--hartie)}
-.portii input{width:3.6rem;text-align:center;font:inherit;padding:.4rem;border:1px solid var(--linie);border-radius:10px;background:var(--hartie);color:inherit}
+.portii input[type=number]{width:3.6rem;text-align:center;padding:.4rem;border:1px solid var(--linie);border-radius:10px;background:var(--hartie);color:inherit}
 .portii .chip{margin-left:auto}
 .ingrediente{list-style:none;margin:0;padding:0;background:var(--hartie);border-radius:14px;overflow:hidden;box-shadow:var(--umbra)}
 .ingrediente li{display:flex;align-items:center;gap:.7rem;padding:.6rem .9rem;border-bottom:1px solid var(--linie)}
 .ingrediente li:last-child{border-bottom:0}
 .ingrediente li.grup{font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--cat,var(--accent));background:var(--fundal);padding:.45rem .9rem;font-weight:700}
-.ingrediente input{width:1.3rem;height:1.3rem;margin:0;flex:none;accent-color:var(--verde)}
-.ingrediente input:checked{animation:pop .2s}
+.ingrediente input[type=checkbox]{width:1.3rem;height:1.3rem;margin:0;flex:none;accent-color:var(--verde)}
+.ingrediente input[type=checkbox]:checked{animation:pop .2s}
 @keyframes pop{50%{transform:scale(1.35)}}
 .ingrediente .nume{flex:1}
 .ingrediente .din{display:block;font-size:.8rem;color:var(--mut)}
@@ -102,6 +105,7 @@ h4{font-size:.78rem;text-transform:uppercase;letter-spacing:.08em;margin:1.1rem 
 .ingrediente .cant b{font-variant-numeric:tabular-nums;white-space:nowrap;font-size:1.05em}
 .ingrediente .cant small{display:block;color:var(--mut);font-size:.8rem;max-width:9rem}
 .bifat .nume{text-decoration:line-through;color:var(--mut)}
+.ingrediente.cumparate li{opacity:.6}
 ol{list-style:none;padding:0;margin:0}
 ol li{position:relative;background:var(--hartie);border-radius:14px;padding:.8rem .9rem .8rem 3.5rem;margin-bottom:.6rem;cursor:pointer;box-shadow:var(--umbra);line-height:1.5}
 ol li::before{content:attr(value);position:absolute;left:.8rem;top:.75rem;width:2rem;height:2rem;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.95rem;font-family:ui-serif,Georgia,serif}
@@ -121,6 +125,13 @@ p.p::before{content:"• ";color:var(--accent)}
 .intrare.greseala{border-left-color:var(--ambra)}
 .intrare p{margin:.25rem 0}
 .intrare .cand{font-size:.8rem;color:var(--mut);text-transform:uppercase;letter-spacing:.05em}
+/* formular jurnal */
+.formular{background:var(--hartie);border-radius:14px;padding:.8rem .9rem;box-shadow:var(--umbra);margin-top:.6rem}
+.formular label{display:block;font-size:.78rem;text-transform:uppercase;letter-spacing:.05em;color:var(--mut);margin:.7rem 0 .3rem}
+.formular label:first-child{margin-top:0}
+.formular .chips{margin-top:0}
+.formular .chip.nota{min-width:2.4rem;text-align:center;padding-left:.5rem;padding-right:.5rem}
+.formular .actiuni{display:flex;gap:.5rem;align-items:center;margin-top:.9rem;flex-wrap:wrap}
 /* cronometre */
 #cronometre{position:fixed;left:0;right:0;bottom:0;z-index:6;display:flex;flex-wrap:wrap;gap:.45rem;padding:.55rem .9rem;background:var(--hartie);border-top:1px solid var(--linie);box-shadow:0 -6px 20px rgba(0,0,0,.08)}
 .cron{position:relative;overflow:hidden;border:0;background:var(--activ);border-radius:12px;padding:.4rem .8rem .5rem;font-weight:700;font-variant-numeric:tabular-nums;text-align:left;line-height:1.2;font-size:1.05rem;color:var(--accent)}
@@ -131,14 +142,31 @@ p.p::before{content:"• ";color:var(--accent)}
 @keyframes clipire{50%{opacity:.55}}
 #timer-panou{position:fixed;left:0;right:0;bottom:0;z-index:7;background:var(--hartie);border-radius:18px 18px 0 0;padding:.9rem;box-shadow:0 -8px 30px rgba(0,0,0,.18)}
 #timer-panou .chips{margin-top:0;margin-bottom:.7rem}
-#timer-panou h3{margin:0 0 .6rem;font-size:1.1rem}
+#timer-panou h3,#alege h3{margin:0 0 .6rem;font-size:1.1rem}
+/* alegere ingrediente pentru cumpărături */
+#alege{position:fixed;inset:0;z-index:5;background:rgba(0,0,0,.35);display:flex;align-items:flex-end}
+#alege>div{background:var(--fundal);width:100%;max-height:85vh;overflow-y:auto;border-radius:18px 18px 0 0;padding:.9rem}
+/* mod gătit */
+#gatit article{padding-bottom:7rem}
+.plan{background:var(--hartie);border-radius:14px;padding:.8rem .9rem;box-shadow:var(--umbra);margin:.6rem 0}
+.plan p{margin:.3rem 0}
+.progres{font-size:.78rem;color:var(--mut);text-transform:uppercase;letter-spacing:.06em;margin:.6rem 0 .2rem}
+.pas-mare{background:var(--hartie);border-radius:18px;padding:1.1rem 1rem;box-shadow:var(--umbra);font-size:1.25rem;line-height:1.5;margin:.4rem 0 .8rem}
+.pas-mare .nr{font-family:ui-serif,Georgia,serif;font-size:2.4rem;font-weight:700;color:var(--accent);line-height:1;margin-bottom:.4rem}
+.pas-mare button.timp{font-size:1.05rem;padding:.25rem .7rem;margin:.15rem 0}
+.pas-mare.facut{opacity:.6}
+.urmeaza{font-size:.92rem;color:var(--mut)}
+.urmeaza p{margin:.3rem 0;padding-left:1.4rem;text-indent:-1.4rem}
+.urmeaza b{color:var(--accent);display:inline-block;width:1.4rem;text-indent:0}
+.gatit-actiuni{position:sticky;bottom:0;display:flex;gap:.5rem;padding:.7rem 0 .3rem;background:linear-gradient(transparent,var(--fundal) 30%)}
+.gatit-actiuni .chip{flex:1;text-align:center}
 a{color:var(--accent)}
 [hidden]{display:none!important}
 </style>
 </head>
 <body>
 <header><div>
-  <div class="cap"><h1>Cartea de rețete<small id="nr-retete"></small></h1><span><button class="chip" id="btn-cumparaturi" type="button" hidden>🛒 cumpărături <span id="nr-cumparaturi"></span></button> <button class="chip" id="btn-timer-lista" type="button" title="cronometru">⏱</button></span></div>
+  <div class="cap"><h1>Cartea de rețete<small id="nr-retete"></small></h1><span><button class="chip" id="btn-cumparaturi" type="button" hidden>🛒 <span id="nr-cumparaturi"></span></button> <button class="chip" id="btn-timer-lista" type="button" title="cronometru">⏱</button></span></div>
   <input id="cautare" type="search" placeholder="Caută după titlu sau ingredient" autocomplete="off">
   <div class="chips" id="stari">
     <span class="chip fix">✓ în carte</span>
@@ -161,56 +189,66 @@ a{color:var(--accent)}
   <nav class="sari"><button type="button" data-tinta="s-ingrediente">Ingrediente</button><button type="button" data-tinta="s-pasi">Pași</button><button type="button" data-tinta="s-nutritie">Nutriție</button><button type="button" data-tinta="s-jurnal">Jurnal</button></nav>
   <article id="detaliu-continut"></article>
 </section>
+<section id="gatit" class="panou" hidden>
+  <div class="bara"><button class="btn" id="gatit-iesi" type="button">‹ Ieși</button><span class="titlu" id="gatit-titlu"></span><button class="btn" id="btn-timer-gatit" type="button" title="cronometru">⏱</button></div>
+  <article id="gatit-continut"></article>
+</section>
 <section id="cumparaturi" class="panou" hidden>
-  <div class="bara"><button class="btn" id="inapoi-cumparaturi" type="button">‹ Înapoi</button><span class="titlu">Cumpărături</span><button class="btn" id="goleste" type="button">golește</button></div>
+  <div class="bara"><button class="btn" id="inapoi-cumparaturi" type="button">‹ Înapoi</button><span class="titlu">Cumpărături</span><button class="btn" id="goleste" type="button">golește tot</button></div>
   <article id="cumparaturi-continut"></article>
 </section>
+<div id="alege" hidden><div>
+  <h3 id="alege-titlu">Ce pui în lista de cumpărături?</h3>
+  <p class="mesaj" style="margin:0 0 .6rem">Debifează ce ai deja în casă.</p>
+  <ul class="ingrediente" id="alege-lista"></ul>
+  <div class="chips" style="margin-top:.8rem"><button class="chip actiune" id="alege-ok" type="button">adaugă în listă</button><button class="chip" id="alege-toate" type="button">toate / niciuna</button><button class="chip" id="alege-inchide" type="button">renunță</button></div>
+</div></div>
 <input type="file" id="poza-fisier" accept="image/*" hidden>
 <div id="cronometre" hidden title="atinge un cronometru ca să-l oprești"></div>
 <div id="timer-panou" hidden>
   <h3>Cronometru</h3>
   <div class="chips" id="timer-presetari"></div>
-  <div class="portii"><input id="timer-minute" type="number" min="1" inputmode="numeric" placeholder="minute">
+  <div class="portii"><input id="timer-minute" type="number" min="1" inputmode="numeric" placeholder="minute" style="width:6rem;padding:.4rem;border:1px solid var(--linie);border-radius:10px;background:var(--hartie)">
     <button class="chip actiune" id="timer-start" type="button">pornește</button><button class="chip" id="timer-inchide" type="button">închide</button></div>
 </div>
 <script>
 "use strict";
 // build.py înlocuiește marcajul de mai jos cu JSON-ul rețetelor (fără cele la gunoi).
 const RETETE = /*@RETETE@*/[];
+const REPO = "DeradFromHell/retete", RAMURA = "master";
 const CATEGORII = {"mic-dejun": "mic dejun", "pranz-cina": "prânz / cină", "garnitura": "garnitură", "desert": "desert", "sos": "sos"};
 const CULORI = {"mic-dejun": "#d29a2c", "pranz-cina": "#b3462b", "garnitura": "#6e8f3c", "desert": "#a95a8a", "sos": "#4a79a6"};
 const STARI = {carte: ["În carte", "verde"], imbunatatire: ["De îmbunătățit", "ambra"], test: ["În test", "gri"]};
+const PAS = {kcal: 10, sare: 0.1};  // rotunjiri la afișare, ca în build.py: kcal la 10, sare la 0,1 g, restul la 1 g
 const $ = id => document.getElementById(id);
 const norm = s => String(s ?? "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
 const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;"})[c]);
 const rot = (x, pas = 1) => Math.floor(x / pas + 0.5) * pas;  // aceleași operații ca rotunjeste() din build.py
 const lei = c => c == null ? "—" : "≈" + String(c).replace(".", ",") + " lei";
+const gsare = v => String(v.toFixed(1)).replace(".", ",");
 const durata = m => m >= 60 ? `${Math.floor(m / 60)} h${m % 60 ? " " + m % 60 + " min" : ""}` : `${m} min`;
 const ultima = r => r.jurnal[r.jurnal.length - 1] || null;
+const azi = () => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`; };
 const acum = d => { const z = Math.floor((Date.now() - new Date(d)) / 864e5); return z <= 0 ? "azi" : z === 1 ? "ieri" : z < 60 ? `acum ${z} zile` : `acum ${Math.round(z / 30)} luni`; };
 const puncte = g => `<span class="puncte"><b>${"●".repeat(g)}</b>${"○".repeat(10 - g)}</span>`;
 const stare = r => `<span class="stare ${STARI[r.status]?.[1] ?? "gri"}">${STARI[r.status]?.[0] ?? esc(r.status)}</span>`;
-// Poza unei rețete e fișierul retete/poze/<slug>.jpg din repo; se încearcă încărcarea, iar dacă nu există rămâne inițiala.
-const REPO = "DeradFromHell/retete", RAMURA = "master";
-const pozaUrl = slug => `../retete/poze/${slug}.jpg`;
-const initiala = r => `<div class="initiala serif" aria-hidden="true">${esc(String(r.titlu).replace(/^TEST\S*\s*/i, "").trim().charAt(0).toUpperCase())}
+const pozaUrl = slug => `../retete/poze/${slug}.jpg`;  // poza unei rețete e fișierul retete/poze/<slug>.jpg; dacă nu există, rămâne inițiala
+const initiala = r => `<div class="initiala serif" aria-hidden="true">${esc(String(r.titlu).trim().charAt(0).toUpperCase())}
   <img src="${pozaUrl(r.slug)}" alt="" loading="lazy" onload="this.parentNode.classList.add('cu-poza')" onerror="this.remove()"></div>`;
 const sursa = s => /^https?:\/\//.test(s) ? `<a href="${esc(s)}" target="_blank" rel="noopener">${esc(s.split("/")[2] || s)}</a>` : "";
-// Starea proprie a paginii (coș de cumpărături, ce e bifat în el, mărimea textului) stă doar în browserul telefonului.
+// Starea proprie a paginii (coș, cumpărate, produse adăugate de tine, mărimea textului, token) stă doar în browserul telefonului.
 const memorie = {
   citeste(c, implicit) { try { return JSON.parse(localStorage.getItem(c)) ?? implicit; } catch (e) { return implicit; } },
   scrie(c, v) { try { localStorage.setItem(c, JSON.stringify(v)); } catch (e) {} },
 };
-let cos = memorie.citeste("cos", {}), cumparate = new Set(memorie.citeste("cumparate", [])), marime = memorie.citeste("marime", 0);
+let cos = memorie.citeste("cos", {}), cumparate = new Set(memorie.citeste("cumparate", [])), extra = memorie.citeste("extra", []), marime = memorie.citeste("marime", 0);
+for (const s in cos) if (typeof cos[s] === "number") cos[s] = {portii: cos[s], ids: null};  // format vechi: toate ingredientele
 // Orice „8 minute” / „3–4 minute” / „30–60 de secunde” dintr-un pas devine buton de cronometru (prima cifră).
 const RE_TIMP = /(\d+)(?:[–-]\d+)?\s*(?:de\s+)?(minute|minut|secunde|secundă)\b/g;
 const cuCronometre = html => html.replace(RE_TIMP, (m, n, u) =>
   `<button type="button" class="timp" data-s="${+n * (u.startsWith("sec") ? 1 : 60)}">⏱ ${m}</button>`);
 
 // Nutriția per porție și per 100 g, recalculată din valorile per 100 g, exact în ordinea și cu rotunjirile din build.py.
-// Se calculează din gramajele originale: per porție nu depinde de numărul de porții (scalarea e proporțională).
-const PAS = {kcal: 10, sare: 0.1};  // rotunjiri la afișare, ca în build.py: kcal la 10, sare la 0,1 g, restul la 1 g
-const gsare = v => String(v.toFixed(1)).replace(".", ",");
 function nutritie(r) {
   const t = {kcal: 0, proteine: 0, carbo: 0, grasimi: 0, fibre: 0, sare: 0}, suta = {};
   let cost = 0, complet = true, crud = 0;
@@ -219,16 +257,34 @@ function nutritie(r) {
     for (const n in t) t[n] += i.g * i[n] / 100;
     if (i.pret_per_kg == null) complet = false; else cost += i.g / 1000 * i.pret_per_kg;
   }
-  const baza = r.greutate_gatita_g || crud;  // per 100 g: pe greutatea gătită dacă e completată, altfel pe ingredientele crude
-  for (const n in t) {
-    suta[n] = rot(t[n] / baza * 100, PAS[n] || 1);
-    t[n] = rot(t[n] / r.portii, PAS[n] || 1);
-  }
+  const baza = r.greutate_gatita_g || crud;
+  for (const n in t) { suta[n] = rot(t[n] / baza * 100, PAS[n] || 1); t[n] = rot(t[n] / r.portii, PAS[n] || 1); }
   t.cost = complet ? rot(cost / r.portii, 0.5) : null;
   return {...t, suta, pe_gatit: !!r.greutate_gatita_g};
 }
 const grila = n => `<div class="nutritie"><div><b>≈${n.kcal}</b>kcal</div><div><b>≈${n.proteine} g</b>proteine</div>
   <div><b>≈${n.carbo} g</b>carbo</div><div><b>≈${n.grasimi} g</b>grăsimi</div><div><b>≈${n.fibre} g</b>fibre</div><div><b>≈${gsare(n.sare)} g</b>sare</div></div>`;
+
+// ---------- GitHub: cartea scrie în repo (poze, jurnal) cu un token personal cerut o singură dată ----------
+function tokenGitHub() {
+  let t = memorie.citeste("github_token", "");
+  if (!t) { t = (prompt("Token GitHub (o singură dată; vezi README, secțiunea „Poze”):") || "").trim(); if (t) memorie.scrie("github_token", t); }
+  return t;
+}
+async function github(cale, metoda = "GET", corp) {
+  const token = tokenGitHub();
+  if (!token) throw new Error("fără token");
+  const r = await fetch(`https://api.github.com/repos/${REPO}/contents/${cale}${metoda === "GET" ? "?ref=" + RAMURA : ""}`,
+    {method: metoda, headers: {Authorization: `Bearer ${token}`, Accept: "application/vnd.github+json", "Content-Type": "application/json"},
+     body: corp ? JSON.stringify({branch: RAMURA, ...corp}) : undefined});
+  if (r.status === 401 || r.status === 403) { memorie.scrie("github_token", ""); throw new Error("token refuzat; atinge din nou și pune altul"); }
+  if (r.status === 404 && metoda === "GET") return null;
+  const date = await r.json();
+  if (!r.ok) throw new Error(date.message || r.status);
+  return date;
+}
+const b64text = s => btoa(Array.from(new TextEncoder().encode(s), b => String.fromCharCode(b)).join(""));
+const text64 = b => new TextDecoder().decode(Uint8Array.from(atob(b.replace(/\s/g, "")), c => c.charCodeAt(0)));
 
 // ---------- lista ----------
 const filtru = {stari: new Set(["carte"]), sort: "gust", cat: "", tag: ""};
@@ -251,8 +307,7 @@ function arataLista() {
       ${r.din_timp ? `<div class="dintimp-mic">⏳ din timp: ${esc(r.din_timp)}</div>` : ""}
     </div></a>`; }).join("")
     : `<p class="gol">${RETETE.length ? "Nicio rețetă pentru filtrele alese." : "Cartea e goală deocamdată."}</p>`;
-  const inCarte = RETETE.filter(r => r.status === "carte").length;
-  $("nr-retete").textContent = `${inCarte} în carte · ${RETETE.length} în total`;
+  $("nr-retete").textContent = `${RETETE.filter(r => r.status === "carte").length} în carte · ${RETETE.length} în total`;
 }
 function chipuri(id, valori, ales, cheie) {
   const cont = $(id);
@@ -264,7 +319,7 @@ function chipuri(id, valori, ales, cheie) {
 // ---------- detaliu ----------
 let curenta = null, portii = 0, bifate = new Set(), facute = new Set();
 function deseneazaDetaliu() {
-  const r = curenta, f = portii / r.portii, n = nutritie(r), u = ultima(r);
+  const r = curenta, f = portii / r.portii, n = nutritie(r), u = ultima(r), inCos = cos[r.slug];
   let grup = "";
   const ingr = r.ingrediente.map((i, k) => (i.grup && i.grup !== grup ? `<li class="grup">${esc(grup = i.grup)}</li>` : "")
     + `<li class="${bifate.has(k) ? "bifat" : ""}"><input type="checkbox" data-k="${k}" ${bifate.has(k) ? "checked" : ""}>
@@ -278,7 +333,7 @@ function deseneazaDetaliu() {
     <div class="antet">${initiala(r)}<div><h2>${esc(r.titlu)}</h2>
       <div class="stari-mici">${stare(r)}<span class="tag">${CATEGORII[r.categorie] ?? esc(r.categorie)}</span>${r.tags.map(t => `<span class="tag">#${esc(t)}</span>`).join("")}</div></div></div>
     <div class="poza-mare" id="poza-mare" hidden><img src="${pozaUrl(r.slug)}" alt="${esc(r.titlu)}" onload="this.parentNode.hidden=false" onerror="this.remove()"></div>
-    <div class="poza-actiuni"><button class="chip" id="btn-poza" type="button">📷 poză</button><small id="poza-stare"></small></div>
+    <div class="poza-actiuni"><button class="chip actiune" id="btn-gateste" type="button">▶ Gătește pas cu pas</button><button class="chip" id="btn-poza" type="button">📷 poză</button><small id="poza-stare"></small></div>
     <div class="cifre"><div><b>${durata(r.timp_total_min)}</b>total</div><div><b>${durata(r.timp_activ_min)}</b>activ</div><div><b>${r.portii}</b>porții</div><div><b>≈${n.kcal}</b>kcal/porție</div><div><b>≈${gsare(n.sare)} g</b>sare/porție</div></div>
     ${r.din_timp ? `<p class="dintimp">⏳ Din timp<small>${esc(r.din_timp)}</small></p>` : ""}
     <p class="gatit">${u ? `${puncte(u.gust)} gust ${u.gust} · efort ${u.efort} · gătită ${acum(u.data)}` : "negătită încă"}</p>
@@ -286,7 +341,7 @@ function deseneazaDetaliu() {
     <div class="portii"><button class="rotund" type="button" data-d="-1" aria-label="mai puține porții">−</button>
       <input id="portii" type="number" min="1" inputmode="numeric" value="${portii}">
       <button class="rotund" type="button" data-d="1" aria-label="mai multe porții">+</button><span>porții</span>
-      <button class="chip${cos[r.slug] ? " activ" : ""}" id="in-cos" type="button">${cos[r.slug] ? "✓ în cumpărături" : "+ cumpărături"}</button></div>
+      <button class="chip${inCos ? " activ" : ""}" id="in-cos" type="button">${inCos ? `✓ în cumpărături (${inCos.ids ? inCos.ids.length : r.ingrediente.length})` : "+ cumpărături"}</button></div>
     <ul class="ingrediente">${ingr}</ul>
     <h3 id="s-pasi">Pași</h3><p class="indiciu">Atinge un pas ca să-l bifezi. Atinge un timp ca să pornești cronometrul.</p>
     ${pasi.replace(/<h3>/g, "<h4>").replace(/<\/h3>/g, "</h4>").replace(/<ol>[\s\S]*?<\/ol>/g, cuCronometre)}
@@ -294,21 +349,72 @@ function deseneazaDetaliu() {
     <h3 id="s-nutritie">Nutriție <small>per porție</small></h3>${grila(n)}
     <h3>Nutriție <small>per 100 g ${n.pe_gatit ? "gătit" : "crud, din ingrediente"}</small></h3>${grila(n.suta)}
     <p class="meta"><span>cost ${lei(n.cost)}/porție</span>${sursa(r.sursa) ? `<span>sursă: ${sursa(r.sursa)}</span>` : ""}</p>
-    <h3 id="s-jurnal">Jurnal</h3>${jurnal}`;
+    <h3 id="s-jurnal">Jurnal</h3>${jurnal}
+    <div class="formular" id="formular-jurnal">
+      <label>Cum a fost? · gust (5 mâncabil · 7 bun, aș schimba ceva · 8 aș face la fel · 10 pentru oaspeți)</label>
+      <div class="chips" id="f-gust">${[1,2,3,4,5,6,7,8,9,10].map(g => `<button class="chip nota" type="button" data-gust="${g}">${g}</button>`).join("")}</div>
+      <label>efort (1 o oală, ≤15 min · 3 două vase, ~30 min · 5 3+ vase sau >2 h)</label>
+      <div class="chips" id="f-efort">${[1,2,3,4,5].map(e => `<button class="chip nota" type="button" data-efort="${e}">${e}</button>`).join("")}</div>
+      <label>execuție</label>
+      <div class="chips" id="f-executie"><button class="chip activ" type="button" data-executie="ok">a ieșit cum trebuia</button><button class="chip" type="button" data-executie="greseala_mea">greșeala mea (nu se numără)</button></div>
+      <label>observații</label><textarea id="f-observatii" placeholder="ce a fost bine, ce nu"></textarea>
+      <label>data viitoare (ce schimbi la v${r.versiune + 1})</label><textarea id="f-urmatoarea" placeholder="ex. jumătate din sare, +5 min la orez"></textarea>
+      <label>data</label><input type="date" id="f-data" value="${azi()}">
+      <div class="actiuni"><button class="chip actiune" id="f-trimite" type="button">scrie în jurnal</button><small class="mesaj" id="f-stare">se salvează în fișierul rețetei, în repo</small></div>
+    </div>`;
   $("detaliu-continut").querySelectorAll("ol li").forEach((li, k) => li.classList.toggle("facut", facute.has(k)));
-  cronometre.forEach(c => butonul(c)?.classList.add("activ"));
+  marcheazaCronometrele();
 }
 
-// Cronometre: oricâte în paralel, într-o bară fixă jos, vizibilă pe orice ecran; sună și vibrează la final.
+// ---------- jurnal din telefon: intrarea se scrie în YAML-ul rețetei, prin GitHub; cartea se regenerează pe GitHub ----------
+const formular = {gust: null, efort: null, executie: "ok"};
+function adaugaInYaml(text, intrare) {
+  const m = text.match(/^---\r?\n([\s\S]*?)\r?\n---[ \t]*(?:\r?\n|$)/);
+  if (!m) throw new Error("fișierul nu are frontmatter");
+  const nl = text.includes("\r\n") ? "\r\n" : "\n", linii = m[1].split(/\r?\n/);
+  const i = linii.findIndex(l => /^jurnal:\s*(\[\]\s*)?$/.test(l));
+  if (i < 0) throw new Error("cheia jurnal lipsește din frontmatter");
+  linii[i] = "jurnal:";
+  let j = i + 1;
+  while (j < linii.length && (linii[j] === "" || /^\s/.test(linii[j]))) j++;
+  while (j > i + 1 && linii[j - 1] === "") j--;  // intrarea nouă vine imediat după ultima
+  const bloc = [`  - data: ${intrare.data}`, `    versiune: ${intrare.versiune}`, `    gust: ${intrare.gust}`, `    efort: ${intrare.efort}`, `    executie: ${intrare.executie}`];
+  if (intrare.observatii) bloc.push(`    observatii: ${JSON.stringify(intrare.observatii)}`);
+  if (intrare.urmatoarea_data) bloc.push(`    urmatoarea_data: ${JSON.stringify(intrare.urmatoarea_data)}`);
+  linii.splice(j, 0, ...bloc);
+  return "---" + nl + linii.join(nl) + nl + "---" + nl + text.slice(m[0].length);
+}
+async function trimiteJurnal() {
+  const r = curenta, stare = $("f-stare");
+  if (!formular.gust || !formular.efort) { stare.textContent = "alege gustul și efortul"; return; }
+  const intrare = {data: $("f-data").value || azi(), versiune: r.versiune, gust: formular.gust, efort: formular.efort, executie: formular.executie,
+                   observatii: $("f-observatii").value.trim(), urmatoarea_data: $("f-urmatoarea").value.trim()};
+  stare.textContent = "se scrie în repo…";
+  try {
+    const cale = `retete/${r.slug}.md`, fisier = await github(cale);
+    if (!fisier) throw new Error("fișierul rețetei nu e în repo");
+    const nou = adaugaInYaml(text64(fisier.content), intrare);
+    await github(cale, "PUT", {message: `${r.slug} v${r.versiune}: gust ${intrare.gust} efort ${intrare.efort}`, content: b64text(nou), sha: fisier.sha});
+    r.jurnal.push(intrare);
+    Object.assign(formular, {gust: null, efort: null, executie: "ok"});
+    deseneazaDetaliu();
+    $("f-stare").textContent = "✓ scris; starea rețetei se actualizează în 2–3 minute, după ce GitHub regenerează cartea";
+    $("s-jurnal").scrollIntoView({behavior: "smooth"});
+  } catch (e) { stare.textContent = "nu s-a putut scrie: " + e.message; }
+}
+
+// ---------- cronometre: oricâte în paralel, într-o bară fixă jos, pe orice ecran; sună și vibrează la final ----------
 let cronometre = [], tic = null, audio = null, nrCron = 0;
-const butonul = c => c.slug === curenta?.slug && c.idx >= 0 ? $("detaliu-continut").querySelectorAll("button.timp")[c.idx] : null;
-function porneste(secunde, eticheta, btn) {
+// Un buton de timp dintr-un pas se leagă de cronometrul lui prin etichetă („pas 6 · 8 minute”), în rețetă și în modul gătit deopotrivă.
+const eticheta = t => `pas ${t.closest("li")?.value ?? pasii(curenta)[pasCurent]?.n ?? ""} · ${t.textContent.replace("⏱ ", "")}`;
+const cronActiv = t => cronometre.find(x => x.slug === curenta?.slug && x.eticheta === eticheta(t) && !x.gata);
+const marcheazaCronometrele = () => document.querySelectorAll("button.timp").forEach(t => t.classList.toggle("activ", !!cronActiv(t)));
+function porneste(secunde, etich) {
   try { audio = audio || new (window.AudioContext || window.webkitAudioContext)(); } catch (e) {}
-  cronometre.push({id: ++nrCron, eticheta, durata: secunde, sfarsit: Date.now() + secunde * 1000, gata: false, slug: curenta?.slug,
-                   idx: btn ? [...$("detaliu-continut").querySelectorAll("button.timp")].indexOf(btn) : -1});
-  btn?.classList.add("activ");
+  cronometre.push({id: ++nrCron, eticheta: etich, durata: secunde, sfarsit: Date.now() + secunde * 1000, gata: false, slug: curenta?.slug});
   if (!tic) tic = setInterval(bate, 500);
   bate();
+  marcheazaCronometrele();
 }
 function bate() {
   for (const c of cronometre) {
@@ -322,11 +428,9 @@ function bate() {
   if (!cronometre.length) { clearInterval(tic); tic = null; }
 }
 function opreste(id) {
-  const c = cronometre.find(x => x.id === id);
-  if (!c) return;
-  butonul(c)?.classList.remove("activ");
-  cronometre = cronometre.filter(x => x !== c);
+  cronometre = cronometre.filter(x => x.id !== id);
   bate();
+  marcheazaCronometrele();
 }
 function aratuTimer(vizibil) { $("timer-panou").hidden = !vizibil; if (vizibil) { $("timer-minute").value = ""; $("timer-minute").focus(); } }
 function suna() {
@@ -343,8 +447,57 @@ function suna() {
   } catch (e) {}
 }
 
-// Poze: micșorată în browser (~1200 px, JPEG), apoi trimisă direct în repo prin API-ul GitHub, cu un token personal
-// (fine-grained, doar repo-ul „retete”, Contents: Read and write) cerut o singură dată și ținut în browserul telefonului.
+// ---------- mod gătit: planul dinainte, apoi un pas pe ecran, cu cronometrele lui și ce urmează ----------
+let pasCurent = -1;
+function pasii(r) {
+  const t = document.createElement("template");
+  t.innerHTML = r.pasi_html.split("<h3>Note</h3>")[0];
+  const lista = []; let etapa = "";
+  for (const el of t.content.children) {
+    if (el.tagName === "H3") etapa = el.textContent;
+    else if (el.tagName === "OL") for (const li of el.children) lista.push({n: +li.getAttribute("value"), html: li.innerHTML, etapa, timpi: [...li.textContent.matchAll(RE_TIMP)].map(m => m[0])});
+  }
+  return lista;
+}
+function deseneazaGatit() {
+  const r = curenta, lista = pasii(r), cont = $("gatit-continut");
+  $("gatit-titlu").textContent = r.titlu;
+  if (pasCurent < 0) {
+    const etape = [];
+    for (const p of lista) { const e = etape.find(x => x.nume === p.etapa) || (etape.push({nume: p.etapa, pasi: 0, timpi: []}), etape[etape.length - 1]); e.pasi++; e.timpi.push(...p.timpi); }
+    cont.innerHTML = `<div class="progres">Planul</div>
+      ${r.din_timp ? `<p class="dintimp">⏳ Din timp<small>${esc(r.din_timp)}</small></p>` : ""}
+      <div class="plan"><p><b>${lista.length} pași</b> · ${durata(r.timp_activ_min)} activ · ${durata(r.timp_total_min)} în total · ${r.portii} porții</p>
+        ${etape.map(e => `<p><b>${esc(e.nume || "Pași")}</b>: ${e.pasi} ${e.pasi === 1 ? "pas" : "pași"}${e.timpi.length ? " · ⏱ " + e.timpi.map(esc).join(", ") : ""}</p>`).join("")}</div>
+      <p class="mesaj">Cronometrele se pornesc dintr-o atingere pe timpul din pas și rămân jos, pe orice ecran. Poți începe și de la un pas anume, din listă.</p>
+      <div class="urmeaza">${lista.map((p, k) => `<p data-k="${k}" style="cursor:pointer"><b>${p.n}</b>${esc(p.html.replace(/<[^>]+>/g, "")).slice(0, 90)}…</p>`).join("")}</div>
+      <div class="gatit-actiuni"><button class="chip actiune mare" type="button" data-mergi="0">▶ Începe</button></div>`;
+    return;
+  }
+  const p = lista[pasCurent], urm = lista.slice(pasCurent + 1, pasCurent + 3);
+  cont.innerHTML = `<div class="progres">${esc(p.etapa || "Pași")} · pasul ${pasCurent + 1} din ${lista.length}</div>
+    <div class="pas-mare${facute.has(pasCurent) ? " facut" : ""}"><div class="nr">${p.n}</div>${cuCronometre(p.html)}</div>
+    ${urm.length ? `<div class="urmeaza"><b style="width:auto;color:var(--mut)">Apoi:</b>${urm.map(q => `<p><b>${q.n}</b>${esc(q.html.replace(/<[^>]+>/g, ""))}</p>`).join("")}</div>` : `<p class="mesaj">Ultimul pas. După ce mănânci, scrie în jurnal cum a fost.</p>`}
+    <div class="gatit-actiuni">${pasCurent > 0 ? `<button class="chip" type="button" data-mergi="${pasCurent - 1}">‹ anterior</button>` : ""}
+      ${pasCurent < lista.length - 1 ? `<button class="chip actiune mare" type="button" data-gata="1">✓ gata, următorul</button>` : `<button class="chip actiune mare" type="button" data-gata="1">✓ gata, la jurnal</button>`}</div>`;
+  marcheazaCronometrele();
+}
+function deschideGatit() {
+  pasCurent = -1;
+  deseneazaGatit();
+  $("gatit").hidden = false; $("gatit").scrollTop = 0;
+  try { history.pushState({slug: curenta.slug, gatit: 1}, "", "#" + curenta.slug); } catch (e) {}
+}
+function inchideGatit() { $("gatit").hidden = true; if (curenta) deseneazaDetaliu(); }
+
+// Mod gătit: ecranul rămâne aprins cât e deschisă o rețetă (unde browserul permite).
+let veghe = null;
+async function tineEcranul() { try { veghe = await navigator.wakeLock.request("screen"); } catch (e) {} }
+function lasaEcranul() { try { veghe && veghe.release(); } catch (e) {} veghe = null; }
+document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible" && !$("detaliu").hidden) tineEcranul(); });
+function aplicaMarimea() { $("detaliu-continut").className = ["", "mare", "foarte-mare"][marime] || ""; }
+
+// ---------- poze: micșorată în browser, apoi trimisă direct în repo ----------
 async function micsoreaza(fisier, max = 1200) {
   let img;
   try { img = await createImageBitmap(fisier, {imageOrientation: "from-image"}); }
@@ -354,89 +507,91 @@ async function micsoreaza(fisier, max = 1200) {
   c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
   return c.toDataURL("image/jpeg", 0.82);
 }
-function tokenGitHub(reia) {
-  let t = reia ? "" : memorie.citeste("github_token", "");
-  if (!t) {
-    t = (prompt("Token GitHub (o singură dată; vezi README, secțiunea „Poze”):") || "").trim();
-    if (t) memorie.scrie("github_token", t);
-  }
-  return t;
-}
 async function urcaPoza(fisier) {
   const stare = $("poza-stare"), r = curenta;
-  const token = tokenGitHub(false);
-  if (!token) { stare.textContent = "fără token, nimic trimis"; return; }
-  stare.textContent = "se micșorează…";
-  const dataUrl = await micsoreaza(fisier);
-  const img = $("poza-mare")?.querySelector("img") || Object.assign(document.createElement("img"), {alt: r.titlu});
-  img.onload = null; img.onerror = null; img.src = dataUrl;
-  if (!img.parentNode) $("poza-mare").appendChild(img);
-  $("poza-mare").hidden = false;
-  stare.textContent = "se trimite în repo…";
-  const api = `https://api.github.com/repos/${REPO}/contents/retete/poze/${r.slug}.jpg`;
-  const antet = {Authorization: `Bearer ${token}`, Accept: "application/vnd.github+json", "Content-Type": "application/json"};
   try {
-    const existent = await fetch(`${api}?ref=${RAMURA}`, {headers: antet});
-    if (existent.status === 401 || existent.status === 403) throw new Error("token refuzat");
-    const sha = existent.ok ? (await existent.json()).sha : undefined;
-    const raspuns = await fetch(api, {method: "PUT", headers: antet, body: JSON.stringify(
-      {message: `poza ${r.slug}`, content: dataUrl.split(",")[1], branch: RAMURA, ...(sha ? {sha} : {})})});
-    if (!raspuns.ok) throw new Error((await raspuns.json()).message || raspuns.status);
+    stare.textContent = "se micșorează…";
+    const dataUrl = await micsoreaza(fisier);
+    const img = $("poza-mare").querySelector("img") || $("poza-mare").appendChild(Object.assign(document.createElement("img"), {alt: r.titlu}));
+    img.onload = null; img.onerror = null; img.src = dataUrl; $("poza-mare").hidden = false;
+    stare.textContent = "se trimite în repo…";
+    const cale = `retete/poze/${r.slug}.jpg`, existent = await github(cale);
+    await github(cale, "PUT", {message: `poza ${r.slug}`, content: dataUrl.split(",")[1], ...(existent ? {sha: existent.sha} : {})});
     stare.textContent = "✓ poza e în repo; pe alte telefoane apare în 1–2 minute";
-  } catch (e) {
-    if (String(e.message).includes("token refuzat") || String(e.message).includes("Bad credentials")) { memorie.scrie("github_token", ""); stare.textContent = "token refuzat; atinge din nou 📷 și pune altul"; }
-    else stare.textContent = "nu s-a putut trimite: " + e.message;
-  }
+  } catch (e) { stare.textContent = "nu s-a putut trimite: " + e.message; }
 }
 
-// Mod gătit: ecranul rămâne aprins cât e deschisă o rețetă (unde browserul permite).
-let veghe = null;
-async function tineEcranul() { try { veghe = await navigator.wakeLock.request("screen"); } catch (e) {} }
-function lasaEcranul() { try { veghe && veghe.release(); } catch (e) {} veghe = null; }
-document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible" && !$("detaliu").hidden) tineEcranul(); });
-function aplicaMarimea() { $("detaliu-continut").className = ["", "mare", "foarte-mare"][marime] || ""; }
-
-// ---------- cumpărături ----------
-function numarCos() { const n = Object.keys(cos).length; $("nr-cumparaturi").textContent = n ? `(${n})` : ""; $("btn-cumparaturi").hidden = !n; }
+// ---------- cumpărături: alegi ce intră din rețetă; cumpăratele coboară; poți adăuga orice ----------
+function numarCos() { const n = Object.keys(cos).length + extra.length; $("nr-cumparaturi").textContent = n ? `cumpărături (${n})` : ""; $("btn-cumparaturi").hidden = !n; }
+let alegere = new Set();
+function deschideAlegere() {
+  const r = curenta, salvat = cos[r.slug];
+  alegere = new Set(salvat ? (salvat.ids ?? r.ingrediente.map(i => i.id)) : r.ingrediente.map(i => i.id));
+  let grup = "";
+  $("alege-lista").innerHTML = r.ingrediente.map(i => (i.grup && i.grup !== grup ? `<li class="grup">${esc(grup = i.grup)}</li>` : "")
+    + `<li><input type="checkbox" data-id="${esc(i.id)}" ${alegere.has(i.id) ? "checked" : ""}><span class="nume">${esc(i.nume)}</span><span class="cant"><b>${Math.max(1, Math.round(i.g * portii / r.portii))} g</b></span></li>`).join("");
+  $("alege-titlu").textContent = `Ce pui în listă din „${r.titlu}” (${portii} porții)?`;
+  $("alege-ok").textContent = salvat ? "actualizează lista" : "adaugă în listă";
+  $("alege").hidden = false;
+}
+function salveazaAlegere() {
+  const ids = [...new Set([...alegere])].filter(id => curenta.ingrediente.some(i => i.id === id));
+  if (ids.length) cos[curenta.slug] = {portii, ids}; else delete cos[curenta.slug];
+  memorie.scrie("cos", cos); numarCos(); $("alege").hidden = true; deseneazaDetaliu();
+}
 function deseneazaCumparaturi() {
   const retete = Object.keys(cos).map(s => RETETE.find(r => r.slug === s)).filter(Boolean), total = {};
   for (const r of retete) {
-    const f = cos[r.slug] / r.portii;
-    for (const i of r.ingrediente) { const t = total[i.id] || (total[i.id] = {nume: i.nume, g: 0, din: new Set()}); t.g += i.g * f; t.din.add(r.titlu); }
+    const c = cos[r.slug], f = c.portii / r.portii;
+    for (const i of r.ingrediente) {
+      if (c.ids && !c.ids.includes(i.id)) continue;
+      const t = total[i.id] || (total[i.id] = {nume: i.nume, g: 0, din: new Set()}); t.g += i.g * f; t.din.add(r.titlu);
+    }
   }
-  const randuri = Object.entries(total).sort((a, b) => a[1].nume.localeCompare(b[1].nume, "ro"));
-  $("cumparaturi-continut").innerHTML = retete.length ? `
-    <h3>Rețete alese</h3><ul class="ingrediente">${retete.map(r => `<li><span class="nume">${esc(r.titlu)}<span class="din">${cos[r.slug]} porții</span></span><button class="chip" type="button" data-scoate="${esc(r.slug)}">scoate</button></li>`).join("")}</ul>
-    <h3>De cumpărat</h3><ul class="ingrediente">${randuri.map(([id, t]) => `<li class="${cumparate.has(id) ? "bifat" : ""}"><input type="checkbox" data-id="${esc(id)}" ${cumparate.has(id) ? "checked" : ""}>
-      <span class="nume">${esc(t.nume)}<span class="din">${[...t.din].map(esc).join(", ")}</span></span><span class="cant"><b>${Math.max(1, Math.round(t.g))} g</b></span></li>`).join("")}</ul>`
-    : `<p class="gol">Nimic încă. Deschide o rețetă și atinge „+ cumpărături”.</p>`;
+  const randuri = [...Object.entries(total).map(([id, t]) => ({id, nume: t.nume, cant: `${Math.max(1, Math.round(t.g))} g`, din: [...t.din].join(", ")})),
+                   ...extra.map(x => ({id: x.id, nume: x.nume, cant: "", din: "adăugat de tine"}))].sort((a, b) => a.nume.localeCompare(b.nume, "ro"));
+  const rand = x => `<li class="${cumparate.has(x.id) ? "bifat" : ""}"><input type="checkbox" data-id="${esc(x.id)}" ${cumparate.has(x.id) ? "checked" : ""}>
+    <span class="nume">${esc(x.nume)}<span class="din">${esc(x.din)}</span></span>${x.cant ? `<span class="cant"><b>${x.cant}</b></span>` : ""}${x.id.startsWith("x_") ? `<button class="chip" type="button" data-sterge="${esc(x.id)}">✕</button>` : ""}</li>`;
+  const deCumparat = randuri.filter(x => !cumparate.has(x.id)), gata = randuri.filter(x => cumparate.has(x.id));
+  $("cumparaturi-continut").innerHTML = `
+    <h3>De cumpărat <small>${deCumparat.length}</small></h3>
+    ${deCumparat.length ? `<ul class="ingrediente">${deCumparat.map(rand).join("")}</ul>` : `<p class="mesaj">Nimic de cumpărat.</p>`}
+    <div class="portii" style="margin-top:.7rem"><input type="text" id="extra-nume" placeholder="adaugă altceva (detergent, pâine…)" style="flex:1"><button class="chip actiune" id="extra-adauga" type="button">+</button></div>
+    ${gata.length ? `<h3>Cumpărate <small>${gata.length}</small></h3><ul class="ingrediente cumparate">${gata.map(rand).join("")}</ul>
+      <div class="chips"><button class="chip" id="curata-cumparate" type="button">scoate cumpăratele din listă</button></div>` : ""}
+    ${retete.length ? `<h3>Din rețetele</h3><ul class="ingrediente">${retete.map(r => `<li><span class="nume">${esc(r.titlu)}<span class="din">${cos[r.slug].portii} porții · ${cos[r.slug].ids ? cos[r.slug].ids.length : r.ingrediente.length} ingrediente</span></span><button class="chip" type="button" data-scoate="${esc(r.slug)}">scoate</button></li>`).join("")}</ul>` : ""}`;
+}
+function adaugaExtra() {
+  const nume = $("extra-nume").value.trim();
+  if (!nume) return;
+  extra.push({id: "x_" + Date.now().toString(36), nume});
+  memorie.scrie("extra", extra); numarCos(); deseneazaCumparaturi();
+  $("extra-nume").focus();
 }
 
 // ---------- navigare (nu depinde de URL: unele vizualizatoare nu permit schimbarea lui; istoricul e bonus) ----------
 function deschide(slug, inIstoric) {
   const r = RETETE.find(x => x.slug === slug);
   if (!r) return inchide();
-  if (r !== curenta) { curenta = r; portii = r.portii; bifate = new Set(); facute = new Set(); }
+  if (r !== curenta) { curenta = r; portii = r.portii; bifate = new Set(); facute = new Set(); Object.assign(formular, {gust: null, efort: null, executie: "ok"}); }
   $("detaliu-titlu").textContent = r.titlu;
   aplicaMarimea();
   deseneazaDetaliu();
-  $("cumparaturi").hidden = true;
-  $("detaliu").hidden = false;
-  $("detaliu").scrollTop = 0;
+  $("cumparaturi").hidden = true; $("gatit").hidden = true;
+  $("detaliu").hidden = false; $("detaliu").scrollTop = 0;
   document.body.style.overflow = "hidden";
   tineEcranul();
   if (inIstoric) try { history.pushState({slug}, "", "#" + slug); } catch (e) {}
 }
 function deschideCumparaturi(inIstoric) {
   deseneazaCumparaturi();
-  $("detaliu").hidden = true;
+  $("detaliu").hidden = true; $("gatit").hidden = true;
   $("cumparaturi").hidden = false;
   document.body.style.overflow = "hidden";
   if (inIstoric) try { history.pushState({cos: 1}, "", "#cumparaturi"); } catch (e) {}
 }
 function inchide() {
-  $("detaliu").hidden = true;
-  $("cumparaturi").hidden = true;
+  $("detaliu").hidden = true; $("cumparaturi").hidden = true; $("gatit").hidden = true; $("alege").hidden = true;
   document.body.style.overflow = "";
   lasaEcranul();
   arataLista();
@@ -448,17 +603,19 @@ const inapoi = () => { inchide(); try { history.replaceState(null, "", "#"); } c
 $("detaliu-continut").addEventListener("click", e => {
   const b = e.target.closest("button[data-d]");
   if (b) { portii = Math.max(1, portii + Number(b.dataset.d)); deseneazaDetaliu(); return; }
-  if (e.target.closest("#in-cos")) {
-    if (cos[curenta.slug]) delete cos[curenta.slug]; else cos[curenta.slug] = portii;
-    memorie.scrie("cos", cos); numarCos(); deseneazaDetaliu(); return;
-  }
+  if (e.target.closest("#in-cos")) { deschideAlegere(); return; }
   if (e.target.closest("#btn-poza")) { $("poza-fisier").value = ""; $("poza-fisier").click(); return; }
-  const t = e.target.closest("button.timp");
-  if (t) {
-    const c = cronometre.find(x => butonul(x) === t);
-    if (c) opreste(c.id); else porneste(+t.dataset.s, `pas ${t.closest("li")?.value ?? ""} · ${t.textContent.replace("⏱ ", "")}`, t);
+  if (e.target.closest("#btn-gateste")) { deschideGatit(); return; }
+  if (e.target.closest("#f-trimite")) { trimiteJurnal(); return; }
+  const chip = e.target.closest("#formular-jurnal .chip");
+  if (chip) {
+    const [cheie, val] = Object.entries(chip.dataset)[0];
+    formular[cheie] = cheie === "executie" ? val : +val;
+    chip.parentElement.querySelectorAll(".chip").forEach(c => c.classList.toggle("activ", c === chip));
     return;
   }
+  const t = e.target.closest("button.timp");
+  if (t) { const c = cronActiv(t); if (c) opreste(c.id); else porneste(+t.dataset.s, eticheta(t)); return; }
   const li = e.target.closest("ol li");
   if (li) {
     const k = [...$("detaliu-continut").querySelectorAll("ol li")].indexOf(li);
@@ -475,19 +632,52 @@ $("detaliu-continut").addEventListener("change", e => {
     el.closest("li").classList.toggle("bifat", el.checked);
   }
 });
+$("gatit-continut").addEventListener("click", e => {
+  const t = e.target.closest("button.timp");
+  if (t) { const c = cronActiv(t); if (c) opreste(c.id); else porneste(+t.dataset.s, eticheta(t)); return; }
+  const m = e.target.closest("[data-mergi]");
+  if (m) { pasCurent = +m.dataset.mergi; deseneazaGatit(); $("gatit").scrollTop = 0; return; }
+  if (e.target.closest("[data-gata]")) {
+    facute.add(pasCurent);
+    if (pasCurent < pasii(curenta).length - 1) { pasCurent++; deseneazaGatit(); $("gatit").scrollTop = 0; }
+    else { inchideGatit(); $("s-jurnal").scrollIntoView(); }
+    return;
+  }
+  const pl = e.target.closest(".urmeaza p[data-k]");
+  if (pl) { pasCurent = +pl.dataset.k; deseneazaGatit(); $("gatit").scrollTop = 0; }
+});
+$("gatit-iesi").addEventListener("click", inchideGatit);
+$("btn-timer-gatit").addEventListener("click", () => aratuTimer($("timer-panou").hidden));
+$("alege-lista").addEventListener("change", e => { const el = e.target; if (el.dataset.id) { if (el.checked) alegere.add(el.dataset.id); else alegere.delete(el.dataset.id); } });
+$("alege-ok").addEventListener("click", salveazaAlegere);
+$("alege-inchide").addEventListener("click", () => { $("alege").hidden = true; });
+$("alege-toate").addEventListener("click", () => {
+  const toate = alegere.size < curenta.ingrediente.length;
+  alegere = new Set(toate ? curenta.ingrediente.map(i => i.id) : []);
+  $("alege-lista").querySelectorAll("input").forEach(i => { i.checked = toate; });
+});
 $("cumparaturi-continut").addEventListener("click", e => {
   const s = e.target.closest("button[data-scoate]");
-  if (s) { delete cos[s.dataset.scoate]; memorie.scrie("cos", cos); numarCos(); deseneazaCumparaturi(); }
+  if (s) { delete cos[s.dataset.scoate]; memorie.scrie("cos", cos); numarCos(); deseneazaCumparaturi(); return; }
+  const x = e.target.closest("button[data-sterge]");
+  if (x) { extra = extra.filter(i => i.id !== x.dataset.sterge); cumparate.delete(x.dataset.sterge); memorie.scrie("extra", extra); memorie.scrie("cumparate", [...cumparate]); numarCos(); deseneazaCumparaturi(); return; }
+  if (e.target.closest("#extra-adauga")) { adaugaExtra(); return; }
+  if (e.target.closest("#curata-cumparate")) {
+    extra = extra.filter(i => !cumparate.has(i.id));
+    for (const s in cos) if (cos[s].ids) { cos[s].ids = cos[s].ids.filter(id => !cumparate.has(id)); if (!cos[s].ids.length) delete cos[s]; }
+    cumparate = new Set(); memorie.scrie("cos", cos); memorie.scrie("extra", extra); memorie.scrie("cumparate", []); numarCos(); deseneazaCumparaturi();
+  }
 });
 $("cumparaturi-continut").addEventListener("change", e => {
   const el = e.target;
   if (el.dataset.id === undefined) return;
   if (el.checked) cumparate.add(el.dataset.id); else cumparate.delete(el.dataset.id);
   memorie.scrie("cumparate", [...cumparate]);
-  el.closest("li").classList.toggle("bifat", el.checked);
+  setTimeout(deseneazaCumparaturi, 250);  // lasă bifa să se vadă, apoi mută rândul
 });
+$("cumparaturi-continut").addEventListener("keydown", e => { if (e.key === "Enter" && e.target.id === "extra-nume") adaugaExtra(); });
 $("poza-fisier").addEventListener("change", e => { const f = e.target.files[0]; if (f && curenta) urcaPoza(f); });
-$("goleste").addEventListener("click", () => { cos = {}; cumparate = new Set(); memorie.scrie("cos", cos); memorie.scrie("cumparate", []); numarCos(); deseneazaCumparaturi(); });
+$("goleste").addEventListener("click", () => { if (!confirm("Golești toată lista de cumpărături?")) return; cos = {}; extra = []; cumparate = new Set(); memorie.scrie("cos", cos); memorie.scrie("extra", []); memorie.scrie("cumparate", []); numarCos(); deseneazaCumparaturi(); });
 $("btn-cumparaturi").addEventListener("click", () => deschideCumparaturi(true));
 $("inapoi-cumparaturi").addEventListener("click", inapoi);
 $("inapoi").addEventListener("click", inapoi);
@@ -496,6 +686,7 @@ $("btn-timer").addEventListener("click", () => aratuTimer($("timer-panou").hidde
 $("btn-timer-lista").addEventListener("click", () => aratuTimer($("timer-panou").hidden));
 $("timer-inchide").addEventListener("click", () => aratuTimer(false));
 $("timer-start").addEventListener("click", () => { const m = Math.round(Number($("timer-minute").value)); if (m > 0) { porneste(m * 60, `${m} min`); aratuTimer(false); } });
+// cronometrele pornite din ⏱ (fără pas) nu se leagă de niciun buton din pași
 $("timer-minute").addEventListener("keydown", e => { if (e.key === "Enter") $("timer-start").click(); });
 $("timer-presetari").addEventListener("click", e => { const b = e.target.closest("button[data-min]"); if (b) { porneste(+b.dataset.min * 60, `${b.dataset.min} min`); aratuTimer(false); } });
 $("btn-text").addEventListener("click", () => { marime = (marime + 1) % 3; memorie.scrie("marime", marime); aplicaMarimea(); });
@@ -524,7 +715,7 @@ $("cautare").addEventListener("input", arataLista);
 window.addEventListener("popstate", () => {  // înapoi/înainte în browser, sau hash schimbat manual
   const s = history.state || {}, slug = s.slug || location.hash.slice(1);
   if (s.cos || slug === "cumparaturi") deschideCumparaturi(false);
-  else if (RETETE.some(x => x.slug === slug)) deschide(slug, false); else inchide();
+  else if (RETETE.some(x => x.slug === slug)) { deschide(slug, false); if (s.gatit) deschideGatit(); } else inchide();
 });
 
 // ---------- pornire ----------
