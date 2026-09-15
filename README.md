@@ -82,7 +82,12 @@ Titlurile `## …` dintre pași grupează pașii pe etape; numerotarea continuă
 
 Poza unei rețete e fișierul `retete/poze/<slug>.jpg`; dacă există, cartea o arată pe card și în detaliu, altfel rămâne inițiala. Build-ul refuză pozele care nu corespund unei rețete.
 
-Din telefon: în rețetă, „📷 poză” alege sau face o poză, o micșorează (~1200 px) și o trimite direct în repo, ca un commit, prin API-ul GitHub. Prima dată cere un token personal, pe care îl faci o singură dată pe github.com: Settings → Developer settings → Personal access tokens → Fine-grained tokens → Generate new token; „Repository access”: Only select repositories → `retete`; „Permissions” → Repository → Contents: Read and write; expirare la alegere (la expirare, faci altul). Token-ul rămâne doar în browserul telefonului; dacă e refuzat, cartea îl cere din nou. Poza apare pe loc pe telefonul tău și în 1–2 minute pe celelalte, după ce GitHub Pages publică commit-ul.
+Din telefon: în rețetă, „📷 poză” alege sau face o poză, o micșorează (~1200 px) și o trimite direct în repo, ca un commit, prin API-ul GitHub. Pentru asta (și pentru jurnal) cartea are nevoie de un token personal, pe care îl faci o singură dată, de preferat tot de pe telefon, logat în GitHub:
+
+1. github.com → poza de profil → **Settings** → jos, **Developer settings** → **Personal access tokens** → **Fine-grained tokens** → **Generate new token**.
+2. Nume oricare; **Expiration** cum vrei (la expirare faci altul); **Repository access**: *Only select repositories* → `retete`.
+3. **Permissions** → *Repository permissions* → **Contents**: *Read and write* (restul rămân „No access”). Generate token, copiază-l (începe cu `github_pat_`).
+4. În carte: „filtre ▾” → **token** → lipește. Cartea îl verifică pe loc (acces la repo și drept de scriere) și îl ține doar în browserul telefonului; sub buton scrie dacă e salvat. Dacă lipsește sau e refuzat, sub „📷 poză” și „scrie în jurnal” apare un mesaj roșu cu motivul. Poza apare pe loc pe telefonul tău și în 1–2 minute pe celelalte, după ce GitHub Pages publică commit-ul.
 
 ## Scale
 

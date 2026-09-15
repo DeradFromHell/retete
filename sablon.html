@@ -77,6 +77,9 @@ article h2{margin:0;font-size:1.7rem;line-height:1.15}
 .poza-mare img{width:100%;height:100%;object-fit:cover;display:block}
 .poza-actiuni{display:flex;gap:.4rem;align-items:center;flex-wrap:wrap;margin:-.3rem 0 .8rem}
 .poza-actiuni small,.mesaj{color:var(--mut);font-size:.82rem}
+.stare-scriere{margin:.2rem 0 .8rem;padding:.55rem .8rem;border-radius:10px;font-size:.92rem;background:var(--ambra-fundal);color:var(--ambra);font-weight:600}
+.stare-scriere.ok{background:var(--verde-fundal);color:var(--verde)}
+.stare-scriere.eroare{background:var(--activ);color:var(--accent)}
 .cifre{display:flex;justify-content:space-around;flex-wrap:wrap;gap:.4rem;border-top:1px solid var(--linie);border-bottom:1px solid var(--linie);padding:.65rem 0;margin:.8rem 0}
 .cifre div{text-align:center;font-size:.7rem;color:var(--mut);text-transform:uppercase;letter-spacing:.05em}
 .cifre b{display:block;font-size:1.3rem;color:var(--text);font-variant-numeric:tabular-nums;line-height:1.15;letter-spacing:-.01em;text-transform:none}
@@ -180,6 +183,7 @@ a{color:var(--accent)}
       <button class="chip" type="button" data-sort="efort">efort</button>
       <button class="chip" type="button" data-sort="timp">timp</button></div>
     <div class="chips linie" id="categorii"><span class="eticheta">categorie</span></div>
+    <div class="chips linie"><span class="eticheta">GitHub</span><button class="chip" id="btn-token" type="button">token</button><span class="mesaj" id="token-stare"></span></div>
     <div class="chips linie" id="taguri"><span class="eticheta">tag</span></div>
   </div>
 </div></header>
@@ -266,23 +270,44 @@ const grila = n => `<div class="nutritie"><div><b>≈${n.kcal}</b>kcal</div><div
   <div><b>≈${n.carbo} g</b>carbo</div><div><b>≈${n.grasimi} g</b>grăsimi</div><div><b>≈${n.fibre} g</b>fibre</div><div><b>≈${gsare(n.sare)} g</b>sare</div></div>`;
 
 // ---------- GitHub: cartea scrie în repo (poze, jurnal) cu un token personal cerut o singură dată ----------
-function tokenGitHub() {
-  let t = memorie.citeste("github_token", "");
-  if (!t) { t = (prompt("Token GitHub (o singură dată; vezi README, secțiunea „Poze”):") || "").trim(); if (t) memorie.scrie("github_token", t); }
+const antetGitHub = token => ({Authorization: `Bearer ${token}`, Accept: "application/vnd.github+json", "Content-Type": "application/json"});
+// Verifică un token: trebuie să poată citi repo-ul și să aibă drept de scriere (Contents: Read and write, fine-grained, doar repo-ul „retete”).
+async function verificaToken(t) {
+  let r;
+  try { r = await fetch(`https://api.github.com/repos/${REPO}`, {headers: antetGitHub(t)}); }
+  catch (e) { return "nu s-a putut contacta GitHub (fără internet?)"; }
+  if (r.status === 401) return "token invalid sau expirat";
+  if (r.status === 404 || r.status === 403) return "token-ul nu are acces la repo-ul „retete”: la „Repository access” alege repo-ul, la „Permissions” Contents: Read and write";
+  if (!r.ok) return "GitHub a răspuns " + r.status;
+  const d = await r.json();
+  if (!d.permissions || !d.permissions.push) return "token-ul poate doar citi; îi lipsește Contents: Read and write";
+  return "";
+}
+async function cereToken(mesaj) {
+  const t = (prompt((mesaj ? mesaj + "\n\n" : "") + "Lipește token-ul GitHub (fine-grained, repo „retete”, Contents: Read and write; pașii sunt în README, secțiunea „Poze”):") || "").trim();
+  if (!t) return "";
+  const problema = await verificaToken(t);
+  if (problema) { alert("Token neacceptat: " + problema); return cereToken(problema); }
+  memorie.scrie("github_token", t);
   return t;
 }
+async function tokenGitHub() { return memorie.citeste("github_token", "") || cereToken(""); }
 async function github(cale, metoda = "GET", corp) {
-  const token = tokenGitHub();
-  if (!token) throw new Error("fără token");
-  const r = await fetch(`https://api.github.com/repos/${REPO}/contents/${cale}${metoda === "GET" ? "?ref=" + RAMURA : ""}`,
-    {method: metoda, headers: {Authorization: `Bearer ${token}`, Accept: "application/vnd.github+json", "Content-Type": "application/json"},
-     body: corp ? JSON.stringify({branch: RAMURA, ...corp}) : undefined});
-  if (r.status === 401 || r.status === 403) { memorie.scrie("github_token", ""); throw new Error("token refuzat; atinge din nou și pune altul"); }
+  const token = await tokenGitHub();
+  if (!token) throw new Error("fără token, nimic trimis");
+  let r;
+  try {
+    r = await fetch(`https://api.github.com/repos/${REPO}/contents/${cale}${metoda === "GET" ? "?ref=" + RAMURA : ""}`,
+      {method: metoda, headers: antetGitHub(token), body: corp ? JSON.stringify({branch: RAMURA, ...corp}) : undefined});
+  } catch (e) { throw new Error("nu s-a putut contacta GitHub (fără internet?)"); }
+  if (r.status === 401 || r.status === 403) { memorie.scrie("github_token", ""); throw new Error("token refuzat (" + r.status + "); atinge din nou și pune altul"); }
   if (r.status === 404 && metoda === "GET") return null;
   const date = await r.json();
   if (!r.ok) throw new Error(date.message || r.status);
   return date;
 }
+// Mesaj vizibil sub buton: în lucru (chihlimbar), reușit (verde) sau eroare (roșu).
+function arataStare(id, text, fel) { const el = $(id); if (!el) return; el.hidden = false; el.textContent = text; el.className = "stare-scriere" + (fel ? " " + fel : ""); }
 const b64text = s => btoa(Array.from(new TextEncoder().encode(s), b => String.fromCharCode(b)).join(""));
 const text64 = b => new TextDecoder().decode(Uint8Array.from(atob(b.replace(/\s/g, "")), c => c.charCodeAt(0)));
 
@@ -333,7 +358,8 @@ function deseneazaDetaliu() {
     <div class="antet">${initiala(r)}<div><h2>${esc(r.titlu)}</h2>
       <div class="stari-mici">${stare(r)}<span class="tag">${CATEGORII[r.categorie] ?? esc(r.categorie)}</span>${r.tags.map(t => `<span class="tag">#${esc(t)}</span>`).join("")}</div></div></div>
     <div class="poza-mare" id="poza-mare" hidden><img src="${pozaUrl(r.slug)}" alt="${esc(r.titlu)}" onload="this.parentNode.hidden=false" onerror="this.remove()"></div>
-    <div class="poza-actiuni"><button class="chip actiune" id="btn-gateste" type="button">▶ Gătește pas cu pas</button><button class="chip" id="btn-poza" type="button">📷 poză</button><small id="poza-stare"></small></div>
+    <div class="poza-actiuni"><button class="chip actiune" id="btn-gateste" type="button">▶ Gătește pas cu pas</button><button class="chip" id="btn-poza" type="button">📷 poză</button></div>
+    <p class="stare-scriere" id="poza-stare" hidden></p>
     <div class="cifre"><div><b>${durata(r.timp_total_min)}</b>total</div><div><b>${durata(r.timp_activ_min)}</b>activ</div><div><b>${r.portii}</b>porții</div><div><b>≈${n.kcal}</b>kcal/porție</div><div><b>≈${gsare(n.sare)} g</b>sare/porție</div></div>
     ${r.din_timp ? `<p class="dintimp">⏳ Din timp<small>${esc(r.din_timp)}</small></p>` : ""}
     <p class="gatit">${u ? `${puncte(u.gust)} gust ${u.gust} · efort ${u.efort} · gătită ${acum(u.data)}` : "negătită încă"}</p>
@@ -360,7 +386,8 @@ function deseneazaDetaliu() {
       <label>observații</label><textarea id="f-observatii" placeholder="ce a fost bine, ce nu"></textarea>
       <label>data viitoare (ce schimbi la v${r.versiune + 1})</label><textarea id="f-urmatoarea" placeholder="ex. jumătate din sare, +5 min la orez"></textarea>
       <label>data</label><input type="date" id="f-data" value="${azi()}">
-      <div class="actiuni"><button class="chip actiune" id="f-trimite" type="button">scrie în jurnal</button><small class="mesaj" id="f-stare">se salvează în fișierul rețetei, în repo</small></div>
+      <div class="actiuni"><button class="chip actiune" id="f-trimite" type="button">scrie în jurnal</button><small class="mesaj">se salvează în fișierul rețetei, în repo</small></div>
+      <p class="stare-scriere" id="f-stare" hidden></p>
     </div>`;
   $("detaliu-continut").querySelectorAll("ol li").forEach((li, k) => li.classList.toggle("facut", facute.has(k)));
   marcheazaCronometrele();
@@ -385,11 +412,11 @@ function adaugaInYaml(text, intrare) {
   return "---" + nl + linii.join(nl) + nl + "---" + nl + text.slice(m[0].length);
 }
 async function trimiteJurnal() {
-  const r = curenta, stare = $("f-stare");
-  if (!formular.gust || !formular.efort) { stare.textContent = "alege gustul și efortul"; return; }
+  const r = curenta;
+  if (!formular.gust || !formular.efort) { arataStare("f-stare", "alege întâi gustul și efortul", "eroare"); return; }
   const intrare = {data: $("f-data").value || azi(), versiune: r.versiune, gust: formular.gust, efort: formular.efort, executie: formular.executie,
                    observatii: $("f-observatii").value.trim(), urmatoarea_data: $("f-urmatoarea").value.trim()};
-  stare.textContent = "se scrie în repo…";
+  arataStare("f-stare", "se scrie în repo…");
   try {
     const cale = `retete/${r.slug}.md`, fisier = await github(cale);
     if (!fisier) throw new Error("fișierul rețetei nu e în repo");
@@ -398,9 +425,9 @@ async function trimiteJurnal() {
     r.jurnal.push(intrare);
     Object.assign(formular, {gust: null, efort: null, executie: "ok"});
     deseneazaDetaliu();
-    $("f-stare").textContent = "✓ scris; starea rețetei se actualizează în 2–3 minute, după ce GitHub regenerează cartea";
+    arataStare("f-stare", "✓ scris; starea rețetei se actualizează în 2–3 minute, după ce GitHub regenerează cartea", "ok");
     $("s-jurnal").scrollIntoView({behavior: "smooth"});
-  } catch (e) { stare.textContent = "nu s-a putut scrie: " + e.message; }
+  } catch (e) { arataStare("f-stare", "nu s-a putut scrie: " + e.message, "eroare"); }
 }
 
 // ---------- cronometre: oricâte în paralel, într-o bară fixă jos, pe orice ecran; sună și vibrează la final ----------
@@ -508,17 +535,17 @@ async function micsoreaza(fisier, max = 1200) {
   return c.toDataURL("image/jpeg", 0.82);
 }
 async function urcaPoza(fisier) {
-  const stare = $("poza-stare"), r = curenta;
+  const r = curenta;
   try {
-    stare.textContent = "se micșorează…";
+    arataStare("poza-stare", "se micșorează…");
     const dataUrl = await micsoreaza(fisier);
     const img = $("poza-mare").querySelector("img") || $("poza-mare").appendChild(Object.assign(document.createElement("img"), {alt: r.titlu}));
     img.onload = null; img.onerror = null; img.src = dataUrl; $("poza-mare").hidden = false;
-    stare.textContent = "se trimite în repo…";
+    arataStare("poza-stare", "se trimite în repo…");
     const cale = `retete/poze/${r.slug}.jpg`, existent = await github(cale);
     await github(cale, "PUT", {message: `poza ${r.slug}`, content: dataUrl.split(",")[1], ...(existent ? {sha: existent.sha} : {})});
-    stare.textContent = "✓ poza e în repo; pe alte telefoane apare în 1–2 minute";
-  } catch (e) { stare.textContent = "nu s-a putut trimite: " + e.message; }
+    arataStare("poza-stare", "✓ poza e în repo; pe alte telefoane apare în 1–2 minute", "ok");
+  } catch (e) { arataStare("poza-stare", "nu s-a putut trimite: " + e.message, "eroare"); }
 }
 
 // ---------- cumpărături: alegi ce intră din rețetă; cumpăratele coboară; poți adăuga orice ----------
@@ -702,6 +729,10 @@ $("stari").addEventListener("click", e => {
   const b = e.target.closest("button[data-stare]");
   if (b) { b.classList.toggle("activ"); if (b.classList.contains("activ")) filtru.stari.add(b.dataset.stare); else filtru.stari.delete(b.dataset.stare); arataLista(); }
 });
+$("btn-token").addEventListener("click", async () => {
+  const t = await cereToken(memorie.citeste("github_token", "") ? "Ai deja un token salvat; lipește altul ca să-l înlocuiești, sau renunță." : "");
+  $("token-stare").textContent = t ? "✓ token verificat și salvat" : (memorie.citeste("github_token", "") ? "token-ul vechi rămâne" : "fără token");
+});
 $("btn-filtre").addEventListener("click", () => { const f = $("filtre"); f.hidden = !f.hidden; $("btn-filtre").textContent = f.hidden ? "filtre ▾" : "filtre ▴"; });
 $("filtre").addEventListener("click", e => {
   const b = e.target.closest("button.chip");
@@ -721,6 +752,7 @@ window.addEventListener("popstate", () => {  // înapoi/înainte în browser, sa
 // ---------- pornire ----------
 chipuri("categorii", Object.keys(CATEGORII).filter(c => RETETE.some(r => r.categorie === c)).map(c => [c, CATEGORII[c]]), "", "cat");
 chipuri("taguri", [...new Set(RETETE.flatMap(r => r.tags))].sort((a, b) => a.localeCompare(b, "ro")).map(t => [t, "#" + t]), "", "tag");
+$("token-stare").textContent = memorie.citeste("github_token", "") ? "token salvat pe acest telefon" : "fără token: pozele și jurnalul nu se pot trimite";
 numarCos();
 $("timer-presetari").innerHTML = [1, 2, 3, 5, 8, 10, 15, 20, 30, 45].map(m => `<button class="chip" type="button" data-min="${m}">${m} min</button>`).join("");
 if (location.hash === "#cumparaturi") deschideCumparaturi(false);
