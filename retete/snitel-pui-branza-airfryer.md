@@ -7,7 +7,7 @@ sursa: claude
 portii: 3
 timp_activ_min: 30
 timp_total_min: 45
-versiune: 1
+versiune: 2
 status_manual:
 greutate_gatita_g:
 ingrediente:
@@ -62,7 +62,7 @@ jurnal:
 2. Taie pieptul în felii de ~1 cm grosime (ies 3 porții a ~215 g). Acoperă-le cu folie și bate-le ușor, până au grosime egală peste tot. Șterge-le cu prosop de hârtie; trebuie să fie uscate, altfel pane-ul nu se prinde. Condimentează cu sare, piper și boia pe ambele fețe.
 3. Trei farfurii, în ordinea asta: făina, albușul bătut bine cu furculița, panko.
 4. Trece fiecare felie prin făină și scutur-o de surplus, apoi prin albuș lăsând excesul să se scurgă, apoi prin panko; presează fulgii cu palma pe ambele fețe. O mână pentru uscate, una pentru albuș.
-5. Porțiile pe care nu le gătești azi: pe o tavă, separate cu hârtie de copt, la congelator. Se gătesc direct din congelat: 200 °C, 18–20 de minute, cu întoarcere la jumătate.
+5. Porțiile pe care nu le gătești azi: pe o tavă, separate cu hârtie de copt, la congelator. Se gătesc direct din congelat la 180 °C, nu 200: 14 minute, întoarse la jumătate, verifică la 12; apoi brânza, 3–4 minute, ca la pasul 9. La 200 °C, 20 de minute plus brânza se ard.
 
 ## Gătit
 6. Preîncălzește air fryer-ul la 200 °C, gol, 3 minute, până simți aer fierbinte când tragi sertarul.
@@ -77,4 +77,5 @@ jurnal:
 - Nu pune hârtie de copt neperforată în coș: blochează aerul pe dedesubt și partea de jos rămâne moale.
 - Pane-ul nu se păstrează bine gătit, se înmoaie la frigider; congelează-l crud, panat. Puiul crud ține 1–2 zile la frigider: panează tot lotul în ziua în care l-ai cumpărat. Albușul pasteurizat se consumă în 2 zile de la deschidere.
 - Merge cu: cartofi wedges la air fryer, 200 °C, 25–30 de minute, întorși la jumătate; se reîncălzesc bine tot în air fryer (3–4 minute la 200 °C), nu la microunde.
-- De testat la v2: saramură uscată (la pasul 2 pui doar sarea și lași feliile descoperite la frigider 30–40 de minute înainte de panare: carne mai suculentă, suprafață mai uscată); 10 ml ulei spray în loc de 15, dacă pane-ul iese destul de rumen.
+- v2 (după prima gătire, 2026-09-19): din congelator la 180 °C, 14 minute plus brânza, în loc de 200 °C, 20 de minute; cele 6 minute de gratinat se adună la timpul total.
+- De testat la v3: cheddar ras fin amestecat în panko, fără mozzarella, tot la 180 °C (la 200 °C cheddarul din pane se arde); saramură uscată (la pasul 2 pui doar sarea și lași feliile descoperite la frigider 30–40 de minute înainte de panare: carne mai suculentă, suprafață mai uscată); 10 ml ulei spray în loc de 15, dacă pane-ul iese destul de rumen.

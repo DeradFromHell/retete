@@ -7,7 +7,7 @@ sursa: propriu
 portii: 4
 timp_activ_min: 30
 timp_total_min: 45
-versiune: 1
+versiune: 2
 status_manual:
 greutate_gatita_g:
 ingrediente:
@@ -48,31 +48,31 @@ ingrediente:
     nota: 10 ml
     grup: Sosul
   - id: usturoi
-    g: 16
-    nota: 4 căței, rași
+    g: 24
+    nota: 6 căței, rași
     grup: Sosul
   - id: sos_soia_kikkoman
-    g: 43
-    nota: 40 ml
+    g: 64
+    nota: 60 ml
     grup: Sosul
   - id: apa
-    g: 100
-    nota: 100 ml
+    g: 150
+    nota: 150 ml
     grup: Sosul
   - id: fulgi_ardei_iute
     g: 1
     nota: opțional
     grup: Sosul
   - id: amidon_porumb
-    g: 4
-    nota: pentru legat
+    g: 8
+    nota: pentru legat (2 lingurițe)
     grup: Sosul
   - id: apa
-    g: 15
-    nota: 15 ml apă rece, pentru amidon
+    g: 20
+    nota: 20 ml apă rece, pentru amidon
     grup: Sosul
   - id: miere
-    g: 30
+    g: 45
     nota: la final, de pe foc
     grup: Sosul
   - id: orez
@@ -91,23 +91,25 @@ jurnal:
     executie: ok
     observatii: "Cred ca sunt urmatoarele probleme, Cred ca am pus prea mult amidon, sau nu le-am scuturat cum a trebuit. Sos-ul mi-a iesit foarte apos nu era gros, si sos-ul nu mi-a ajuns pentru jumatate, Sos-ul mi-a ajuns de 3 portii, si orez tot de 3 portii. A fost facuta in 2 ture, una la cuptor si una la airfryer, pentru cele din air fryer care insumeaza cam 2 portii cred, nu am mai avut sos. Orezul se termina prea repede, si dupa se raceste pana se termina celelalte, poate ar fi o idee buna, sa punem orezul odata cu puiul cand se baga la cuptor sau airfryer"
 ---
-## Orezul (pornește primul)
-1. Pune orezul spălat și apa rece într-o cratiță, la foc mare, până dă în clocot: bule mari, care sparg suprafața. Nu săra apa: sosul aduce destulă sare.
-2. Pune capacul, dă focul la minimum și lasă 12 minute. Stinge focul și mai lasă 4 minute cu capacul pus. Nu ridica capacul și nu amesteca în tot acest timp; e singura greșeală care strică orezul. Abia apoi afânează cu furculița.
-
 ## Puiul
-3. Într-un bol, amestecă cuburile de pui cu sosul de soia, apa, usturoiul ras, ghimbirul și piperul alb. Lasă 10 minute.
-4. Într-un al doilea bol pune amidonul și trece cuburile prin el până sunt acoperite uniform, ca pudrate; scutură surplusul.
-5. Air fryer la 200 °C, 16 minute, agitând coșul de două ori; pulverizează ulei la început și încă o dată la jumătate. Un singur strat în coș, altfel fă-le în două reprize. Gata când crusta e aurie și uscată la atingere. La cuptor: 190 °C, 18 minute, pe hârtie de copt.
+1. Într-un bol, amestecă cuburile de pui cu sosul de soia, apa, usturoiul ras, ghimbirul și piperul alb. Lasă 10 minute.
+2. Scurge cuburile într-o strecurătoare ~1 minut, până nu mai picură; udă, iau un strat gros de amidon care apoi soarbe sosul.
+3. Pune amidonul într-un bol și trece cuburile prin el în două ture, nu toate deodată; apoi scutură-le într-o sită, până stratul e subțire, ca o pudră, nu o cocă. Amidonul rămas în bol se aruncă.
+4. Air fryer la 200 °C, 16 minute, agitând coșul de două ori; pulverizează ulei la început și încă o dată la jumătate. Un singur strat în coș, altfel fă-le în două reprize. Gata când crusta e aurie și uscată la atingere. La cuptor: 190 °C, 18 minute, pe hârtie de copt.
+
+## Orezul (pornește odată cu puiul)
+5. Când puiul intră în air fryer, pune orezul spălat și apa rece într-o cratiță, la foc mare, până dă în clocot: bule mari, care sparg suprafața. Nu săra apa: sosul aduce destulă sare.
+6. Pune capacul, dă focul la minimum și lasă 12 minute. Stinge focul și lasă-l cu capacul pus până e gata totul; așa rămâne cald. Nu ridica capacul și nu amesteca; e singura greșeală care strică orezul. Afânează cu furculița abia la servire.
 
 ## Sosul (în ultimele 10 minute ale puiului)
-6. Într-o tigaie la foc mediu, pulverizează uleiul și pune usturoiul ras; călește ~1 minut, până începe să miroasă, fără să se rumenească.
-7. Adaugă sosul de soia și apa și adu la fierbere ușoară: bule mici pe margini.
-8. Separat, amestecă amidonul cu apa rece până se dizolvă complet. Dă focul mic, toarnă amestecul și fulgii de ardei și amestecă ~2 minute, până sosul se îngroașă și îmbracă lingura. Dacă iese prea gros, subțiază cu puțină apă.
-9. Ia tigaia de pe foc și adaugă mierea. Gustă. Nu adăuga sare înainte să guști: cu soia clasică, sosul e deja la limită.
+7. Într-o tigaie la foc mediu, pulverizează uleiul și pune usturoiul ras; călește ~1 minut, până începe să miroasă, fără să se rumenească.
+8. Adaugă sosul de soia și apa și adu la fierbere ușoară: bule mici pe margini.
+9. Separat, amestecă amidonul cu apa rece până se dizolvă complet. Dă focul mic, toarnă amestecul și fulgii de ardei, amestecând.
+10. Ține la clocot mic 2 minute întregi, amestecând, până sosul îmbracă lingura și lasă urmă când tragi cu degetul pe dosul ei. Dacă tot e apos, încă 1 minut; dacă iese prea gros, subțiază cu puțină apă.
+11. Ia tigaia de pe foc și adaugă mierea. Gustă. Nu adăuga sare înainte să guști: cu soia clasică, sosul e deja la limită.
 
 ## Servire
-10. Pune puiul în sos și amestecă până se acoperă uniform. Servește peste orez; opțional, ceapă verde tăiată deasupra.
+12. Pune puiul în sos și amestecă până se acoperă uniform. Servește peste orez; opțional, ceapă verde tăiată deasupra.
 
 ## Note
 - Adaptare după rețeta lui Jack Ovens (scrisă cu alt AI): originalul cere 140 ml sos de soia cu sodiu redus; cu Kikkoman clasic (16,9 g sare/100 ml) ar însemna ~6 g sare pe porție, așa că soia e redusă la 70 ml și diferența e completată cu apă. Rezultă ~3 g sare pe porție. Dacă vrei mai jos, înlocuiește 20 ml de soia cu apă și compensează cu mai mult usturoi și ghimbir.
@@ -117,4 +119,5 @@ jurnal:
 - Nutriție: estimare pesimistă, tot amidonul (100 g) e numărat, deși o parte bună rămâne în bol; caloriile și carbohidrații reali sunt mai mici. Orezul e ~270 kcal din porție; dacă vrei să scazi caloriile, taie din orez, nu din sos. Mierea și amidonul sunt valori USDA generice; sosul de soia, uleiul spray și restul, de pe etichete.
 - Fără orez, rețeta nu merge ca atare: sosul e calculat să se întindă peste orez neutru; înjumătățește sosul și servește cu cartofi natur. Amestecurile congelate orez-cu-legume au adesea sare și condimente; încălzește-le separat, nu în sos.
 - Păstrare: frigider 3 zile; congelator 4 luni, decongelat peste noapte la frigider. Reîncălzire în tigaie la foc mediu sau la microunde; orezul, cu o lingură de apă peste porție și capac.
-- De testat la v2: amidon amestecat cu puțină făină de orez pentru crustă mai crocantă; soia redusă la 50 ml total, cu mai mult ghimbir, dacă iese prea sărat.
+- v2 (după prima gătire, 2026-09-17): sos de 1,5 ori (la v1 nu a ajuns nici pentru 3 porții) și legat cu 8 g amidon în loc de 4, clocotit 2 minute; cuburile scurse și scuturate în sită, în două ture, ca stratul de amidon să fie subțire; orezul pornit odată cu puiul și ținut cu capacul pus, ca să nu se răcească. Amidonul pentru crustă rămâne 100 g.
+- De testat la v3: amidon amestecat cu puțină făină de orez pentru crustă mai crocantă; soia redusă, cu mai mult ghimbir, dacă iese prea sărat.
