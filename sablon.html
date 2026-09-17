@@ -158,6 +158,11 @@ p.p::before{content:"• ";color:var(--accent)}
 .pas-mare .nr{font-family:ui-serif,Georgia,serif;font-size:2.4rem;font-weight:700;color:var(--accent);line-height:1;margin-bottom:.4rem}
 .pas-mare button.timp{font-size:1.05rem;padding:.25rem .7rem;margin:.15rem 0}
 .pas-mare.facut{opacity:.6}
+.nevoie{display:flex;flex-wrap:wrap;gap:.35rem .5rem;align-items:baseline;margin:0 0 .9rem;font-size:.95rem}
+.nevoie>b{color:var(--mut);font-size:.78rem;text-transform:uppercase;letter-spacing:.05em;width:100%}
+.nevoie span{background:var(--hartie);border-radius:10px;padding:.3rem .6rem;box-shadow:var(--umbra)}
+.nevoie small{color:var(--mut)}
+.grup-mic{font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--accent);margin:.6rem 0 .2rem;font-weight:700}
 .urmeaza{font-size:.92rem;color:var(--mut)}
 .urmeaza p{margin:.3rem 0;padding-left:1.4rem;text-indent:-1.4rem}
 .urmeaza b{color:var(--accent);display:inline-block;width:1.4rem;text-indent:0}
@@ -239,6 +244,33 @@ const stare = r => `<span class="stare ${STARI[r.status]?.[1] ?? "gri"}">${STARI
 const pozaUrl = slug => `../retete/poze/${slug}.jpg`;  // poza unei rețete e fișierul retete/poze/<slug>.jpg; dacă nu există, rămâne inițiala
 const initiala = r => `<div class="initiala serif" aria-hidden="true">${esc(String(r.titlu).trim().charAt(0).toUpperCase())}
   <img src="${pozaUrl(r.slug)}" alt="" loading="lazy" onload="this.parentNode.classList.add('cu-poza')" onerror="this.remove()"></div>`;
+// Măsura de bucătărie din nota („3 linguri”, „1/2 linguriță”, „2 căței”) se scalează cu porțiile când începe cu un număr.
+const fractie = s => { const m = s.match(/^(\d+)(?:\s+(\d+)\/(\d+))?|^(\d+)\/(\d+)/); if (!m) return null; return m[4] ? +m[4] / +m[5] : +m[1] + (m[2] ? +m[2] / +m[3] : 0); };
+const nrScurt = v => { const r = Math.round(v * 4) / 4; return r === Math.floor(r) ? String(r) : String(Math.round(r * 100) / 100).replace(".", ","); };
+function masura(nota, f) {
+  if (!nota) return "";
+  if (f === 1) return nota;
+  const m = nota.match(/^(\d+\s+\d+\/\d+|\d+\/\d+|\d+[.,]\d+|\d+)(?:\s*(ml|g))?\s*(.*)$/);
+  if (!m) return nota;
+  const v = /[.,]/.test(m[1]) ? parseFloat(m[1].replace(",", ".")) : fractie(m[1]), rest = m[3].replace(/^[,;]\s*/, "");
+  return `≈${nrScurt(v * f)}${m[2] ? " " + m[2] : ""} ${rest}`.trim();
+}
+const cantitate = (i, f) => `<b>${Math.max(1, Math.round(i.g * f))} g</b>${i.nota ? `<small>${esc(masura(i.nota, f))}</small>` : ""}`;
+// Ingredientele pomenite într-un pas: cuvintele-cheie din nume (rădăcina de 5 litere) căutate în textul pasului.
+const STOP = new Set(["crud", "cruda", "crude", "fara", "piele", "proaspat", "proaspata", "valoare", "generica", "usda", "comert", "alba", "integral", "integrala", "tos", "masa", "macinat", "dulce", "spray", "gaina", "intreg", "coaja", "bob", "lung", "simplu", "rasa", "redusa", "grasime", "pasteurizat", "cuburi"]);
+const SCURTE = new Set(["ou", "oua", "apa", "sare", "unt", "orez", "sos", "ulei", "miere", "boia", "piper", "lapte", "otet", "faina"]);
+function cheile(nume) {
+  return norm(nume).replace(/[(),;]/g, " ").split(/\s+/).filter(w => w && !STOP.has(w) && (w.length >= 5 || SCURTE.has(w))).map(w => w.slice(0, 5));
+}
+const pomenit = (i, text) => cheile(i.nume).some(k => new RegExp("(^|[^a-z])" + k).test(text));
+// Dacă etapa sau pasul pomenește un grup de ingrediente („marinadei”, „Glazura”), se arată doar acel grup.
+function necesarePentru(r, p) {
+  const text = norm(p.html.replace(/<[^>]+>/g, "")), context = text + " " + norm(p.etapa);
+  const grupuri = [...new Set(r.ingrediente.map(i => i.grup).filter(Boolean))];
+  const potrivite = grupuri.filter(g => cheile(g).some(k => new RegExp("(^|[^a-z])" + k).test(context)));
+  const grup = potrivite.length === 1 ? potrivite[0] : null;
+  return {grup, lista: r.ingrediente.filter(i => (!grup || i.grup === grup || !i.grup) && pomenit(i, text))};
+}
 const sursa = s => /^https?:\/\//.test(s) ? `<a href="${esc(s)}" target="_blank" rel="noopener">${esc(s.split("/")[2] || s)}</a>` : "";
 // Starea proprie a paginii (coș, cumpărate, produse adăugate de tine, mărimea textului, token) stă doar în browserul telefonului.
 const memorie = {
@@ -348,7 +380,7 @@ function deseneazaDetaliu() {
   let grup = "";
   const ingr = r.ingrediente.map((i, k) => (i.grup && i.grup !== grup ? `<li class="grup">${esc(grup = i.grup)}</li>` : "")
     + `<li class="${bifate.has(k) ? "bifat" : ""}"><input type="checkbox" data-k="${k}" ${bifate.has(k) ? "checked" : ""}>
-      <span class="nume">${esc(i.nume)}</span><span class="cant"><b>${Math.max(1, Math.round(i.g * f))} g</b>${i.nota && f === 1 ? `<small>${esc(i.nota)}</small>` : ""}</span></li>`).join("");
+      <span class="nume">${esc(i.nume)}</span><span class="cant">${cantitate(i, f)}</span></li>`).join("");
   const [pasi, note] = r.pasi_html.split("<h3>Note</h3>");
   const jurnal = r.jurnal.length ? [...r.jurnal].reverse().map(j => `<div class="intrare${j.executie === "greseala_mea" ? " greseala" : ""}"><p class="cand">${esc(j.data)} · v${j.versiune}${j.executie === "greseala_mea" ? " · greșeala mea" : ""}</p>
     <p>${puncte(j.gust)} <b>gust ${j.gust}</b> · efort ${j.efort}</p>
@@ -497,13 +529,17 @@ function deseneazaGatit() {
       <div class="plan"><p><b>${lista.length} pași</b> · ${durata(r.timp_activ_min)} activ · ${durata(r.timp_total_min)} în total · ${r.portii} porții</p>
         ${etape.map(e => `<p><b>${esc(e.nume || "Pași")}</b>: ${e.pasi} ${e.pasi === 1 ? "pas" : "pași"}${e.timpi.length ? " · ⏱ " + e.timpi.map(esc).join(", ") : ""}</p>`).join("")}</div>
       <p class="mesaj">Cronometrele se pornesc dintr-o atingere pe timpul din pas și rămân jos, pe orice ecran. Poți începe și de la un pas anume, din listă.</p>
+      <details class="note" open><summary>Ingrediente de scos (${r.ingrediente.length}, pentru ${portii} porții)</summary>
+        ${(() => { let g = ""; return r.ingrediente.map(i => (i.grup && i.grup !== g ? `<p class="grup-mic">${esc(g = i.grup)}</p>` : "") + `<p class="p">${esc(i.nume)}: <b>${Math.max(1, Math.round(i.g * portii / r.portii))} g</b>${i.nota ? ` <span class="mesaj">(${esc(masura(i.nota, portii / r.portii))})</span>` : ""}</p>`).join(""); })()}</details>
       <div class="urmeaza">${lista.map((p, k) => `<p data-k="${k}" style="cursor:pointer"><b>${p.n}</b>${esc(p.html.replace(/<[^>]+>/g, "")).slice(0, 90)}…</p>`).join("")}</div>
       <div class="gatit-actiuni"><button class="chip actiune mare" type="button" data-mergi="0">▶ Începe</button></div>`;
     return;
   }
-  const p = lista[pasCurent], urm = lista.slice(pasCurent + 1, pasCurent + 3);
+  const p = lista[pasCurent], urm = lista.slice(pasCurent + 1, pasCurent + 3), f = portii / r.portii;
+  const {grup, lista: necesare} = necesarePentru(r, p);
   cont.innerHTML = `<div class="progres">${esc(p.etapa || "Pași")} · pasul ${pasCurent + 1} din ${lista.length}</div>
     <div class="pas-mare${facute.has(pasCurent) ? " facut" : ""}"><div class="nr">${p.n}</div>${cuCronometre(p.html)}</div>
+    ${necesare.length ? `<div class="nevoie"><b>Ai nevoie${grup ? " · " + esc(grup) : ""}:</b> ${necesare.map(i => `<span>${esc(i.nume)} <b>${Math.max(1, Math.round(i.g * f))} g</b>${i.nota ? ` <small>(${esc(masura(i.nota, f))}${!grup && i.grup ? " · " + esc(i.grup) : ""})</small>` : !grup && i.grup ? ` <small>(${esc(i.grup)})</small>` : ""}</span>`).join("")}</div>` : ""}
     ${urm.length ? `<div class="urmeaza"><b style="width:auto;color:var(--mut)">Apoi:</b>${urm.map(q => `<p><b>${q.n}</b>${esc(q.html.replace(/<[^>]+>/g, ""))}</p>`).join("")}</div>` : `<p class="mesaj">Ultimul pas. După ce mănânci, scrie în jurnal cum a fost.</p>`}
     <div class="gatit-actiuni">${pasCurent > 0 ? `<button class="chip" type="button" data-mergi="${pasCurent - 1}">‹ anterior</button>` : ""}
       ${pasCurent < lista.length - 1 ? `<button class="chip actiune mare" type="button" data-gata="1">✓ gata, următorul</button>` : `<button class="chip actiune mare" type="button" data-gata="1">✓ gata, la jurnal</button>`}</div>`;
