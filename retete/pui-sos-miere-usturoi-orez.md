@@ -93,7 +93,7 @@ jurnal:
 ---
 ## Orezul (pornește primul)
 1. Pune orezul spălat și apa rece într-o cratiță, la foc mare, până dă în clocot: bule mari, care sparg suprafața. Nu săra apa: sosul aduce destulă sare.
-2. Pune capacul, dă focul la minimum și lasă 12 minute. Stinge focul și mai lasă 4 minute cu capacul pus. Nu ridica capacul și nu amesteca în cele 16 minute; e singura greșeală care strică orezul. Abia apoi afânează cu furculița.
+2. Pune capacul, dă focul la minimum și lasă 12 minute. Stinge focul și mai lasă 4 minute cu capacul pus. Nu ridica capacul și nu amesteca în tot acest timp; e singura greșeală care strică orezul. Abia apoi afânează cu furculița.
 
 ## Puiul
 3. Într-un bol, amestecă cuburile de pui cu sosul de soia, apa, usturoiul ras, ghimbirul și piperul alb. Lasă 10 minute.

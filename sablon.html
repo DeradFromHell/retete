@@ -137,11 +137,14 @@ p.p::before{content:"• ";color:var(--accent)}
 .formular .actiuni{display:flex;gap:.5rem;align-items:center;margin-top:.9rem;flex-wrap:wrap}
 /* cronometre */
 #cronometre{position:fixed;left:0;right:0;bottom:0;z-index:6;display:flex;flex-wrap:wrap;gap:.45rem;padding:.55rem .9rem;background:var(--hartie);border-top:1px solid var(--linie);box-shadow:0 -6px 20px rgba(0,0,0,.08)}
-.cron{position:relative;overflow:hidden;border:0;background:var(--activ);border-radius:12px;padding:.4rem .8rem .5rem;font-weight:700;font-variant-numeric:tabular-nums;text-align:left;line-height:1.2;font-size:1.05rem;color:var(--accent)}
+.cron{position:relative;overflow:hidden;background:var(--activ);border-radius:12px;color:var(--accent);display:flex;flex-direction:column;max-width:100%}
+.cron>button{background:none;border:0;text-align:left;padding:.4rem .8rem .5rem;font-weight:700;font-variant-numeric:tabular-nums;line-height:1.2;font-size:1.05rem;color:inherit}
 .cron small{display:block;font-size:.7rem;font-weight:500;color:var(--text);opacity:.8}
+.cron>button.cron-apoi{border-top:1px solid rgba(0,0,0,.1);font-size:.85rem;font-weight:600;padding:.35rem .8rem .45rem}
 .cron i{position:absolute;left:0;bottom:0;height:4px;background:var(--accent);width:var(--p,0%);transition:width .5s linear}
 .cron.gata{background:var(--accent);color:#fff;animation:clipire 1s infinite}
 .cron.gata small{color:#fff}
+.cron.gata>button.cron-apoi{background:rgba(255,255,255,.2);border-top-color:rgba(255,255,255,.3)}
 @keyframes clipire{50%{opacity:.55}}
 #timer-panou{position:fixed;left:0;right:0;bottom:0;z-index:7;background:var(--hartie);border-radius:18px 18px 0 0;padding:.9rem;box-shadow:0 -8px 30px rgba(0,0,0,.18)}
 #timer-panou .chips{margin-top:0;margin-bottom:.7rem}
@@ -273,10 +276,13 @@ function cheile(nume) {
 const pomenit = (i, text) => cheile(i.nume).some(k => new RegExp("(^|[^a-z])" + k).test(text));
 // Dacă etapa sau pasul pomenește un grup de ingrediente („marinadei”, „Glazura”), se arată doar acel grup.
 function necesarePentru(r, p) {
-  const text = norm(p.html.replace(/<[^>]+>/g, "")), context = text + " " + norm(p.etapa);
+  const text = norm(p.html.replace(/<[^>]+>/g, "")), etapa = norm(p.etapa);
   const grupuri = [...new Set(r.ingrediente.map(i => i.grup).filter(Boolean))];
-  const potrivite = grupuri.filter(g => cheile(g).some(k => new RegExp("(^|[^a-z])" + k).test(context)));
-  const grup = potrivite.length === 1 ? potrivite[0] : null;
+  const potriveste = (g, t) => cheile(g).some(k => new RegExp("(^|[^a-z])" + k).test(t));
+  const pozitie = (g, t) => Math.min(...cheile(g).map(k => { const m = t.match(new RegExp("(^|[^a-z])" + k)); return m ? m.index : Infinity; }));
+  const dinEtapa = grupuri.filter(g => pozitie(g, etapa) < Infinity).sort((a, b) => pozitie(a, etapa) - pozitie(b, etapa));  // primul pomenit în numele etapei
+  const dinText = grupuri.filter(g => potriveste(g, text));
+  const grup = dinEtapa.length ? dinEtapa[0] : dinText.length === 1 ? dinText[0] : null;
   return {grup, lista: r.ingrediente.filter(i => (!grup || i.grup === grup || !i.grup) && pomenit(i, text))};
 }
 const sursa = s => /^https?:\/\//.test(s) ? `<a href="${esc(s)}" target="_blank" rel="noopener">${esc(s.split("/")[2] || s)}</a>` : "";
@@ -472,25 +478,43 @@ async function trimiteJurnal() {
 
 // ---------- cronometre: oricâte în paralel, într-o bară fixă jos, pe orice ecran; sună și vibrează la final ----------
 let cronometre = [], tic = null, audio = null, nrCron = 0;
-// Un buton de timp dintr-un pas se leagă de cronometrul lui prin etichetă („pas 6 · 8 minute”), în rețetă și în modul gătit deopotrivă.
-const eticheta = t => `pas ${t.closest("li")?.value ?? pasii(curenta)[pasCurent]?.n ?? ""} · ${t.textContent.replace("⏱ ", "")}`;
-const cronActiv = t => cronometre.find(x => x.slug === curenta?.slug && x.eticheta === eticheta(t) && !x.gata);
-const marcheazaCronometrele = () => document.querySelectorAll("button.timp").forEach(t => t.classList.toggle("activ", !!cronActiv(t)));
-function porneste(secunde, etich) {
+// Un cronometru pornit dintr-un pas ține minte rețeta, pasul (k) și al câtelea timp din pas e (idx); așa știe ce urmează
+// când sună: următorul timp din același pas („apoi 4 minute cu capacul pus”) sau pasul următor al acelui fir, oriunde ai fi.
+const secunde = text => { const m = text.match(new RegExp(RE_TIMP.source)); return m ? +m[1] * (m[2].startsWith("sec") ? 1 : 60) : 0; };
+function contextTimp(t) {
+  const cutie = t.closest("li[value], .pas-mare[data-k]"), lista = pasii(curenta);
+  const k = !cutie ? -1 : cutie.dataset.k !== undefined ? +cutie.dataset.k : lista.findIndex(p => p.n === +cutie.getAttribute("value"));
+  return {slug: curenta.slug, k, idx: cutie ? [...cutie.querySelectorAll("button.timp")].indexOf(t) : -1, text: t.textContent.replace("⏱ ", "")};
+}
+const cronActiv = t => { const c = contextTimp(t); return cronometre.find(x => x.slug === c.slug && x.k === c.k && x.idx === c.idx && !x.gata); };
+const marcheazaCronometrele = () => { if (curenta) document.querySelectorAll("button.timp").forEach(t => t.classList.toggle("activ", !!cronActiv(t))); };
+function porneste(sec, ctx) {
   try { audio = audio || new (window.AudioContext || window.webkitAudioContext)(); } catch (e) {}
-  cronometre.push({id: ++nrCron, eticheta: etich, durata: secunde, sfarsit: Date.now() + secunde * 1000, gata: false, slug: curenta?.slug});
+  const r = RETETE.find(x => x.slug === ctx.slug), p = r && ctx.k >= 0 ? pasii(r)[ctx.k] : null;
+  cronometre.push({id: ++nrCron, ...ctx, durata: sec, sfarsit: Date.now() + sec * 1000, gata: false,
+                   eticheta: p ? `pas ${p.n} · ${ctx.text}` : ctx.text, titlu: r ? r.titlu : ""});
   if (!tic) tic = setInterval(bate, 500);
   bate();
   marcheazaCronometrele();
 }
+function apoi(c) {  // ce urmează după ce sună: următorul timp din pas, altfel pasul următor din rețetă
+  const r = RETETE.find(x => x.slug === c.slug);
+  if (!r || c.k < 0) return null;
+  const lista = pasii(r), p = lista[c.k];
+  if (p.timpi[c.idx + 1]) return {tip: "timp", text: p.timpi[c.idx + 1], s: secunde(p.timpi[c.idx + 1])};
+  if (lista[c.k + 1]) return {tip: "pas", k: c.k + 1, text: `pasul ${lista[c.k + 1].n}: ${lista[c.k + 1].html.replace(/<[^>]+>/g, "").slice(0, 70)}…`};
+  return null;
+}
 function bate() {
   for (const c of cronometre) {
     const rest = Math.max(0, Math.round((c.sfarsit - Date.now()) / 1000));
-    c.text = rest ? `${Math.floor(rest / 60)}:${String(rest % 60).padStart(2, "0")}` : "gata!";
+    c.text2 = rest ? `${Math.floor(rest / 60)}:${String(rest % 60).padStart(2, "0")}` : "gata!";
     c.p = Math.min(100, Math.round(100 - rest / c.durata * 100));
     if (!rest && !c.gata) { c.gata = true; suna(); }
   }
-  $("cronometre").innerHTML = cronometre.map(c => `<button type="button" class="cron${c.gata ? " gata" : ""}" data-id="${c.id}" style="--p:${c.p}%">⏱ ${c.text}<small>${esc(c.eticheta)}</small><i></i></button>`).join("");
+  $("cronometre").innerHTML = cronometre.map(c => { const a = c.gata ? apoi(c) : null; return `<div class="cron${c.gata ? " gata" : ""}" style="--p:${c.p}%">
+    <button type="button" data-id="${c.id}">⏱ ${c.text2}<small>${esc(c.eticheta)}${c.slug !== curenta?.slug && c.titlu ? " · " + esc(c.titlu) : ""}</small></button>
+    ${a ? `<button type="button" class="cron-apoi" data-id="${c.id}" ${a.tip === "timp" ? `data-s="${a.s}" data-text="${esc(a.text)}"` : `data-k="${a.k}"`}>${a.tip === "timp" ? "▶ apoi: " + esc(a.text) : "→ apoi, " + esc(a.text)}</button>` : ""}<i></i></div>`; }).join("");
   $("cronometre").hidden = !cronometre.length;
   if (!cronometre.length) { clearInterval(tic); tic = null; }
 }
@@ -514,8 +538,8 @@ function suna() {
   } catch (e) {}
 }
 
-// ---------- mod gătit: planul dinainte, apoi un pas pe ecran, cu cronometrele lui și ce urmează ----------
-let pasCurent = -1;
+// ---------- mod gătit: planul dinainte, apoi o etapă pe ecran, cu pașii ei bifabili, cronometrele și ce urmează ----------
+let etapaCurenta = -1;
 function pasii(r) {
   const t = document.createElement("template");
   t.innerHTML = r.pasi_html.split("<h3>Note</h3>")[0];
@@ -526,38 +550,48 @@ function pasii(r) {
   }
   return lista;
 }
+function etapele(r) {
+  const et = [];
+  pasii(r).forEach((p, k) => { let e = et.find(x => x.nume === p.etapa); if (!e) et.push(e = {nume: p.etapa, pasi: []}); e.pasi.push({...p, k}); });
+  return et;
+}
+const rezumat = p => esc(p.html.replace(/<[^>]+>/g, "")).slice(0, 90) + "…";
 function deseneazaGatit() {
-  const r = curenta, lista = pasii(r), cont = $("gatit-continut");
+  const r = curenta, et = etapele(r), cont = $("gatit-continut"), f = portii / r.portii;
   $("gatit-titlu").textContent = r.titlu;
-  if (pasCurent < 0) {
-    const etape = [];
-    for (const p of lista) { const e = etape.find(x => x.nume === p.etapa) || (etape.push({nume: p.etapa, pasi: 0, timpi: []}), etape[etape.length - 1]); e.pasi++; e.timpi.push(...p.timpi); }
+  if (etapaCurenta < 0) {
     cont.innerHTML = `<div class="progres">Planul</div>
       ${r.din_timp ? `<p class="dintimp">⏳ Din timp<small>${esc(r.din_timp)}</small></p>` : ""}
-      <div class="plan"><p><b>${lista.length} pași</b> · ${durata(r.timp_activ_min)} activ · ${durata(r.timp_total_min)} în total · ${r.portii} porții</p>
-        ${etape.map(e => `<p><b>${esc(e.nume || "Pași")}</b>: ${e.pasi} ${e.pasi === 1 ? "pas" : "pași"}${e.timpi.length ? " · ⏱ " + e.timpi.map(esc).join(", ") : ""}</p>`).join("")}</div>
-      <p class="mesaj">Cronometrele se pornesc dintr-o atingere pe timpul din pas și rămân jos, pe orice ecran. Poți începe și de la un pas anume, din listă.</p>
+      <div class="plan"><p><b>${et.length} etape, ${pasii(r).length} pași</b> · ${durata(r.timp_activ_min)} activ · ${durata(r.timp_total_min)} în total · ${r.portii} porții</p>
+        ${et.map((e, i) => `<p data-etapa="${i}" style="cursor:pointer"><b>${esc(e.nume || "Pași")}</b>: ${e.pasi.length} ${e.pasi.length === 1 ? "pas" : "pași"}${e.pasi.some(p => p.timpi.length) ? " · ⏱ " + e.pasi.flatMap(p => p.timpi).map(esc).join(", ") : ""}</p>`).join("")}</div>
+      <p class="mesaj">O etapă pe ecran, cu toți pașii ei: îi bifezi pe rând. Cronometrele pornesc dintr-o atingere pe timp și rămân jos, pe orice ecran; când sună, îți spun ce urmează pe firul acela. Poți începe de la orice etapă, din listă.</p>
       <details class="note" open><summary>Ingrediente de scos (${r.ingrediente.length}, pentru ${portii} porții)</summary>
-        ${(() => { let g = ""; return r.ingrediente.map(i => (i.grup && i.grup !== g ? `<p class="grup-mic">${esc(g = i.grup)}</p>` : "") + `<p class="p">${esc(i.nume)}: <b>${Math.max(1, Math.round(i.g * portii / r.portii))} g</b>${i.nota ? ` <span class="mesaj">(${esc(masura(i.nota, portii / r.portii))})</span>` : ""}</p>`).join(""); })()}</details>
-      <div class="urmeaza">${lista.map((p, k) => `<p data-k="${k}" style="cursor:pointer"><b>${p.n}</b>${esc(p.html.replace(/<[^>]+>/g, "")).slice(0, 90)}…</p>`).join("")}</div>
-      <div class="gatit-actiuni"><button class="chip actiune mare" type="button" data-mergi="0">▶ Începe</button></div>`;
+        ${(() => { let g = ""; return r.ingrediente.map(i => (i.grup && i.grup !== g ? `<p class="grup-mic">${esc(g = i.grup)}</p>` : "") + `<p class="p">${esc(i.nume)}: <b>${Math.max(1, Math.round(i.g * f))} g</b>${i.nota ? ` <span class="mesaj">(${esc(masura(i.nota, f))})</span>` : ""}</p>`).join(""); })()}</details>
+      <div class="gatit-actiuni"><button class="chip actiune mare" type="button" data-etapa="0">▶ Începe</button></div>`;
     return;
   }
-  const p = lista[pasCurent], urm = lista.slice(pasCurent + 1, pasCurent + 3), f = portii / r.portii;
-  const {grup, lista: necesare} = necesarePentru(r, p);
-  cont.innerHTML = `<div class="progres">${esc(p.etapa || "Pași")} · pasul ${pasCurent + 1} din ${lista.length}</div>
-    <div class="pas-mare${facute.has(pasCurent) ? " facut" : ""}"><div class="nr">${p.n}</div>${cuCronometre(p.html)}</div>
-    ${necesare.length ? `<div class="nevoie"><b>Ai nevoie${grup ? " · " + esc(grup) : ""}:</b> ${necesare.map(i => `<span>${esc(i.nume)} <b>${Math.max(1, Math.round(i.g * f))} g</b>${i.nota ? ` <small>(${esc(masura(i.nota, f))}${!grup && i.grup ? " · " + esc(i.grup) : ""})</small>` : !grup && i.grup ? ` <small>(${esc(i.grup)})</small>` : ""}</span>`).join("")}</div>` : ""}
-    ${urm.length ? `<div class="urmeaza"><b style="width:auto;color:var(--mut)">Apoi:</b>${urm.map(q => `<p><b>${q.n}</b>${esc(q.html.replace(/<[^>]+>/g, ""))}</p>`).join("")}</div>` : `<p class="mesaj">Ultimul pas. După ce mănânci, scrie în jurnal cum a fost.</p>`}
-    <div class="gatit-actiuni">${pasCurent > 0 ? `<button class="chip" type="button" data-mergi="${pasCurent - 1}">‹ anterior</button>` : ""}
-      ${pasCurent < lista.length - 1 ? `<button class="chip actiune mare" type="button" data-gata="1">✓ gata, următorul</button>` : `<button class="chip actiune mare" type="button" data-gata="1">✓ gata, la jurnal</button>`}</div>`;
+  const e = et[etapaCurenta], urm = et[etapaCurenta + 1];
+  const necesare = [], vazute = new Set();
+  for (const p of e.pasi) for (const i of necesarePentru(r, p).lista) { const key = r.ingrediente.indexOf(i); if (!vazute.has(key)) { vazute.add(key); necesare.push(i); } }
+  cont.innerHTML = `<div class="progres">Etapa ${etapaCurenta + 1} din ${et.length} · ${esc(e.nume || "Pași")}</div>
+    ${necesare.length ? `<div class="nevoie"><b>Ai nevoie:</b> ${necesare.map(i => `<span>${esc(i.nume)} <b>${Math.max(1, Math.round(i.g * f))} g</b>${i.nota ? ` <small>(${esc(masura(i.nota, f))})</small>` : ""}${i.grup ? ` <small>· ${esc(i.grup)}</small>` : ""}</span>`).join("")}</div>` : ""}
+    ${e.pasi.map(p => `<div class="pas-mare${facute.has(p.k) ? " facut" : ""}" data-k="${p.k}"><div class="nr">${p.n}</div>${cuCronometre(p.html)}</div>`).join("")}
+    ${urm ? `<div class="urmeaza"><b style="width:auto;color:var(--mut)">Apoi, ${esc(urm.nume || "pașii următori")}:</b>${urm.pasi.slice(0, 2).map(q => `<p><b>${q.n}</b>${rezumat(q)}</p>`).join("")}</div>` : `<p class="mesaj">Ultima etapă. După ce mănânci, scrie în jurnal cum a fost.</p>`}
+    <div class="gatit-actiuni">${etapaCurenta > 0 ? `<button class="chip" type="button" data-etapa="${etapaCurenta - 1}">‹ etapa anterioară</button>` : ""}
+      <button class="chip actiune mare" type="button" data-gata="1">${urm ? "✓ etapa gata, următoarea" : "✓ gata, la jurnal"}</button></div>`;
   marcheazaCronometrele();
 }
-function deschideGatit() {
-  pasCurent = -1;
+function deschideGatit(etapa = -1) {
+  etapaCurenta = etapa;
   deseneazaGatit();
+  $("cumparaturi").hidden = true; $("detaliu").hidden = false;
   $("gatit").hidden = false; $("gatit").scrollTop = 0;
   try { history.pushState({slug: curenta.slug, gatit: 1}, "", "#" + curenta.slug); } catch (e) {}
+}
+// Sare la etapa care conține pasul k al rețetei slug (de exemplu din „apoi” al unui cronometru care a sunat).
+function deschideGatitLa(slug, k) {
+  if (!curenta || curenta.slug !== slug) deschide(slug, false);
+  deschideGatit(etapele(curenta).findIndex(e => e.pasi.some(p => p.k === k)));
 }
 function inchideGatit() { $("gatit").hidden = true; if (curenta) deseneazaDetaliu(); }
 
@@ -652,6 +686,7 @@ function deschide(slug, inIstoric) {
   $("detaliu").hidden = false; $("detaliu").scrollTop = 0;
   document.body.style.overflow = "hidden";
   tineEcranul();
+  if (cronometre.length) bate();
   if (inIstoric) try { history.pushState({slug}, "", "#" + slug); } catch (e) {}
 }
 function deschideCumparaturi(inIstoric) {
@@ -686,7 +721,7 @@ $("detaliu-continut").addEventListener("click", e => {
     return;
   }
   const t = e.target.closest("button.timp");
-  if (t) { const c = cronActiv(t); if (c) opreste(c.id); else porneste(+t.dataset.s, eticheta(t)); return; }
+  if (t) { const c = cronActiv(t); if (c) opreste(c.id); else porneste(+t.dataset.s, contextTimp(t)); return; }
   const li = e.target.closest("ol li");
   if (li) {
     const k = [...$("detaliu-continut").querySelectorAll("ol li")].indexOf(li);
@@ -705,17 +740,17 @@ $("detaliu-continut").addEventListener("change", e => {
 });
 $("gatit-continut").addEventListener("click", e => {
   const t = e.target.closest("button.timp");
-  if (t) { const c = cronActiv(t); if (c) opreste(c.id); else porneste(+t.dataset.s, eticheta(t)); return; }
-  const m = e.target.closest("[data-mergi]");
-  if (m) { pasCurent = +m.dataset.mergi; deseneazaGatit(); $("gatit").scrollTop = 0; return; }
+  if (t) { const c = cronActiv(t); if (c) opreste(c.id); else porneste(+t.dataset.s, contextTimp(t)); return; }
+  const m = e.target.closest("[data-etapa]");
+  if (m) { etapaCurenta = +m.dataset.etapa; deseneazaGatit(); $("gatit").scrollTop = 0; return; }
   if (e.target.closest("[data-gata]")) {
-    facute.add(pasCurent);
-    if (pasCurent < pasii(curenta).length - 1) { pasCurent++; deseneazaGatit(); $("gatit").scrollTop = 0; }
+    etapele(curenta)[etapaCurenta].pasi.forEach(p => facute.add(p.k));
+    if (etapaCurenta < etapele(curenta).length - 1) { etapaCurenta++; deseneazaGatit(); $("gatit").scrollTop = 0; }
     else { inchideGatit(); $("s-jurnal").scrollIntoView(); }
     return;
   }
-  const pl = e.target.closest(".urmeaza p[data-k]");
-  if (pl) { pasCurent = +pl.dataset.k; deseneazaGatit(); $("gatit").scrollTop = 0; }
+  const card = e.target.closest(".pas-mare[data-k]");
+  if (card) { const k = +card.dataset.k; if (facute.has(k)) facute.delete(k); else facute.add(k); card.classList.toggle("facut", facute.has(k)); }
 });
 $("gatit-iesi").addEventListener("click", inchideGatit);
 $("btn-timer-gatit").addEventListener("click", () => aratuTimer($("timer-panou").hidden));
@@ -752,14 +787,23 @@ $("goleste").addEventListener("click", () => { if (!confirm("Golești toată lis
 $("btn-cumparaturi").addEventListener("click", () => deschideCumparaturi(true));
 $("inapoi-cumparaturi").addEventListener("click", inapoi);
 $("inapoi").addEventListener("click", inapoi);
-$("cronometre").addEventListener("click", e => { const b = e.target.closest(".cron"); if (b) opreste(+b.dataset.id); });
+$("cronometre").addEventListener("click", e => {
+  const b = e.target.closest("button[data-id]");
+  if (!b) return;
+  const c = cronometre.find(x => x.id === +b.dataset.id);
+  opreste(+b.dataset.id);
+  if (!c || !b.classList.contains("cron-apoi")) return;
+  if (b.dataset.s) porneste(+b.dataset.s, {slug: c.slug, k: c.k, idx: c.idx + 1, text: b.dataset.text});  // următorul timp din același pas
+  else deschideGatitLa(c.slug, +b.dataset.k);  // pasul următor al acelui fir, în modul gătit
+});
 $("btn-timer").addEventListener("click", () => aratuTimer($("timer-panou").hidden));
 $("btn-timer-lista").addEventListener("click", () => aratuTimer($("timer-panou").hidden));
 $("timer-inchide").addEventListener("click", () => aratuTimer(false));
-$("timer-start").addEventListener("click", () => { const m = Math.round(Number($("timer-minute").value)); if (m > 0) { porneste(m * 60, `${m} min`); aratuTimer(false); } });
-// cronometrele pornite din ⏱ (fără pas) nu se leagă de niciun buton din pași
+// cronometrele pornite din ⏱ (fără pas) nu se leagă de niciun pas și nu au „apoi”
+const liber = m => ({slug: curenta?.slug, k: -1, idx: -1, text: `${m} min`});
+$("timer-start").addEventListener("click", () => { const m = Math.round(Number($("timer-minute").value)); if (m > 0) { porneste(m * 60, liber(m)); aratuTimer(false); } });
 $("timer-minute").addEventListener("keydown", e => { if (e.key === "Enter") $("timer-start").click(); });
-$("timer-presetari").addEventListener("click", e => { const b = e.target.closest("button[data-min]"); if (b) { porneste(+b.dataset.min * 60, `${b.dataset.min} min`); aratuTimer(false); } });
+$("timer-presetari").addEventListener("click", e => { const b = e.target.closest("button[data-min]"); if (b) { porneste(+b.dataset.min * 60, liber(+b.dataset.min)); aratuTimer(false); } });
 $("btn-text").addEventListener("click", () => { marime = (marime + 1) % 3; memorie.scrie("marime", marime); aplicaMarimea(); });
 document.querySelector(".sari").addEventListener("click", e => {
   const b = e.target.closest("button[data-tinta]");
