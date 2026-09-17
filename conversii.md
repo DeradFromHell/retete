@@ -2,7 +2,7 @@
 
 Tabel de referință pentru scrierea rețetelor, nu pentru script. Toate cantitățile din `retete/` se scriu în grame; cantitatea originală („1 lingură”) merge în câmpul `nota`. Măsurile sunt rase (fără vârf). Marja acceptată pentru ingredientele mici (ulei, sare, condimente): ±5%.
 
-Setul din bucătărie: lingura = 15 ml, lingurița = 5 ml (lingurița de 7,5 ml umplută cam două treimi).
+Setul din bucătărie: lingura = 15 ml = 1 tbsp, lingurița = 5 ml = 1 tsp, cana = 240 ml = 1 cup (lingurița de 7,5 ml umplută cam două treimi). Cartea afișează echivalentul tbsp / tsp / cup lângă fiecare măsură.
 
 ## Lichide și grăsimi
 

@@ -247,13 +247,21 @@ const initiala = r => `<div class="initiala serif" aria-hidden="true">${esc(Stri
 // Măsura de bucătărie din nota („3 linguri”, „1/2 linguriță”, „2 căței”) se scalează cu porțiile când începe cu un număr.
 const fractie = s => { const m = s.match(/^(\d+)(?:\s+(\d+)\/(\d+))?|^(\d+)\/(\d+)/); if (!m) return null; return m[4] ? +m[4] / +m[5] : +m[1] + (m[2] ? +m[2] / +m[3] : 0); };
 const nrScurt = v => { const r = Math.round(v * 4) / 4; return r === Math.floor(r) ? String(r) : String(Math.round(r * 100) / 100).replace(".", ","); };
+// „lingură” = tbsp (15 ml), „linguriță” = tsp (5 ml), „cană” = cup (240 ml): se adaugă în paranteză, pentru setul de măsuri.
+const RE_UNITATE = /^(≈?\d+(?:\s+\d+\/\d+)?|≈?\d+\/\d+|≈?\d+[.,]\d+)\s+(lingurițe|linguriță|lingură|linguri|căni|cană)(?![a-zăâîșț])/;
+function cuTbsp(text) {
+  const m = text.match(RE_UNITATE);
+  if (!m) return text;
+  const abrev = /^lingurit/.test(norm(m[2])) ? "tsp" : /^lingur/.test(norm(m[2])) ? "tbsp" : "cup";
+  return text.replace(RE_UNITATE, `$1 $2 (${m[1].replace("≈", "")} ${abrev})`);
+}
 function masura(nota, f) {
   if (!nota) return "";
-  if (f === 1) return nota;
+  if (f === 1) return cuTbsp(nota);
   const m = nota.match(/^(\d+\s+\d+\/\d+|\d+\/\d+|\d+[.,]\d+|\d+)(?:\s*(ml|g))?\s*(.*)$/);
   if (!m) return nota;
   const v = /[.,]/.test(m[1]) ? parseFloat(m[1].replace(",", ".")) : fractie(m[1]), rest = m[3].replace(/^[,;]\s*/, "");
-  return `≈${nrScurt(v * f)}${m[2] ? " " + m[2] : ""} ${rest}`.trim();
+  return cuTbsp(`≈${nrScurt(v * f)}${m[2] ? " " + m[2] : ""} ${rest}`.trim());
 }
 const cantitate = (i, f) => `<b>${Math.max(1, Math.round(i.g * f))} g</b>${i.nota ? `<small>${esc(masura(i.nota, f))}</small>` : ""}`;
 // Ingredientele pomenite într-un pas: cuvintele-cheie din nume (rădăcina de 5 litere) căutate în textul pasului.
