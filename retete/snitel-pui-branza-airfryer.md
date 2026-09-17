@@ -50,6 +50,12 @@ ingrediente:
     nota: ras
     grup: Gratinat
 jurnal:
+  - data: 2026-09-19
+    versiune: 1
+    gust: 7
+    efort: 2
+    executie: ok
+    observatii: "Merge bine, o problema  cand le gatesti direct de la congelator 200C la 20 de min se ard, si 180C la 20 de min,  sunt mai bune dar foarte crocante si ele. El mai sta vreo 6 minute dupa pentru mozzarela si cheddar, deci posibil de acolo.  Poate am putea sa amestecam cheddarul, (nu mai punem mozzarela) direct in  pesmentul panko? sa mearga cumva impreuna? e doar o idee dar eu cumva asta as vrea."
 ---
 ## Pregătire
 1. Scoate mozzarella din zer, rupe-o în bucăți mici și preseaz-o între două prosoape de hârtie ca să scoți apa. Rade cheddarul. Ține-le separat, la frigider, până la final.
