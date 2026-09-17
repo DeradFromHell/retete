@@ -84,6 +84,12 @@ ingrediente:
     nota: 550 ml, rece
     grup: Orezul
 jurnal:
+  - data: 2026-09-17
+    versiune: 1
+    gust: 7
+    efort: 2
+    executie: ok
+    observatii: "Cred ca sunt urmatoarele probleme, Cred ca am pus prea mult amidon, sau nu le-am scuturat cum a trebuit. Sos-ul mi-a iesit foarte apos nu era gros, si sos-ul nu mi-a ajuns pentru jumatate, Sos-ul mi-a ajuns de 3 portii, si orez tot de 3 portii. A fost facuta in 2 ture, una la cuptor si una la airfryer, pentru cele din air fryer care insumeaza cam 2 portii cred, nu am mai avut sos. Orezul se termina prea repede, si dupa se raceste pana se termina celelalte, poate ar fi o idee buna, sa punem orezul odata cu puiul cand se baga la cuptor sau airfryer"
 ---
 ## Orezul (pornește primul)
 1. Pune orezul spălat și apa rece într-o cratiță, la foc mare, până dă în clocot: bule mari, care sparg suprafața. Nu săra apa: sosul aduce destulă sare.
