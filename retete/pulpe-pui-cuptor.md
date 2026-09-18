@@ -52,6 +52,11 @@ jurnal:
 8. Gata când pielea e maro-auriu lucios și, la înțepat lângă os, zeama iese limpede, nu roz.
 9. Dacă nu sunt gata: încă 8–10 minute, acoperite lejer cu folie (altfel zahărul din sos se arde); scoate folia în ultimele 3 minute.
 
+## Păstrare și reîncălzire
+- Frigider: în cutie închisă, 3–4 zile.
+- Cuptor sau air fryer (cel mai bine): 180 °C, 8–10 minute, până pielea e din nou crocantă și carnea fierbinte lângă os.
+- Microunde: merge, dar pielea se înmoaie; dă-le apoi 2 minute în air fryer, ca să-și revină.
+
 ## Note
 - Sosul se pune doar la final pentru că are zahăr: la 200 °C, 45 de minute, se face negru și amar cu mult înainte ca pulpele să fie gata.
 - Fără marinadă lichidă: pulpele au piele și grăsime, iar marinada udă strică exact pielea crocantă. Nu tampona carnea grasă ca pe piept; are nevoie doar de pielea uscată din frigider.
@@ -60,5 +65,4 @@ jurnal:
 - Nutriția e calculată pe carne cu piele, fără os: 450 g din ~600 g cu os. Sosul teriyaki e valoarea generică USDA; pentru exact, de pe eticheta sticlei.
 - Indiciile senzoriale de la pașii 5, 6 și 7 sunt propuse de Claude, nu din experiența ta; corectează-le după prima gătire.
 - Merge cu (sugestii): cartofi la cuptor în aceeași tavă de dedesubt sau pe alt raft, tot la 200 °C; orez sau piure; salată de varză, de castraveți sau murături, care taie grăsimea pielii.
-- Păstrare și reîncălzire (sugestii): la frigider, în cutie închisă, 3–4 zile. Reîncălzește în cuptor sau air fryer la 180 °C, 8–10 minute, până pielea e din nou crocantă și carnea fierbinte la os; la microunde pielea se înmoaie, dacă tot îl folosești, dă-le apoi 2 minute în air fryer.
 - Dacă le faci împreună cu pieptul teriyaki, în aceeași seară: T−15 cuptorul la 200 °C cu tava și grătarul, apă în tavă, condimentezi pulpele; T0 pulpele pe grătar, cu pielea în sus; T25 scoți pieptul din marinadă, tamponezi, air fryer 190 °C, 8 min; T33 întorci pieptul, 3 min, și începi glazura în crăticioară; T35 pulpele: primul strat de sos, înapoi 4 min; T36 pieptul: pensulezi cu glazură, înapoi 2 min; T39 scoți pieptul, mai pensulezi, îl lași să se odihnească; pulpele: al doilea strat, 4 min; T43 scoți pulpele; orez cu legume în tigaie 8 min, cât se odihnesc.

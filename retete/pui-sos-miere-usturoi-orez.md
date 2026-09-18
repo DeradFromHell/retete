@@ -111,6 +111,12 @@ jurnal:
 ## Servire
 12. Pune puiul în sos și amestecă până se acoperă uniform. Servește peste orez; opțional, ceapă verde tăiată deasupra.
 
+## Păstrare și reîncălzire
+- Frigider: 3 zile, puiul cu sos și orezul în cutii separate. Congelator: 4 luni; decongelează peste noapte la frigider.
+- Tigaie (cel mai bine): puiul cu sos la foc mediu, 4–5 minute, cu 1–2 linguri de apă, până sosul redevine lucios și puiul e fierbinte la mijloc.
+- Microunde: 2 minute, amestecat la jumătate. Orezul, cu o lingură de apă peste porție și capac, 1,5–2 minute, până ies aburi.
+- Crusta nu mai e crocantă după ce a stat în sos; e normal.
+
 ## Note
 - Adaptare după rețeta lui Jack Ovens (scrisă cu alt AI): originalul cere 140 ml sos de soia cu sodiu redus; cu Kikkoman clasic (16,9 g sare/100 ml) ar însemna ~6 g sare pe porție, așa că soia e redusă la 70 ml și diferența e completată cu apă. Rezultă ~3 g sare pe porție. Dacă vrei mai jos, înlocuiește 20 ml de soia cu apă și compensează cu mai mult usturoi și ghimbir.
 - De ce apă, nu supă: cuburile și granulele de supă au 10–15 g sare la 100 g; peste soia ar duce porția peste 4 g sare.
@@ -118,6 +124,5 @@ jurnal:
 - Originalul cere și zahăr brun și miere, la pași diferiți; aici e păstrată doar mierea.
 - Nutriție: estimare pesimistă, tot amidonul (100 g) e numărat, deși o parte bună rămâne în bol; caloriile și carbohidrații reali sunt mai mici. Orezul e ~270 kcal din porție; dacă vrei să scazi caloriile, taie din orez, nu din sos. Mierea și amidonul sunt valori USDA generice; sosul de soia, uleiul spray și restul, de pe etichete.
 - Fără orez, rețeta nu merge ca atare: sosul e calculat să se întindă peste orez neutru; înjumătățește sosul și servește cu cartofi natur. Amestecurile congelate orez-cu-legume au adesea sare și condimente; încălzește-le separat, nu în sos.
-- Păstrare: frigider 3 zile; congelator 4 luni, decongelat peste noapte la frigider. Reîncălzire în tigaie la foc mediu sau la microunde; orezul, cu o lingură de apă peste porție și capac.
 - v2 (după prima gătire, 2026-09-17): sos de 1,5 ori (la v1 nu a ajuns nici pentru 3 porții) și legat cu 8 g amidon în loc de 4, clocotit 2 minute; cuburile scurse și scuturate în sită, în două ture, ca stratul de amidon să fie subțire; orezul pornit odată cu puiul și ținut cu capacul pus, ca să nu se răcească. Amidonul pentru crustă rămâne 100 g.
 - De testat la v3: amidon amestecat cu puțină făină de orez pentru crustă mai crocantă; soia redusă, cu mai mult ghimbir, dacă iese prea sărat.

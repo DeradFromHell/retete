@@ -76,7 +76,7 @@ jurnal:
 Ce nu e sigur: timpi, sare, temperatura cuptorului.
 ```
 
-Titlurile `## …` dintre pași grupează pașii pe etape; numerotarea continuă (se folosește numărul scris în fișier). În carte, pașii se bifează prin atingere, iar orice „8 minute” sau „30–60 de secunde” dintr-un pas pornește un cronometru cu sunet la final. Timpul total se afișează în ore și minute. Toate cantitățile în grame. Nume de fișiere și id-uri: ASCII, fără diacritice. Conținutul: română cu diacritice. `sursa` e un URL complet (cu `http://` sau `https://`), `claude` sau `propriu`.
+După pași vine `## Păstrare și reîncălzire` (cât ține la frigider sau congelator și cum se reîncălzește, pe metode: air fryer, tigaie, microunde, cu temperatură, timp și semn că e gata), apoi `## Note`; cartea arată reîncălzirea deschis, cu buton în bara de salt, iar notele pliate. Titlurile `## …` dintre pași grupează pașii pe etape; numerotarea continuă (se folosește numărul scris în fișier). În carte, pașii se bifează prin atingere, iar orice „8 minute” sau „30–60 de secunde” dintr-un pas pornește un cronometru cu sunet la final. Timpul total se afișează în ore și minute. Toate cantitățile în grame. Nume de fișiere și id-uri: ASCII, fără diacritice. Conținutul: română cu diacritice. `sursa` e un URL complet (cu `http://` sau `https://`), `claude` sau `propriu`.
 
 ## Poze
 

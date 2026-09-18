@@ -116,6 +116,8 @@ ol li.facut{color:var(--mut);background:transparent;box-shadow:none;border:1px d
 ol li.facut::before{content:"✓";background:var(--verde)}
 button.timp{font-size:.92em;background:var(--activ);border:0;border-radius:8px;padding:.05rem .5rem;white-space:nowrap;color:var(--accent);font-weight:600}
 button.timp.activ{background:var(--accent);color:#fff}
+.pastrare{background:var(--hartie);border-radius:14px;padding:.5rem .9rem;box-shadow:var(--umbra)}
+.pastrare p{margin:.45rem 0}
 details.note{margin-top:1rem;background:var(--hartie);border-radius:14px;padding:.5rem .9rem;box-shadow:var(--umbra)}
 details.note summary{cursor:pointer;font-weight:600;padding:.35rem 0}
 details.note p{margin:.45rem 0}
@@ -198,7 +200,7 @@ a{color:var(--accent)}
 <main id="lista"></main>
 <section id="detaliu" class="panou" hidden>
   <div class="bara"><button class="btn" id="inapoi" type="button">‹ Înapoi</button><span class="titlu" id="detaliu-titlu"></span><button class="btn" id="btn-timer" type="button" title="cronometru">⏱</button><button class="btn" id="btn-text" type="button" title="text mai mare">Aa</button></div>
-  <nav class="sari"><button type="button" data-tinta="s-ingrediente">Ingrediente</button><button type="button" data-tinta="s-pasi">Pași</button><button type="button" data-tinta="s-nutritie">Nutriție</button><button type="button" data-tinta="s-jurnal">Jurnal</button></nav>
+  <nav class="sari"><button type="button" data-tinta="s-ingrediente">Ingrediente</button><button type="button" data-tinta="s-pasi">Pași</button><button type="button" data-tinta="s-reincalzire">Reîncălzire</button><button type="button" data-tinta="s-nutritie">Nutriție</button><button type="button" data-tinta="s-jurnal">Jurnal</button></nav>
   <article id="detaliu-continut"></article>
 </section>
 <section id="gatit" class="panou" hidden>
@@ -387,6 +389,13 @@ function chipuri(id, valori, ales, cheie) {
     cont.insertAdjacentHTML("beforeend", `<button class="chip${v === ales ? " activ" : ""}" type="button" data-${cheie}="${esc(v)}">${esc(text)}</button>`);
 }
 
+// Corpul rețetei are trei părți: pașii (cu etape), „## Păstrare și reîncălzire” și „## Note”, în ordinea asta.
+function parti(r) {
+  const [inainte, note = ""] = r.pasi_html.split("<h3>Note</h3>");
+  const [pasi, pastrare = ""] = inainte.split("<h3>Păstrare și reîncălzire</h3>");
+  return {pasi, pastrare, note};
+}
+
 // ---------- detaliu ----------
 let curenta = null, portii = 0, bifate = new Set(), facute = new Set();
 function deseneazaDetaliu() {
@@ -395,7 +404,7 @@ function deseneazaDetaliu() {
   const ingr = r.ingrediente.map((i, k) => (i.grup && i.grup !== grup ? `<li class="grup">${esc(grup = i.grup)}</li>` : "")
     + `<li class="${bifate.has(k) ? "bifat" : ""}"><input type="checkbox" data-k="${k}" ${bifate.has(k) ? "checked" : ""}>
       <span class="nume">${esc(i.nume)}</span><span class="cant">${cantitate(i, f)}</span></li>`).join("");
-  const [pasi, note] = r.pasi_html.split("<h3>Note</h3>");
+  const {pasi, pastrare, note} = parti(r);
   const jurnal = r.jurnal.length ? [...r.jurnal].reverse().map(j => `<div class="intrare${j.executie === "greseala_mea" ? " greseala" : ""}"><p class="cand">${esc(j.data)} · v${j.versiune}${j.executie === "greseala_mea" ? " · greșeala mea" : ""}</p>
     <p>${puncte(j.gust)} <b>gust ${j.gust}</b> · efort ${j.efort}</p>
     ${j.observatii ? `<p>${esc(j.observatii)}</p>` : ""}${j.urmatoarea_data ? `<p><b>Data viitoare:</b> ${esc(j.urmatoarea_data)}</p>` : ""}</div>`).join("") : `<p class="gol">Încă negătită.</p>`;
@@ -417,6 +426,7 @@ function deseneazaDetaliu() {
     <ul class="ingrediente">${ingr}</ul>
     <h3 id="s-pasi">Pași</h3><p class="indiciu">Atinge un pas ca să-l bifezi. Atinge un timp ca să pornești cronometrul.</p>
     ${pasi.replace(/<h3>/g, "<h4>").replace(/<\/h3>/g, "</h4>").replace(/<ol>[\s\S]*?<\/ol>/g, cuCronometre)}
+    ${pastrare ? `<h3 id="s-reincalzire">Păstrare și reîncălzire</h3><div class="pastrare">${pastrare}</div>` : ""}
     ${note ? `<details class="note"><summary>Note (${(note.match(/<p/g) || []).length})</summary>${note}</details>` : ""}
     <h3 id="s-nutritie">Nutriție <small>per porție</small></h3>${grila(n)}
     <h3>Nutriție <small>per 100 g ${n.pe_gatit ? "gătit" : "crud, din ingrediente"}</small></h3>${grila(n.suta)}
@@ -542,7 +552,7 @@ function suna() {
 let etapaCurenta = -1;
 function pasii(r) {
   const t = document.createElement("template");
-  t.innerHTML = r.pasi_html.split("<h3>Note</h3>")[0];
+  t.innerHTML = parti(r).pasi;
   const lista = []; let etapa = "";
   for (const el of t.content.children) {
     if (el.tagName === "H3") etapa = el.textContent;

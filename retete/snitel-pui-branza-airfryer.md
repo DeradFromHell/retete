@@ -71,11 +71,15 @@ jurnal:
 9. Coboară la 180 °C. Pune mozzarella, apoi cheddarul deasupra, și presează cu mâna ca să nu zboare de la ventilator; lasă brânza la ~1 cm de margini, ca să nu curgă în coș. 3–4 minute, doar până se topește și face bule; cheddarul cu grăsime redusă devine cauciucos dacă stă prea mult.
 10. Scoate feliile pe o grilă, nu pe farfurie (aburul de dedesubt înmoaie pane-ul). 2 minute, apoi servește.
 
+## Păstrare și reîncălzire
+- Cel mai bine: congelează porțiile crude, panate (pasul 5), și gătește-le proaspăt. Gătit, pane-ul se înmoaie la frigider.
+- Dacă a rămas gătit: frigider, 2 zile. Air fryer la 180 °C, 4–5 minute, până pane-ul e din nou crocant și brânza moale. Nu la microunde: pane-ul devine cauciucat.
+- Puiul crud ține 1–2 zile la frigider; albușul pasteurizat, 2 zile de la deschidere.
+
 ## Note
 - Sarea: panko are 1,5 g sare la 100 g, cheddarul 2 g; din ~2,3 g sare pe porție, doar 1 g e cea adăugată. De asta e doar 1/2 linguriță la 3 porții; nu mai adăuga „după gust” înainte să guști produsul gata.
 - Nutriție: estimare pesimistă, toată făina, tot albușul și tot panko sunt numărate, deși o parte rămâne în farfurii; realist, caloriile și carbohidrații sunt cu 8–12% mai mici. Brânzeturile, albușul, panko și uleiul sunt de pe etichete; puiul și făina, USDA.
 - Nu pune hârtie de copt neperforată în coș: blochează aerul pe dedesubt și partea de jos rămâne moale.
-- Pane-ul nu se păstrează bine gătit, se înmoaie la frigider; congelează-l crud, panat. Puiul crud ține 1–2 zile la frigider: panează tot lotul în ziua în care l-ai cumpărat. Albușul pasteurizat se consumă în 2 zile de la deschidere.
 - Merge cu: cartofi wedges la air fryer, 200 °C, 25–30 de minute, întorși la jumătate; se reîncălzesc bine tot în air fryer (3–4 minute la 200 °C), nu la microunde.
 - v2 (după prima gătire, 2026-09-19): din congelator la 180 °C, 14 minute plus brânza, în loc de 200 °C, 20 de minute; cele 6 minute de gratinat se adună la timpul total.
 - De testat la v3: cheddar ras fin amestecat în panko, fără mozzarella, tot la 180 °C (la 200 °C cheddarul din pane se arde); saramură uscată (la pasul 2 pui doar sarea și lași feliile descoperite la frigider 30–40 de minute înainte de panare: carne mai suculentă, suprafață mai uscată); 10 ml ulei spray în loc de 15, dacă pane-ul iese destul de rumen.

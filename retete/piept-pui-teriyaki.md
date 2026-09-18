@@ -108,6 +108,12 @@ jurnal:
 14. Scoate, mai pensulează o dată deasupra și lasă-l să se odihnească 5 minute înainte să-l tai.
 15. Presară semințele de susan prăjite și ceapa verde tăiată.
 
+## Păstrare și reîncălzire
+- Frigider: în cutie închisă, 3–4 zile. Glazura rămasă, separat, într-un borcan, până la o săptămână.
+- Air fryer (cel mai bine): bucata întreagă, nu feliată, la 160 °C, 3–4 minute, până e fierbinte la mijloc; pensulează cu puțină glazură la final.
+- Microunde: 1–1,5 minute, cu o lingură de apă și capac, ca să nu se usuce.
+- Rece, feliat subțire, merge în salată sau sandvici, fără reîncălzire.
+
 ## Note
 - Semințele de susan crude sunt aproape fără gust: prăjește-le înainte, în tigaie uscată, fără ulei, la foc mediu, 2–3 minute, amestecând des, până devin aurii și miros a prăjit. Se ard în câteva secunde, stai lângă ele. Poți prăji toată punga odată; țin săptămâni într-un borcan.
 - Marinada nu pătrunde mai mult de 2–3 mm în carne, oricât ai lăsa-o; aroma reală vine din glazura aplicată la final.
@@ -117,6 +123,5 @@ jurnal:
 - Acidul (lămâie, oțet) în cantitate mare, pe termen lung, strică textura pieptului; în glazură, la final, e în regulă.
 - Dacă le faci împreună cu pulpele la cuptor, cronologia serii e în rețeta „pulpe-pui-cuptor”.
 - Merge cu (sugestii): orez simplu fiert, care absoarbe glazura; orez cu legume în tigaie, cum faci deja; broccoli sau fasole verde sotată; salată de castraveți cu oțet de mere și puțin susan.
-- Păstrare și reîncălzire (sugestii): la frigider, în cutie închisă, 3–4 zile; glazura rămasă, separat, până la o săptămână. Reîncălzește bucata întreagă (feliată se usucă) în air fryer la 160 °C, 3–4 minute, până e fierbinte la mijloc, sau la microunde 1–1,5 minute cu o lingură de apă și capac. Rece, feliat subțire, merge în salată sau sandvici.
 - Nutriție (observația lui Claude): marinada se aruncă, dar e numărată integral, ≈80 kcal/porție (mai ales mierea și uleiul de susan); fără ea, porția ar avea ≈380 kcal, nu 460. La fel sarea: din ≈6,9 g/porție afișate, jumătate e soia din marinada aruncată; realist, ≈3,5 g. Susanul și ceapa verde de la servit sunt cantități estimate.
 - Indiciile senzoriale de la pașii 6, 7, 10 și 13 sunt propuse de Claude, nu din experiența ta; corectează-le după prima gătire.

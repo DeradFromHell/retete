@@ -31,7 +31,9 @@ jurnal:
 4. Amestecă încet și continuu cu o spatulă, trăgând de la margine spre centru; 2–3 minute în total, până sunt cremoase și încă puțin lucioase.
 5. Ia tigaia de pe foc când sunt cu puțin mai moi decât le vrei: se mai gătesc 30 de secunde din căldura tigăii. Piper deasupra, servește imediat.
 
+## Păstrare și reîncălzire
+- Nu se păstrează: reîncălzite devin cauciucate. Fă câte mănânci și mănâncă-le pe loc.
+
 ## Note
 - Ce nu e sigur (rețetă clasică scrisă de Claude, nu testată de tine): timpul depinde de tigaie și de aragaz; focul mic e tot secretul, la foc mare ies uscate în 40 de secunde. Sarea, 2 g la 4 ouă, e un reper mediu.
 - Merge cu (sugestii): pâine prăjită cu unt, roșii tăiate, ceapă verde tocată sau puțină smântână amestecată la final, de pe foc.
-- Nu se păstrează: reîncălzite devin cauciucate. Mănâncă-le pe loc.
