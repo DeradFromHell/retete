@@ -112,8 +112,10 @@ jurnal:
 12. Pune puiul în sos și amestecă până se acoperă uniform. Servește peste orez; opțional, ceapă verde tăiată deasupra.
 
 ## Păstrare și reîncălzire
-- Frigider: 3 zile, puiul cu sos și orezul în cutii separate. Congelator: 4 luni; decongelează peste noapte la frigider.
-- Tigaie (cel mai bine): puiul cu sos la foc mediu, 4–5 minute, cu 1–2 linguri de apă, până sosul redevine lucios și puiul e fierbinte la mijloc.
+- Frigider: 3 zile; congelator: 4 luni, decongelat peste noapte la frigider. Orezul în cutie separată.
+- Cel mai bine: păstrează puiul fără sos (pune în sos doar ce mănânci pe loc). La reîncălzire, puiul în air fryer la 180 °C, 4–5 minute, până crusta e din nou uscată și crocantă, și sos proaspăt, făcut în 5 minute, doar pentru porția de atunci.
+- Sos proaspăt pentru o porție: 15 ml soia (1 lingură), 40 ml apă, 1–2 căței de usturoi, 2 g amidon (2/3 linguriță) dizolvat în 1 linguriță de apă rece, 11 g miere (1/2 lingură) la final, de pe foc. Aceiași pași ca la sosul mare; la cantitatea asta se leagă în mai puțin de 1 minut, stai lângă el.
+- Dacă puiul e deja în sos, tigaie: puiul cu sos la foc mediu, 4–5 minute, cu 1–2 linguri de apă, până sosul redevine lucios și puiul e fierbinte la mijloc.
 - Microunde: 2 minute, amestecat la jumătate. Orezul, cu o lingură de apă peste porție și capac, 1,5–2 minute, până ies aburi.
 - Crusta nu mai e crocantă după ce a stat în sos; e normal.
 
