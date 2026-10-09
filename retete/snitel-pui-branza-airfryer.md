@@ -62,7 +62,7 @@ jurnal:
 2. Taie pieptul în felii de ~1 cm grosime (ies 3 porții a ~215 g). Acoperă-le cu folie și bate-le ușor, până au grosime egală peste tot. Șterge-le cu prosop de hârtie; trebuie să fie uscate, altfel pane-ul nu se prinde. Condimentează cu sare, piper și boia pe ambele fețe.
 3. Trei farfurii, în ordinea asta: făina, albușul bătut bine cu furculița, panko.
 4. Trece fiecare felie prin făină și scutur-o de surplus, apoi prin albuș lăsând excesul să se scurgă, apoi prin panko; presează fulgii cu palma pe ambele fețe. O mână pentru uscate, una pentru albuș.
-5. Porțiile pe care nu le gătești azi: pe o tavă, separate cu hârtie de copt, la congelator. Se gătesc direct din congelat la 180 °C, nu 200: 14 minute, întoarse la jumătate, verifică la 12; apoi brânza, 3–4 minute, ca la pasul 9. La 200 °C, 20 de minute plus brânza se ard.
+5. Porțiile pe care nu le gătești azi: pe o tavă, separate cu hârtie de copt, la congelator. Cum le gătești din congelat scrie la „Păstrare și reîncălzire”.
 
 ## Gătit
 6. Preîncălzește air fryer-ul la 200 °C, gol, 3 minute, până simți aer fierbinte când tragi sertarul.
@@ -73,6 +73,7 @@ jurnal:
 
 ## Păstrare și reîncălzire
 - Cel mai bine: congelează porțiile crude, panate (pasul 5), și gătește-le proaspăt. Gătit, pane-ul se înmoaie la frigider.
+- Din congelat, direct în air fryer, la 180 °C, nu 200: 14 minute, întoarse la jumătate, verifică la 12; apoi brânza, 3–4 minute, ca la pasul 9. La 200 °C, 20 de minute plus brânza se ard.
 - Dacă a rămas gătit: frigider, 2 zile. Air fryer la 180 °C, 4–5 minute, până pane-ul e din nou crocant și brânza moale. Nu la microunde: pane-ul devine cauciucat.
 - Puiul crud ține 1–2 zile la frigider; albușul pasteurizat, 2 zile de la deschidere.
 

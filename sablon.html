@@ -416,9 +416,16 @@ const RE_TIMP = /(\d+)(?:[–-]\d+)?\s*(?:de\s+)?(minute|minut|secunde|secundă)
 // sau o verificare: „16 minute … La cuptor: 18 minute”, „total ~43 de minute”, „Dacă tot e apos, încă 1 minut”, „Cu os: 20 minute”,
 // „verifică prima dată la 10 minute”, „La 200 °C, 20 de minute … se ard”. Variantele rămân butoane în text, dar nu sunt propuse după.
 const RE_ALT = /\b(la cuptor|alternativ|sau|ultimele|total|daca|cu os|fara os|prima data)\b|\bla \d+\s*°/;
-const timpiDin = t => { let dupa = 0; return [...t.matchAll(RE_TIMP)].map((m, i) => {
+// Și primul timp dintr-un pas poate fi pentru altă zi („porțiile pe care nu le gătești azi … din congelat, 14 minute”).
+const RE_ALTA_DATA = /\b(nu (le|il|o) gatesti azi|din congelat|din congelator|la reincalzire|data viitoare)\b/;
+// „Cu 30 de minute înainte: … lasă-le 30 de minute”: primul e doar cât de devreme începi; dacă după el mai vine un timp în pas,
+// cronometrul adevărat e acela (altfel ai aștepta de două ori).
+const RE_AVANS = /^\s*(inainte|pana la [^.;:]*inainte)/;
+const timpiDin = t => { let dupa = 0; const l = [...t.matchAll(RE_TIMP)].map((m, i) => {
   const intre = norm(t.slice(dupa, m.index)); dupa = m.index + m[0].length;
-  return {text: m[0], s: +m[1] * (m[2].startsWith("sec") ? 1 : 60), alt: i > 0 && RE_ALT.test(intre)}; }); };
+  return {text: m[0], s: +m[1] * (m[2].startsWith("sec") ? 1 : 60), alt: i > 0 ? RE_ALT.test(intre) : RE_ALTA_DATA.test(intre), avans: RE_AVANS.test(norm(t.slice(dupa, dupa + 40)))}; });
+  l.forEach((x, i) => { if (x.avans && i < l.length - 1) x.alt = true; delete x.avans; });
+  return l; };
 for (const r of RETETE) {
   r.etape = []; r.pastrare = []; r.note = [];
   for (const s of r.sectiuni) {
@@ -559,17 +566,23 @@ function apoi(c) {
   if (c.tip !== "pas" || !r) return null;
   const p = r.pasi[c.k], t = p && p.timpi[c.i + 1];
   if (t && !t.alt) return {text: `Apoi ${t.text}`, fa: () => pornesteCron({slug: c.slug, k: c.k, i: c.i + 1, text: t.text, s: t.s, tip: "pas"})};
-  const u = r.pasi[c.k + 1];
-  return u ? {text: `Apoi pasul ${u.n}`, fa: () => mergiLaPas(c.slug, u.k)} : null;
+  const b = banda(c.slug);
+  if (!b || !b.pornita) { const u = r.pasi[c.k + 1]; return u ? {text: `Apoi pasul ${u.n}`, fa: () => mergiLaPas(c.slug, u.k)} : null; }
+  // La masă: timpul pasului s-a terminat, deci pasul se bifează singur, și mergi la primul pas rămas după el
+  // care nu are deja un cronometru pornit (sau la primul rămas, dacă ai lucrat înainte).
+  const merge = q => st.cron.some(x => x.slug === c.slug && x.k === q.k && x.tip === "pas" && !x.gata);
+  const rest = r.pasi.filter(q => q.k !== c.k && !b.facute.includes(q.k)), u = rest.find(q => q.k > c.k && !merge(q)) || rest.find(q => !merge(q)) || rest[0];
+  const bifat = () => { if (!b.facute.includes(c.k)) b.facute.push(c.k); salveaza(); };
+  return u ? {text: `Apoi pasul ${u.n}`, fa: () => { bifat(); mergiLaPas(c.slug, u.k); }} : {text: `Gata, bifez pasul ${p.n}`, fa: () => { bifat(); randeaza(); }};
 }
-// O alarmă care a sunat dispare singură după ce ai trecut mai departe: ai bifat pasul următor sau rețeta e gata.
+// O alarmă care a sunat rămâne până o atingi, până bifezi pasul ei după ce a sunat (vezi bifeaza) sau până e gata rețeta.
+// Nu dispare doar pentru că ai bifat alt pas: când lucrezi înainte (orezul cât e puiul în air fryer), alarma puiului trebuie să se vadă.
 function curataCron() {
   const inainte = st.cron.length;
   st.cron = st.cron.filter(c => {
     if (!c.gata || c.tip !== "pas") return true;
-    const b = banda(c.slug), r = reteta(c.slug);
-    if (!b || !b.pornita) return true;
-    return etapaCurenta(r, b) >= 0 && !(r.pasi[c.k + 1] && b.facute.includes(c.k + 1));
+    const b = banda(c.slug);
+    return !b || !b.pornita || etapaCurenta(reteta(c.slug), b) >= 0;
   });
   return st.cron.length !== inainte;
 }
@@ -639,7 +652,8 @@ function scoateDeLaMasa(slug) {
 // Etapele „Din timp” / „Cu 4–6 ore înainte”: dacă le-ai făcut deja (bifat în plan), nu mai intră în timp și apar bifate;
 // dacă nu, cronometrele lor se adaugă la durata rețetei, ca ordinea de pornire să rămână corectă.
 const eDinTimp = e => /^din timp|inainte/.test(norm(e.titlu));
-const minuteDinTimp = r => Math.round(r.etape.filter(eDinTimp).flatMap(e => e.pasi).flatMap(p => p.timpi).reduce((s, t) => s + t.s, 0) / 60);
+// Pe fiecare pas contează timpul cel mai lung (același timp scris de două ori nu se adună).
+const minuteDinTimp = r => Math.round(r.etape.filter(eDinTimp).flatMap(e => e.pasi).reduce((s, p) => s + Math.max(0, ...p.timpi.map(t => t.s)), 0) / 60);
 const totalEfectiv = (s, b) => { const r = reteta(b.slug); return r.timp_total_min + (s.dinTimp[b.slug] ? 0 : minuteDinTimp(r)); };
 // Ca să fie gata împreună: rețeta cea mai lungă pornește prima, celelalte după diferența de timp.
 const offset = (s, b) => s.deodata ? 0 : Math.max(...s.retete.map(x => totalEfectiv(s, x))) - totalEfectiv(s, b);
@@ -678,6 +692,7 @@ function bifeaza(slug, k) {
   const facute = b && b.pornita ? b.facute : (bifeDetaliu[slug] ||= []);
   const i = facute.indexOf(k);
   if (i >= 0) facute.splice(i, 1); else facute.push(k);
+  if (i < 0) st.cron = st.cron.filter(c => !(c.gata && c.tip === "pas" && c.slug === slug && c.k === k));  // bifat după ce a sunat: alarma și-a făcut treaba
   salveaza();
   const r = reteta(slug);
   if (vedere === "gatit" && b && i < 0 && r.etape[r.pasi[k].etapa].pasi.every(p => b.facute.includes(p.k))) anunta(`Etapa „${r.etape[r.pasi[k].etapa].titlu}” e gata`);
@@ -907,27 +922,53 @@ function randeazaBanda(b) {
       ${ramase.map(x => `<button class="buton plin" type="button" data-a="banda" data-slug="${esc(x.slug)}">${ic("oala")} Continuă cu ${esc(scurt(reteta(x.slug).titlu))}</button>`).join("")}
       <button class="buton${ramase.length ? "" : " plin"}" type="button" data-a="laJurnal" data-slug="${esc(b.slug)}">Scrie în jurnal cum a ieșit</button></div>`;
   }
-  const e = r.etape[ei], nev = necesare(r, e);
   // Aștepți doar după cronometrele pașilor încă nebifați; un pas bifat cu cronometrul pornit (puiul e în air fryer) nu te ține pe loc.
   const merg = st.cron.filter(c => c.slug === b.slug && c.tip === "pas" && !c.gata && !b.facute.includes(c.k)).sort((a, z) => a.sfarsit - z.sfarsit);
+  const neterminata = j => r.etape[j] && r.etape[j].pasi.some(p => !b.facute.includes(p.k));
+  if (b.inainte != null && (b.inainte <= ei || !neterminata(b.inainte))) delete b.inainte;
+  const vede = b.inainte ?? ei, e = r.etape[vede], nev = necesare(r, e);
   let ast = "";
   if (merg.length) {
-    const libere = st.sesiune.retete.filter(x => x !== b && x.pornita && etapaCurenta(reteta(x.slug), x) >= 0 && !st.cron.some(c => c.slug === x.slug && c.tip === "pas" && !c.gata && !x.facute.includes(c.k)));
+    // Ce poți face cât aștepți: în rețeta asta, din altă etapă (orezul cât e puiul în air fryer), și în celelalte rețete.
+    const aici = deFacut(b, vede) || (vede !== ei ? deFacut(b) : null), libere = st.sesiune.retete.filter(x => x !== b).map(x => [x, deFacut(x)]).filter(([, p]) => p);
     const programate = st.sesiune.retete.filter(x => !x.pornita);
-    const urm = r.etape[ei + 1];
-    ast = `<div class="asteptare">${inel(merg[0])}<p>Aștepți ${merg.map(c => `<b>${esc(c.text)}</b>`).join(" și ")}.<br><span class="mic">Când sună, cartea îți spune ce urmează.</span></p>
-      ${libere.map(x => { const rx = reteta(x.slug), px = rx.pasi.find(p => !x.facute.includes(p.k)); return `<button class="buton plin" type="button" data-a="pasDin" data-slug="${esc(x.slug)}" data-k="${px.k}">Între timp: ${esc(scurt(rx.titlu))}, pasul ${px.n}</button>`; }).join("")}
+    const urm = r.etape[vede + 1], alte = merg.length - 1, aiciAlta = aici && aici.etapa !== vede;
+    // Etapa e blocată de o așteptare lungă (cartofii fierb 18 minute): etapa următoare se poate face de obicei în paralel,
+    // dar nu sigur, deci e doar o propunere; titlul ei spune dacă are un moment anume („odată cu puiul”).
+    const prim = e.pasi.find(p => !b.facute.includes(p.k)), lunga = !aiciAlta && prim && merg.some(c => c.k === prim.k && c.s >= 480);
+    const jOpt = lunga ? r.etape.findIndex((x, j) => j > vede && neterminata(j) && !eServire(x)) : -1, opt = jOpt >= 0 ? r.etape[jOpt].pasi.find(p => !b.facute.includes(p.k)) : null;
+    ast = `<div class="asteptare">${inel(merg[0])}<p>Aștepți <b>${esc(merg[0].text)}</b>${merg[0].k !== -1 ? `, pasul ${r.pasi[merg[0].k].n}` : ""}.${alte ? ` Mai ${alte === 1 ? "merge un cronometru" : `merg ${alte} cronometre`}.` : ""}<br><span class="mic">Când sună, cartea îți spune ce urmează.</span></p>
+      ${aiciAlta ? `<button class="buton plin" type="button" data-a="pasDin" data-slug="${esc(b.slug)}" data-k="${aici.k}">Între timp: ${esc(r.etape[aici.etapa].titlu)}, pasul ${aici.n}</button>` : ""}
+      ${opt ? `<button class="buton" type="button" data-a="pasDin" data-slug="${esc(b.slug)}" data-k="${opt.k}">Dacă vrei, între timp: ${esc(r.etape[jOpt].titlu)}, pasul ${opt.n}</button>` : ""}
+      ${libere.map(([x, px]) => `<button class="buton plin" type="button" data-a="pasDin" data-slug="${esc(x.slug)}" data-k="${px.k}">Între timp: ${esc(scurt(reteta(x.slug).titlu))}, pasul ${px.n}</button>`).join("")}
       ${!libere.length && programate.length ? programate.map(x => `<button class="buton" type="button" data-a="pornesteBanda" data-slug="${esc(x.slug)}">Între timp poți porni ${esc(scurt(reteta(x.slug).titlu))}</button>`).join("") : ""}
-      ${!libere.length && !programate.length && urm ? `<p class="mic">Între timp, citește etapa următoare (${esc(urm.titlu || "Pași")}) și pregătește-i ingredientele.</p>` : ""}</div>`;
+      ${!aici && !opt && !libere.length && !programate.length && urm ? `<p class="mic">Între timp, citește etapa următoare (${esc(urm.titlu || "Pași")}) și pregătește-i ingredientele.</p>` : ""}</div>`;
   }
-  const gata = r.etape.slice(0, ei), viitoare = r.etape.slice(ei + 1);
-  return `${cap}<div class="etapa-cap"><h2>${esc(e.titlu || "Pași")}</h2><span class="mic">etapa ${ei + 1} din ${r.etape.length}</span></div>
+  const gata = r.etape.filter((x, j) => !neterminata(j)), altele = r.etape.map((x, j) => j).filter(j => j !== vede && neterminata(j));
+  return `${cap}<div class="etapa-cap"><h2>${vede !== ei ? "Între timp: " : ""}${esc(e.titlu || "Pași")}</h2><span class="mic">etapa ${vede + 1} din ${r.etape.length}</span></div>
     ${ast}
     ${nev.length ? `<div class="nevoie" role="list" aria-label="Ai nevoie">${nev.map(i => `<span role="listitem">${esc(i.nume)} <b>${gram(i, f)}</b>${i.nota ? ` <small>${esc(masura(i.nota, f))}</small>` : ""}</span>`).join("")}</div>` : ""}
     <ol class="pasi mari">${e.pasi.map(p => pasHtml(b.slug, p, b.facute.includes(p.k))).join("")}</ol>
-    <button class="buton mare" type="button" data-a="etapaGata" data-slug="${esc(b.slug)}" style="margin-top:.8rem">${ic("check")} Am terminat toată etapa</button>
-    ${viitoare.map(x => `<details class="pliat"><summary>Urmează: ${esc(x.titlu || "Pași")} (${x.pasi.length} ${x.pasi.length === 1 ? "pas" : "pași"})</summary><div><ol class="pasi">${x.pasi.map(p => pasHtml(b.slug, p, b.facute.includes(p.k))).join("")}</ol></div></details>`).join("")}
+    <button class="buton mare" type="button" data-a="etapaGata" data-slug="${esc(b.slug)}" data-e="${vede}" style="margin-top:.8rem">${ic("check")} Am terminat toată etapa</button>
+    ${altele.map(j => { const x = r.etape[j]; return `<details class="pliat"><summary>${j < vede ? "În curs" : "Urmează"}: ${esc(x.titlu || "Pași")} (${x.pasi.length} ${x.pasi.length === 1 ? "pas" : "pași"})</summary><div><ol class="pasi">${x.pasi.map(p => pasHtml(b.slug, p, b.facute.includes(p.k))).join("")}</ol></div></details>`; }).join("")}
     ${gata.length ? `<details class="pliat"><summary>${ic("check")}&nbsp;Gata: ${gata.map(x => esc(x.titlu || "Pași")).join(", ")}</summary><div><ol class="pasi">${gata.flatMap(x => x.pasi).map(p => pasHtml(b.slug, p, b.facute.includes(p.k))).join("")}</ol></div></details>` : ""}`;
+}
+const eServire = e => /^(servire|la masa|final)/.test(norm(e.titlu));
+// Următorul pas pe care îl poți face acum într-o rețetă pornită. Pașii unei etape se fac în ordine: dacă primul pas nebifat
+// așteaptă un cronometru (air fryer-ul se încălzește), etapa e blocată. Doar dacă tot ce a rămas din ea are cronometrul pornit
+// (mâini libere: puiul e în air fryer), poți trece la etapa următoare, dar nu la servire.
+const mergePas = (slug, k) => st.cron.some(c => c.slug === slug && c.k === k && c.tip === "pas" && !c.gata);
+function deFacut(x, de) {  // de: etapa de la care cauți (cea de pe ecran, dacă ai lucrat înainte)
+  const r = reteta(x.slug), ei = !x.pornita || etapaCurenta(r, x) < 0 ? -1 : de ?? etapaCurenta(r, x);
+  if (ei < 0) return null;
+  for (let j = ei; j < r.etape.length; j++) {
+    if (j > ei && eServire(r.etape[j])) return null;
+    const rest = r.etape[j].pasi.filter(p => !x.facute.includes(p.k));
+    if (!rest.length) continue;
+    if (!mergePas(x.slug, rest[0].k)) return rest[0];
+    if (!rest.every(p => mergePas(x.slug, p.k))) return null;
+  }
+  return null;
 }
 
 // ---------- cumpărături ----------
@@ -1082,13 +1123,16 @@ const ACTIUNI = {
     mergiLaPas(c.slug, c.k); },
   cronApoi: el => { const c = st.cron.find(x => x.id === +el.dataset.id), a = c && apoi(c); if (!a) return; opresteCron(c.id); a.fa(); },
   banda: el => { st.sesiune.activa = el.dataset.slug; salveaza(); randeazaGatit(); window.scrollTo(0, 0); },
-  pasDin: el => mergiLaPas(el.dataset.slug, +el.dataset.k),
+  // Un pas din altă etapă (sau altă rețetă) făcut cât aștepți: ecranul arată etapa lui.
+  pasDin: el => { const b = banda(el.dataset.slug), r = reteta(el.dataset.slug), p = r.pasi[+el.dataset.k];
+    if (b) { if (p.etapa > etapaCurenta(r, b)) b.inainte = p.etapa; else delete b.inainte; salveaza(); } mergiLaPas(r.slug, p.k); },
   pornesteBanda: el => pornesteBanda(el.dataset.slug),
   scoateBanda: el => { scoateDeLaMasa(el.dataset.slug); randeaza(); },
   portiiBanda: el => { const b = banda(el.dataset.slug); b.portii = Math.max(1, b.portii + +el.dataset.d); salveaza(); randeazaGatit(); },
   incepe: incepeMasa,
-  etapaGata: el => { const b = banda(el.dataset.slug), r = reteta(b.slug), ei = etapaCurenta(r, b); if (ei < 0) return;
+  etapaGata: el => { const b = banda(el.dataset.slug), r = reteta(b.slug), ei = el.dataset.e ? +el.dataset.e : etapaCurenta(r, b); if (ei < 0) return;
     for (const p of r.etape[ei].pasi) if (!b.facute.includes(p.k)) b.facute.push(p.k);
+    st.cron = st.cron.filter(c => !(c.gata && c.tip === "pas" && c.slug === b.slug && r.pasi[c.k]?.etapa === ei));
     curataCron(); salveaza(); anunta(`Etapa „${r.etape[ei].titlu}” e gata`); randeaza(); window.scrollTo(0, 0); },
   laJurnal: el => arata("reteta", {slug: el.dataset.slug, ancora: "s-jurnal"}),
   inchideMasa: () => inchideMasa(st.sesiune && st.sesiune.retete.some(b => b.pornita && etapaCurenta(reteta(b.slug), b) >= 0)),
