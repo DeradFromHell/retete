@@ -1,0 +1,11 @@
+{
+  "name": "Cartea de rețete",
+  "short_name": "Rețete",
+  "lang": "ro",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#F3F4F0",
+  "theme_color": "#1F4FA8",
+  "icons": [{"src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any"}]
+}

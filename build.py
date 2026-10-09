@@ -3,7 +3,6 @@
     python build.py [--check]   cu --check doar validează (raportează toate erorile odată)"""
 import csv, io, json, math, re, sys
 from datetime import date
-from html import escape
 from pathlib import Path
 
 import yaml
@@ -181,21 +180,18 @@ def calculeaza_nutritie(meta, ingrediente):
     rezultat["cost"] = rotunjeste(cost / meta["portii"], 0.5) if cost_complet else None
     return rezultat
 
-def corp_in_html(corp):
-    """Pașii numerotați devin <ol> (cu numărul din fișier, ca etapele „## Titlu” să nu reia numerotarea), restul paragrafe."""
-    html, pasi = [], []
-    for linie in [l.strip() for l in corp.splitlines() if l.strip()] + [""]:  # rândurile goale nu rup lista
-        if pas := RE_PAS.match(linie):
-            pasi.append(f'<li value="{pas.group(1)}">{escape(pas.group(2))}</li>')
-            continue
-        if pasi:
-            html.append(f"<ol>{''.join(pasi)}</ol>")
-            pasi = []
+def corp_structurat(corp):
+    """Corpul pe secțiuni „## Titlu”: fiecare cu pașii numerotați (numărul din fișier) și restul rândurilor ca text simplu.
+    Cartea le afișează ea (cu escapare); etapele sunt secțiunile cu pași, plus „Păstrare și reîncălzire” și „Note”."""
+    sectiuni = [{"titlu": "", "pasi": [], "text": []}]
+    for linie in (l.strip() for l in corp.splitlines()):
         if titlu := re.match(r"#+\s+(.+)$", linie):
-            html.append(f"<h3>{escape(titlu.group(1))}</h3>")
-        elif linie:  # „- text” devine punct de listă (marcat prin CSS), restul paragraf
-            html.append(f'<p class="p">{escape(linie[2:])}</p>' if linie.startswith("- ") else f"<p>{escape(linie)}</p>")
-    return "".join(html)
+            sectiuni.append({"titlu": titlu.group(1), "pasi": [], "text": []})
+        elif pas := RE_PAS.match(linie):
+            sectiuni[-1]["pasi"].append({"n": int(pas.group(1)), "text": pas.group(2)})
+        elif linie:
+            sectiuni[-1]["text"].append(linie[2:] if linie.startswith("- ") else linie)
+    return [s for s in sectiuni if s["pasi"] or s["text"]]
 
 def pregateste(meta, corp, ingrediente):
     """Structura unei rețete pentru JSON-ul din carte: stare, tag-uri, ingrediente cu valori/100 g, nutriție."""
@@ -212,7 +208,7 @@ def pregateste(meta, corp, ingrediente):
                          "grup": str(i.get("grup") or ""), **{n: ingrediente[i["id"]][n] for n in NUTRIENTI + ("pret_per_kg",)}}
                         for i in meta["ingrediente"]],
         "nutritie": calculeaza_nutritie(meta, ingrediente),
-        "pasi_html": corp_in_html(corp), "jurnal": jurnal,
+        "sectiuni": corp_structurat(corp), "jurnal": jurnal, "status_manual": meta.get("status_manual") or None,
     }
 
 def main(argv):

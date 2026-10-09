@@ -17,7 +17,7 @@ ingrediente:
     grup: Carnea și condimentele
   - id: sare
     g: 3
-    nota: 1/2 linguriță, pentru toate cele 3 porții
+    nota: 1/2 linguriță
     grup: Carnea și condimentele
   - id: piper_alb
     g: 2
