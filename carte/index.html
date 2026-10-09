@@ -230,6 +230,11 @@ table.nutritie{width:100%;border-collapse:collapse;font-variant-numeric:tabular-
 .asteptare .buton.plin{background:var(--rosie);color:var(--pe-rosie)}
 .asteptare .buton:not(.plin){background:color-mix(in srgb,var(--pe-plin) 14%,transparent);color:var(--pe-plin)}
 .asteptare>.mic{grid-column:1/-1;margin:0}
+.ocupat{display:grid;grid-template-columns:auto 1fr;gap:.6rem .7rem;align-items:start;background:var(--mustar-fundal);color:var(--cerneala);border-radius:22px;padding:1rem;margin:.7rem 0 1rem}
+.ocupat>.ic{color:var(--mustar);margin-top:.15rem}
+.ocupat>p{margin:0;line-height:1.45}
+.ocupat>.buton,.ocupat>.comutator{grid-column:1/-1;margin:0}
+.ocupat>.buton{width:100%}
 .nevoie{display:flex;gap:.5rem;margin:.2rem -1rem .9rem;padding:0 1rem 2px;overflow-x:auto;scrollbar-width:none}
 .nevoie::-webkit-scrollbar{display:none}
 .nevoie span{flex:none;max-width:15rem;background:var(--pagina);border:1.5px solid var(--linie);border-radius:16px;padding:.45rem .8rem;font-size:.93rem;line-height:1.3}
@@ -443,6 +448,17 @@ const timpiDin = t => { let dupa = 0; const l = [...t.matchAll(RE_TIMP)].map((m,
   l.forEach(x => { if (x.alt) return; const sf = t.indexOf(".", x.sf), j = norm(t.slice(x.sf, sf < 0 ? t.length : sf)).indexOf("la jumatate");
     if (j >= 0) (x.memente ||= []).push({la: x.s / 2, text: clauza(t, x.sf + j)}); });
   return l.map(({text, s, alt, memente}) => ({text, s, alt, memente})); };
+// Aparatele care nu pot găti două rețete deodată. Un pas folosește primul aparat pomenit în el
+// („Air fryer la 200 °C … La cuptor: 18 minute” e air fryer; cuptorul e doar varianta). „Coșul” e al air fryer-ului.
+const APARATE = [{id: "airfryer", nume: "air fryer-ul", unul: "air fryer", re: /air ?fryer|\bcos(ul)?\b/}, {id: "cuptor", nume: "cuptorul", unul: "cuptor", re: /cuptor/}];
+// „Când puiul intră în air fryer, pune orezul” e doar un moment, nu o folosire.
+const aparatPas = p => { const t = norm(p.text); let id = null, poz = Infinity;
+  for (const a of APARATE) for (const m of t.matchAll(new RegExp(a.re.source, "g"))) {
+    if (/\bcand\b[^.;:]*$/.test(t.slice(Math.max(0, m.index - 30), m.index))) continue;
+    if (m.index < poz) { id = a.id; poz = m.index; } break; }
+  return id; };
+// Mâncarea iese din aparat: „scoate … pe o grilă”, pe tocător, pe foc, în tigaie (dar nu „scoate și pune înapoi”).
+const RE_IESIRE = /\bscoate|pe (un|o) (tocator|farfurie|grila|fund)|\bfoc\b|tigai|cratit|craticioar|\boala\b|servest/;
 for (const r of RETETE) {
   r.etape = []; r.pastrare = []; r.note = [];
   for (const s of r.sectiuni) {
@@ -454,6 +470,17 @@ for (const r of RETETE) {
   }
   r.pasi = r.etape.flatMap((e, ei) => e.pasi.map(p => Object.assign(p, {etapa: ei, timpi: timpiDin(p.text)})));
   r.pasi.forEach((p, k) => { p.k = k; });
+  // Aparatele: de la primul pas care le pomenește până la ultimul, apoi mai departe cât timp mâncarea nu iese
+  // („35 de minute: nu le atingi” nu mai scrie „cuptor”, dar e tot acolo). Fără pașii din timp.
+  r.aparate = {};
+  const pasiG = r.pasi.filter(p => !/^din timp|inainte/.test(norm(r.etape[p.etapa].titlu)));
+  for (const a of APARATE) {
+    const cu = pasiG.filter(p => aparatPas(p) === a.id);
+    if (!cu.length) continue;
+    let pana = cu[cu.length - 1].k;
+    for (const p of pasiG) if (p.k > pana) { const t = norm(p.text); if ((RE_IESIRE.test(t) && !/pune[a-z-]* inapoi/.test(t)) || (aparatPas(p) && aparatPas(p) !== a.id)) break; pana = p.k; }
+    r.aparate[a.id] = {de: cu[0].k, pana, temp: +(cu[0].text.match(/(\d+)\s*°C/)?.[1]) || null};
+  }
 }
 
 // Aceleași reguli de stare ca în build.py, ca să vezi pe loc ce face o intrare nouă în jurnal.
@@ -619,6 +646,15 @@ function bate(structura) {
   for (const b of st.sesiune?.retete || []) { const r = reteta(b.slug);
     if (b.pornita) r.etape.forEach((e, j) => { if (minuteUltime(e) && !(b.anuntate ||= []).includes(j) && !e.pasi.some(p => b.facute.includes(p.k)) && panaLa(b, e) === 0 && refUltime(b, e)) {
       b.anuntate.push(j); schimbat = true; memento(`Acum începe: ${e.titlu} (${scurt(r.titlu)})`); } }); }
+  // Aparatul s-a eliberat pentru o rețetă care îl aștepta.
+  const s = st.sesiune;
+  if (s?.pornita) for (const b of s.retete) {
+    const r = reteta(b.slug), ei = b.pornita ? etapaCurenta(r, b) : -1, p = ei >= 0 && r.etape[ei].pasi.find(q => !b.facute.includes(q.k)), oc = p && ocupat(b, p.k);
+    s.blocate ||= {};
+    if (oc) { if (!s.blocate[b.slug]) { s.blocate[b.slug] = oc[0].id; schimbat = true; } }
+    else if (s.blocate[b.slug]) { const a = APARATE.find(x => x.id === s.blocate[b.slug]); delete s.blocate[b.slug]; schimbat = true;
+      if (p) memento(`${mare(a.nume)} e liber: ${scurt(r.titlu)}, pasul ${p.n}`); }
+  }
   if (schimbat) { salveaza(); randeazaDock(); if (vedere === "gatit" || vedere === "reteta") randeaza(); }
   for (const el of document.querySelectorAll("[data-cron]")) { const c = st.cron.find(x => String(x.id) === el.dataset.cron); if (c) el.textContent = c.gata ? "gata" : ceas(ramas(c)); }
   for (const el of document.querySelectorAll("[data-cron-p]")) { const c = st.cron.find(x => String(x.id) === el.dataset.cronP); if (c) el.style.setProperty("--p", Math.min(100, 100 - ramas(c) / VITEZA / c.ms * 100) + "%"); }
@@ -736,7 +772,7 @@ function bifeaza(slug, k) {
   const r = reteta(slug);
   if (vedere === "gatit" && b && i < 0 && r.etape[r.pasi[k].etapa].pasi.every(p => b.facute.includes(p.k))) anunta(`Etapa „${r.etape[r.pasi[k].etapa].titlu}” e gata`);
   if (curataCron()) salveaza();
-  randeaza();
+  bate(true);  // redesenează și verifică dacă s-a eliberat un aparat
   if (i < 0) $(`pas-${slug}-${k}`)?.classList.add("abia");  // doar pasul abia bifat sare puțin
 }
 const bifeDetaliu = {}, bifeIngr = {}, portiiD = {};
@@ -932,6 +968,10 @@ function plan(s) {
       <div class="portii"><button class="rotund" type="button" data-a="portiiBanda" data-slug="${esc(b.slug)}" data-d="-1" aria-label="Mai puține porții">${ic("minus")}</button>
         <output>${b.portii}</output><span>${b.portii === 1 ? "porție" : "porții"}</span>
         <button class="rotund" type="button" data-a="portiiBanda" data-slug="${esc(b.slug)}" data-d="1" aria-label="Mai multe porții">${ic("plus")}</button></div></li>`; }).join("")}</ol>
+    ${conflicte(s).map(a => { const unul = unSingur(a.id), n = Math.max(...a.benzi.map(x => minuteAparat(banda(x), a.id)));
+      return `<div class="ocupat">${ic("foc")}<p><b>${a.benzi.map(x => esc(scurt(reteta(x).titlu))).join(" și ")} folosesc ${a.id === "cuptor" ? "cuptorul, la temperaturi diferite" : a.nume}.</b>
+        ${unul ? `Le faci pe rând: cine intră primul îl ține până termină, cealaltă așteaptă, iar cartea te anunță când se eliberează. Masa poate dura cu până la ${durata(n)} mai mult.` : "Le faci în paralel, câte una în fiecare."}</p>
+        <label class="comutator"><input type="checkbox" data-c="unAparat" data-id="${a.id}" ${unul ? "checked" : ""}> Am un singur ${a.unul}</label></div>`; }).join("")}
     ${multe ? `<label class="comutator"><input type="checkbox" data-c="deodata" ${s.deodata ? "checked" : ""}> Le pornesc pe toate acum, nu la rând</label>` : ""}
     <button class="buton" type="button" data-a="mergi" data-v="lista" style="width:100%">${ic("plus")} Adaugă altă rețetă la masă</button>
     ${dinTimp.length ? `<h2 class="sectiune">Din timp</h2><p class="mic">Bifează ce ai făcut deja; ce nu e bifat se face acum, la începutul rețetei, și intră în timp.</p>
@@ -967,6 +1007,13 @@ function randeazaBanda(b) {
   if (b.inainte != null && (b.inainte <= ei || !neterminata(b.inainte))) delete b.inainte;
   const vede = b.inainte ?? ei, e = r.etape[vede], nev = necesare(r, e);
   let ast = "";
+  // Următorul pas are nevoie de aparatul ținut de altă rețetă: spune cine îl ține și ce poți face până se eliberează.
+  const prim0 = e.pasi.find(p => !b.facute.includes(p.k)), oc = prim0 && !mergePas(b.slug, prim0.k) && ocupat(b, prim0.k);
+  if (oc) {
+    const [a, alta] = oc, ra = reteta(alta.slug), la = deFacut(alta), libere = st.sesiune.retete.filter(x => x !== b && x !== alta).map(x => [x, deFacut(x)]).filter(([, p]) => p);
+    ast += `<div class="ocupat">${ic("clepsidra")}<p><b>${mare(a.nume)} e ocupat</b> de ${esc(scurt(ra.titlu))}. Pasul ${prim0.n} așteaptă; când se eliberează, cartea te anunță.</p>
+      ${[[alta, la], ...libere].filter(([, p]) => p).map(([x, px]) => `<button class="buton plin" type="button" data-a="pasDin" data-slug="${esc(x.slug)}" data-k="${px.k}">Între timp: ${esc(scurt(reteta(x.slug).titlu))}, pasul ${px.n}</button>`).join("")}</div>`;
+  }
   if (merg.length) {
     // Ce poți face cât aștepți: în rețeta asta, din altă etapă (orezul cât e puiul în air fryer), și în celelalte rețete.
     const aici = deFacut(b, vede) || (vede !== ei ? deFacut(b) : null), libere = st.sesiune.retete.filter(x => x !== b).map(x => [x, deFacut(x)]).filter(([, p]) => p);
@@ -976,7 +1023,7 @@ function randeazaBanda(b) {
     // dar nu sigur, deci e doar o propunere; titlul ei spune dacă are un moment anume („odată cu puiul”).
     const prim = e.pasi.find(p => !b.facute.includes(p.k)), lunga = !aiciAlta && prim && merg.some(c => c.k === prim.k && c.s >= 480);
     const jOpt = lunga ? r.etape.findIndex((x, j) => j > vede && neterminata(j) && !eServire(x)) : -1, opt = jOpt >= 0 ? r.etape[jOpt].pasi.find(p => !b.facute.includes(p.k)) : null;
-    ast = `<div class="asteptare">${inel(merg[0])}<p>Aștepți <b>${esc(merg[0].text)}</b>${merg[0].k !== -1 ? `, pasul ${r.pasi[merg[0].k].n}` : ""}.${alte ? ` Mai ${alte === 1 ? "merge un cronometru" : `merg ${alte} cronometre`}.` : ""}<br><span class="mic">Când sună, cartea îți spune ce urmează.</span></p>
+    ast += `<div class="asteptare">${inel(merg[0])}<p>Aștepți <b>${esc(merg[0].text)}</b>${merg[0].k !== -1 ? `, pasul ${r.pasi[merg[0].k].n}` : ""}.${alte ? ` Mai ${alte === 1 ? "merge un cronometru" : `merg ${alte} cronometre`}.` : ""}<br><span class="mic">Când sună, cartea îți spune ce urmează.</span></p>
       ${aiciAlta ? `<button class="buton plin" type="button" data-a="pasDin" data-slug="${esc(b.slug)}" data-k="${aici.k}">Între timp: ${esc(r.etape[aici.etapa].titlu)}, pasul ${aici.n}</button>` : ""}
       ${!opt ? "" : !minuteUltime(r.etape[jOpt]) ? `<button class="buton" type="button" data-a="pasDin" data-slug="${esc(b.slug)}" data-k="${opt.k}">Dacă vrei, între timp: ${esc(r.etape[jOpt].titlu)}, pasul ${opt.n}</button>`
         : panaLa(b, r.etape[jOpt]) === 0 ? `<button class="buton plin" type="button" data-a="pasDin" data-slug="${esc(b.slug)}" data-k="${opt.k}">Acum: ${esc(r.etape[jOpt].titlu)}, pasul ${opt.n}</button>`
@@ -1002,6 +1049,30 @@ const panaLa = (x, e) => { const n = minuteUltime(e); if (!n) return 0; const c 
 // Următorul pas pe care îl poți face acum într-o rețetă pornită. Pașii unei etape se fac în ordine: dacă primul pas nebifat
 // așteaptă un cronometru (air fryer-ul se încălzește), etapa e blocată. Doar dacă tot ce a rămas din ea are cronometrul pornit
 // (mâini libere: puiul e în air fryer), poți trece la etapa următoare, dar nu la servire.
+// ---------- un singur air fryer (sau cuptor la temperaturi diferite) pentru două rețete ----------
+// Cine intră primul în aparat îl ține până îi termină toți pașii de acolo; cealaltă rețetă așteaptă, iar cartea anunță când se eliberează.
+const unSingur = id => (mem.get("aparate", {})[id] ?? 1) === 1;  // implicit: unul singur
+const mare = s => s.charAt(0).toUpperCase() + s.slice(1);
+function conflicte(s) {
+  return APARATE.map(a => { const b = s.retete.filter(x => reteta(x.slug).aparate[a.id]), t = new Set(b.map(x => reteta(x.slug).aparate[a.id].temp).filter(Boolean));
+    return b.length > 1 && (a.id !== "cuptor" || t.size > 1) ? {...a, benzi: b.map(x => x.slug)} : null; }).filter(Boolean);
+}
+const pasiAparat = (x, id) => { const w = reteta(x.slug).aparate[id]; return w ? reteta(x.slug).pasi.filter(p => p.k >= w.de && p.k <= w.pana) : []; };
+function tineAparat(x, id) {
+  const pasi = pasiAparat(x, id), cron = k => st.cron.some(c => c.slug === x.slug && c.k === k && c.tip === "pas");
+  return pasi.some(p => x.facute.includes(p.k) || cron(p.k)) && (pasi.some(p => !x.facute.includes(p.k)) || pasi.some(p => mergePas(x.slug, p.k)));
+}
+// Pasul k al rețetei x are nevoie de un aparat ținut de altă rețetă: [aparatul, rețeta care îl ține], altfel null.
+function ocupat(x, k) {
+  const s = st.sesiune; if (!s) return null;
+  for (const a of conflicte(s)) {
+    if (!unSingur(a.id) || !pasiAparat(x, a.id).some(p => p.k === k) || tineAparat(x, a.id)) continue;
+    const alta = s.retete.find(y => y !== x && a.benzi.includes(y.slug) && tineAparat(y, a.id));
+    if (alta) return [a, alta];
+  }
+  return null;
+}
+const minuteAparat = (x, id) => Math.round(pasiAparat(x, id).reduce((m, p) => m + (p.timpi.find(t => !t.alt)?.s || 0), 0) / 60);
 const mergePas = (slug, k) => st.cron.some(c => c.slug === slug && c.k === k && c.tip === "pas" && !c.gata);
 function deFacut(x, de) {  // de: etapa de la care cauți (cea de pe ecran, dacă ai lucrat înainte)
   const r = reteta(x.slug), ei = !x.pornita || etapaCurenta(r, x) < 0 ? -1 : de ?? etapaCurenta(r, x);
@@ -1010,7 +1081,7 @@ function deFacut(x, de) {  // de: etapa de la care cauți (cea de pe ecran, dac�
     if (j > ei && (eServire(r.etape[j]) || panaLa(x, r.etape[j]) > 0)) return null;
     const rest = r.etape[j].pasi.filter(p => !x.facute.includes(p.k));
     if (!rest.length) continue;
-    if (!mergePas(x.slug, rest[0].k)) return rest[0];
+    if (!mergePas(x.slug, rest[0].k)) return ocupat(x, rest[0].k) ? null : rest[0];
     if (!rest.every(p => mergePas(x.slug, p.k))) return null;
   }
   return null;
@@ -1182,7 +1253,7 @@ const ACTIUNI = {
   etapaGata: el => { const b = banda(el.dataset.slug), r = reteta(b.slug), ei = el.dataset.e ? +el.dataset.e : etapaCurenta(r, b); if (ei < 0) return;
     for (const p of r.etape[ei].pasi) if (!b.facute.includes(p.k)) b.facute.push(p.k);
     st.cron = st.cron.filter(c => !(c.gata && c.tip === "pas" && c.slug === b.slug && r.pasi[c.k]?.etapa === ei));
-    curataCron(); salveaza(); anunta(`Etapa „${r.etape[ei].titlu}” e gata`); randeaza(); window.scrollTo(0, 0); },
+    curataCron(); salveaza(); anunta(`Etapa „${r.etape[ei].titlu}” e gata`); bate(true); window.scrollTo(0, 0); },
   laJurnal: el => arata("reteta", {slug: el.dataset.slug, ancora: "s-jurnal"}),
   inchideMasa: () => inchideMasa(st.sesiune && st.sesiune.retete.some(b => b.pornita && etapaCurenta(reteta(b.slug), b) >= 0)),
   golesteCos: () => { if (!nrCos() || !confirm("Golești toată lista de cumpărături?")) return; st.cos = {}; st.extra = []; st.cumparate = new Set(); salveaza(); randeaza(); },
@@ -1207,6 +1278,7 @@ document.addEventListener("change", e => {
   else if (c === "scoase") { const l = st.sesiune.scoase[el.dataset.slug] ||= [], k = +el.dataset.k; el.checked ? l.push(k) : l.splice(l.indexOf(k), 1); salveaza(); el.closest(".ingr").classList.toggle("luat", el.checked); }
   else if (c === "dinTimp") { st.sesiune.dinTimp[el.dataset.slug] = el.checked; salveaza(); const y = scrollY; randeazaGatit(); window.scrollTo(0, y); }
   else if (c === "deodata") { st.sesiune.deodata = el.checked; salveaza(); randeazaGatit(); }
+  else if (c === "unAparat") { const a = mem.get("aparate", {}); a[el.dataset.id] = el.checked ? 1 : 2; mem.set("aparate", a); const y = scrollY; randeazaGatit(); window.scrollTo(0, y); }
   else if (el.id === "poza-fisier" && el.files[0]) urcaPoza(el.files[0]);
 });
 document.addEventListener("submit", e => {
