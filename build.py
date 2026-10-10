@@ -22,7 +22,6 @@ OBLIGATORII = ("titlu", "slug", "categorie", "sursa", "portii", "timp_activ_min"
 RE_PAS = re.compile(r"^(\d+)[.)]\s+(.+)$")
 RE_FRONTMATTER = re.compile(r"^---\r?\n(.*?)\r?\n---[ \t]*(?:\r?\n|$)(.*)$", re.S)
 
-
 class Incarcator(yaml.SafeLoader):  # fără date implicite: „2026-13-40” rămâne text și îl verifică data_valida, cu mesaj clar
     yaml_implicit_resolvers = {c: [r for r in l if r[0] != "tag:yaml.org,2002:timestamp"]
                                for c, l in yaml.SafeLoader.yaml_implicit_resolvers.items()}
