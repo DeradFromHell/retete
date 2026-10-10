@@ -4,6 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="color-scheme" content="light dark">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#FFFFFF" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#141516" media="(prefers-color-scheme: dark)">
 <link rel="manifest" href="manifest.webmanifest">
@@ -18,7 +20,10 @@
   --marar:#1B7F4E;--marar-fundal:#E2F3E9;--pe-marar:#FFFFFF;--mustar:#7F5500;--mustar-fundal:#FFF1C7;
   --plin:#1A1A1A;--pe-plin:#FFFFFF;--umbra:0 1px 2px rgba(0,0,0,.07),0 6px 20px rgba(0,0,0,.10);
   --titluri:"Bricolage Grotesque",ui-rounded,"Segoe UI Variable Display",system-ui,sans-serif;
-  --text:"Figtree",system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans",sans-serif;--dock:0px}
+  --text:"Figtree",system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans",sans-serif;--dock:0px;
+  /* mișcarea, peste tot aceleași: apăsare, schimbare de stare, intrare, drum lung; curbe: sosește (încetinește), pleacă (accelerează), arc (sare puțin) */
+  --t-apasa:120ms;--t-scurt:200ms;--t-mediu:320ms;--t-lung:520ms;
+  --e-iese:cubic-bezier(.16,1,.3,1);--e-intra:cubic-bezier(.4,0,1,1);--e-arc:cubic-bezier(.34,1.56,.64,1)}
 @media (prefers-color-scheme:dark){:root{--pagina:#141516;--supr:#1F2022;--supr2:#2C2D30;--cerneala:#F3F2EF;--mut:#ABAAA5;--linie:#2E2F32;--linie-tare:#4A4B4F;
   --rosie:#FF6B52;--rosie-text:#FF907C;--rosie-fundal:#3A1C16;--pe-rosie:#1C0905;
   --marar:#58CC90;--marar-fundal:#143020;--pe-marar:#0A1A11;--mustar:#F4C455;--mustar-fundal:#35290B;
@@ -37,16 +42,22 @@ b,strong{font-weight:700}
 .ic.plin{fill:currentColor;stroke:none}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
 [hidden]{display:none!important}
-section:not([hidden]){animation:intra .28s ease-out}
-@keyframes intra{from{opacity:0;transform:translateY(8px)}}
+/* ecranele: înainte vin din dreapta, înapoi din stânga; în timpul unei tranziții cu poza, nu se mai mișcă și ele */
+section:not([hidden]){animation:intra var(--t-mediu) var(--e-iese)}
+body[data-dir=inapoi] section:not([hidden]){animation-name:intra-inapoi}
+html.vt section{animation:none!important}
+@keyframes intra{from{opacity:0;transform:translateX(18px)}}
+@keyframes intra-inapoi{from{opacity:0;transform:translateX(-18px)}}
 @keyframes pop{45%{transform:scale(1.18)}}
 @keyframes urca{from{transform:translateY(100%)}}
-@keyframes puls{50%{transform:scale(1.03)}}
+/* alarma: unde care pleacă din buton și se sting (ca pulsating-button din Magic UI), nu butonul care crește */
+@keyframes val{from{box-shadow:0 0 0 0 color-mix(in srgb,var(--val,var(--rosie)) 60%,transparent)}to{box-shadow:0 0 0 16px transparent}}
+@keyframes trage{from{stroke-dashoffset:24}to{stroke-dashoffset:0}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
 
 /* butoane: pastile, ținte de cel puțin 44 px */
 .buton{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;min-height:48px;padding:.6rem 1.2rem;border-radius:999px;border:0;
-  background:var(--supr);color:var(--cerneala);font-weight:650;text-decoration:none;text-align:center;transition:transform .12s ease}
+  background:var(--supr);color:var(--cerneala);font-weight:650;text-decoration:none;text-align:center;transition:transform var(--t-apasa) var(--e-iese)}
 .buton.plin{background:var(--plin);color:var(--pe-plin)}
 .buton.mare{width:100%;min-height:58px;font-size:1.08rem}
 .buton:active,.chip:active,.card-adauga:active,.banda:active{transform:scale(.97)}
@@ -54,13 +65,13 @@ section:not([hidden]){animation:intra .28s ease-out}
 .chips{display:flex;flex-wrap:wrap;gap:.5rem}
 .chips.derulant{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
 .chips.derulant::-webkit-scrollbar{display:none}
-.chip{min-height:44px;padding:.4rem 1rem;border-radius:999px;border:0;background:var(--supr);font-size:.95rem;font-weight:600;white-space:nowrap;display:inline-flex;align-items:center;gap:.35rem;transition:transform .12s ease}
+.chip{min-height:44px;padding:.4rem 1rem;border-radius:999px;border:0;background:var(--supr);font-size:.95rem;font-weight:600;white-space:nowrap;display:inline-flex;align-items:center;gap:.35rem;transition:transform var(--t-apasa) var(--e-iese)}
 .chip[aria-pressed=true]{background:var(--plin);color:var(--pe-plin)}
 .eticheta-rand{font-size:.9rem;color:var(--mut);align-self:center;white-space:nowrap;margin-right:.1rem}
 input[type=search],input[type=text],input[type=date],input[type=number],textarea{width:100%;font-size:1rem;padding:.7rem 1rem;border:2px solid transparent;border-radius:16px;background:var(--supr);min-height:50px}
 input:focus,textarea:focus{outline:none;border-color:var(--cerneala)}
 textarea{min-height:5.5rem;resize:vertical}
-input[type=checkbox]{appearance:none;-webkit-appearance:none;width:26px;height:26px;margin:0;border-radius:50%;border:2px solid var(--linie-tare);background:var(--pagina);display:grid;place-items:center;flex:none;transition:background .15s,border-color .15s}
+input[type=checkbox]{appearance:none;-webkit-appearance:none;width:26px;height:26px;margin:0;border-radius:50%;border:2px solid var(--linie-tare);background:var(--pagina);display:grid;place-items:center;flex:none;transition:background var(--t-scurt),border-color var(--t-scurt)}
 input[type=checkbox]:checked{background:var(--marar);border-color:var(--marar)}
 input[type=checkbox]:checked::after{content:"";width:11px;height:6px;border:solid var(--pe-marar);border-width:0 0 2.5px 2.5px;transform:translateY(-1.5px) rotate(-45deg)}
 
@@ -83,7 +94,7 @@ input[type=checkbox]:checked::after{content:"";width:11px;height:6px;border:soli
 #filtre{margin-top:.6rem;display:grid;gap:.5rem}
 #lista{display:grid;grid-template-columns:repeat(auto-fill,minmax(17rem,1fr));gap:1.7rem 1rem;padding-top:1rem;padding-bottom:1rem}
 .card{position:relative}
-.card .foto{aspect-ratio:4/3;border-radius:22px;transition:transform .18s ease}
+.card .foto{aspect-ratio:4/3;border-radius:22px;transition:transform var(--t-apasa) var(--e-iese)}
 .card:active .foto{transform:scale(.985)}
 .card h2{font-size:1.3rem;margin:.8rem 0 .35rem}
 .card h2 a{color:inherit;text-decoration:none}
@@ -92,7 +103,7 @@ input[type=checkbox]:checked::after{content:"";width:11px;height:6px;border:soli
 .card h2 a:focus-visible::after{outline:3px solid var(--rosie);outline-offset:4px}
 .card .foto .stare{position:absolute;left:.75rem;top:.75rem;box-shadow:var(--umbra)}
 .card-adauga{position:absolute;z-index:1;right:.75rem;top:.75rem;min-height:44px;padding:.35rem 1rem .35rem .8rem;border-radius:999px;border:0;
-  background:var(--pagina);color:var(--cerneala);box-shadow:var(--umbra);display:inline-flex;align-items:center;gap:.3rem;font-size:.95rem;font-weight:700;transition:transform .12s ease,background .15s}
+  background:var(--pagina);color:var(--cerneala);box-shadow:var(--umbra);display:inline-flex;align-items:center;gap:.3rem;font-size:.95rem;font-weight:700;transition:transform var(--t-apasa) var(--e-iese),background var(--t-scurt)}
 .card-adauga[aria-pressed=true]{background:var(--rosie);color:var(--pe-rosie)}
 .meta{display:flex;flex-wrap:wrap;gap:.25rem .9rem;margin:0;color:var(--mut);font-size:.93rem}
 .meta>span{display:inline-flex;align-items:center;gap:.3rem}
@@ -108,9 +119,9 @@ input[type=checkbox]:checked::after{content:"";width:11px;height:6px;border:soli
 .subsol{color:var(--mut);font-size:.92rem;margin:2rem auto 1rem;display:flex;flex-wrap:wrap;align-items:center;gap:.5rem .8rem}
 
 /* bara de sus a vederilor */
-.bara{position:sticky;top:0;z-index:6;background:color-mix(in srgb,var(--pagina) 90%,transparent);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border-bottom:1px solid var(--linie);transition:background .2s,border-color .2s}
+.bara{position:sticky;top:0;z-index:6;background:color-mix(in srgb,var(--pagina) 90%,transparent);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border-bottom:1px solid var(--linie);transition:background var(--t-scurt),border-color var(--t-scurt)}
 .bara>.cont{display:flex;align-items:center;gap:.25rem;min-height:58px;padding:0 .5rem}
-.bara .titlu{flex:1;min-width:0;font:700 1.08rem var(--titluri);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:opacity .2s}
+.bara .titlu{flex:1;min-width:0;font:700 1.08rem var(--titluri);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:opacity var(--t-scurt)}
 #v-reteta .bara{position:fixed;left:0;right:0;background:transparent;border-color:transparent;-webkit-backdrop-filter:none;backdrop-filter:none}
 #v-reteta .bara .titlu{opacity:0}
 #v-reteta .bara .ic-btn{background:var(--pagina);box-shadow:var(--umbra);margin-left:.2rem}
@@ -160,9 +171,10 @@ body[data-marime="2"] .marire{font-size:1.25em}
 .pasi{list-style:none;margin:0;padding:0}
 .pas{display:grid;grid-template-columns:44px 1fr 44px;gap:.6rem;padding:.95rem 0;border-bottom:1px solid var(--linie);cursor:pointer;scroll-margin-top:9rem}
 .pas:last-child{border-bottom:0}
-.pas-nr{width:44px;height:44px;border-radius:50%;border:0;background:var(--rosie-fundal);color:var(--rosie-text);display:grid;place-items:center;font:750 1.1rem var(--titluri);transition:background .15s}
+.pas-nr{width:44px;height:44px;border-radius:50%;border:0;background:var(--rosie-fundal);color:var(--rosie-text);display:grid;place-items:center;font:750 1.1rem var(--titluri);transition:background var(--t-scurt)}
 .pas.facut .pas-nr{background:var(--marar);color:var(--pe-marar)}
-.pas.abia .pas-nr{animation:pop .35s ease}
+.pas.abia .pas-nr{animation:pop var(--t-mediu) var(--e-arc)}
+.pas.abia.facut .pas-nr .ic{stroke-dasharray:24;animation:trage var(--t-mediu) 60ms var(--e-iese) backwards}
 .pas.facut .pas-text{color:var(--mut)}
 .pas-nota{width:44px;height:44px;border:0;border-radius:50%;background:none;color:var(--mut);display:grid;place-items:center}
 .nota-pas{display:block;margin-top:.45rem;padding:.4rem .7rem;border-radius:12px;background:var(--mustar-fundal);color:var(--cerneala);font-size:.92em;line-height:1.4}
@@ -190,7 +202,7 @@ body[data-marime="2"] .marire{font-size:1.25em}
   background:var(--rosie-fundal);color:var(--rosie-text);font:700 .95em var(--titluri);font-variant-numeric:tabular-nums;vertical-align:baseline}
 .pasi.mari .timp{background:var(--pagina)}
 .timp.merge,.pasi.mari .timp.merge{background:var(--plin);color:var(--pe-plin)}
-.timp.gata,.pasi.mari .timp.gata{background:var(--rosie);color:var(--pe-rosie);animation:puls 1.2s ease-in-out infinite}
+.timp.gata,.pasi.mari .timp.gata{background:var(--rosie);color:var(--pe-rosie);animation:val 1.6s var(--e-iese) infinite}
 h3.etapa{font-size:1.22rem;margin:1.7rem 0 .2rem}
 .text-lista{background:var(--supr);border-radius:20px;padding:.5rem 1.1rem}
 .text-lista p{margin:.6rem 0}
@@ -223,7 +235,7 @@ table.nutritie{width:100%;border-collapse:collapse;font-variant-numeric:tabular-
 /* gătit */
 .benzi{position:sticky;top:58px;z-index:5;background:var(--pagina);border-bottom:1px solid var(--linie)}
 .benzi .chips{padding:.55rem 1rem}
-.banda{flex:none;min-height:60px;max-width:16.5rem;display:flex;align-items:center;gap:.65rem;padding:.4rem 1rem .4rem .45rem;border-radius:999px;border:0;background:var(--supr);text-align:left;transition:transform .12s ease}
+.banda{flex:none;min-height:60px;max-width:16.5rem;display:flex;align-items:center;gap:.65rem;padding:.4rem 1rem .4rem .45rem;border-radius:999px;border:0;background:var(--supr);text-align:left;transition:transform var(--t-apasa) var(--e-iese)}
 .banda[aria-pressed=true]{background:var(--plin);color:var(--pe-plin)}
 .banda b{display:block;font-size:.95rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .banda small{display:block;font-size:.85rem;color:var(--mut);font-variant-numeric:tabular-nums}
@@ -280,17 +292,33 @@ table.nutritie{width:100%;border-collapse:collapse;font-variant-numeric:tabular-
 .cron-du small{display:block;font-size:.82rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:10.5rem}
 .cron-x{border:0;background:none;color:inherit;min-width:44px;min-height:44px}
 .cron-apoi{grid-column:1/-1;display:flex;align-items:center;gap:.4rem;border:0;margin:0 .35rem .35rem;border-radius:999px;background:var(--pe-plin);color:var(--plin);font-weight:700;min-height:44px;padding:0 .9rem}
-.cron.gata{background:var(--rosie);color:var(--pe-rosie);animation:puls 1.2s ease-in-out infinite}
+.cron.gata{background:var(--rosie);color:var(--pe-rosie);animation:val 1.6s var(--e-iese) infinite}
 .cron.gata .cron-apoi{background:var(--pe-rosie);color:var(--rosie)}
-.cron.memento{background:#F5B700;color:#1A1A1A;animation:puls 1.2s ease-in-out 3}
+.cron.memento{--val:#F5B700;background:#F5B700;color:#1A1A1A;animation:val 1.6s var(--e-iese) 3}
 .cron.memento small{white-space:normal;max-width:12rem}
+/* cronometrul care zboară din pas în bara de jos; bara de progres din fila rețetei; confetti la masa gata */
+.zbor{position:fixed;z-index:40;pointer-events:none;border-radius:999px;background:var(--rosie);color:var(--pe-rosie);font:700 .95rem var(--titluri);padding:.45rem .9rem;white-space:nowrap;box-shadow:var(--umbra)}
+.banda>span:last-child{min-width:0;flex:1}
+.banda-bara{display:block;height:4px;border-radius:9px;margin-top:.3rem;background:color-mix(in srgb,currentColor 18%,transparent);overflow:hidden}
+.banda-bara i{display:block;height:100%;border-radius:inherit;background:var(--b,var(--rosie));transform-origin:left;transform:scaleX(var(--p,0));transition:transform var(--t-lung) var(--e-iese)}
+.dock-cron{padding:10px;margin:-10px}
+.confetti{position:fixed;inset:0;z-index:45;pointer-events:none}
+::view-transition-group(poza-reteta){animation-duration:var(--t-mediu);animation-timing-function:var(--e-iese)}
+::view-transition-old(poza-reteta),::view-transition-new(poza-reteta){height:100%;object-fit:cover;overflow:clip}
+::view-transition-old(root),::view-transition-new(root){animation-duration:var(--t-scurt)}
+.fantoma{position:fixed;z-index:35;pointer-events:none;margin:0}
+/* iPhone cu cartea pe ecranul principal: nimic sub ceas și sub bara de stare */
+.bara{padding-top:env(safe-area-inset-top)}
+.cap{padding-top:calc(1.2rem + env(safe-area-inset-top))}
+.sari,.benzi{top:calc(58px + env(safe-area-inset-top))}
+html{scroll-padding-top:calc(7.5rem + env(safe-area-inset-top))}
 .la-pas{display:inline;border:0;background:none;padding:0;color:var(--rosie-text);font:inherit;font-weight:700;text-decoration:underline;text-underline-offset:3px;min-height:0}
 .dock-act{display:flex;gap:.5rem}
 .dock-act .buton{flex:1;background:color-mix(in srgb,var(--pe-plin) 12%,transparent);color:var(--pe-plin);min-height:50px;padding:.4rem .8rem}
 
 /* foi care urcă de jos */
 .foaie{position:fixed;inset:0;z-index:30;background:rgba(10,10,10,.5);display:flex;align-items:flex-end}
-.foaie>div{background:var(--pagina);width:100%;max-width:44rem;margin:0 auto;max-height:88vh;overflow:auto;border-radius:28px 28px 0 0;padding:.6rem 1.1rem calc(1.2rem + env(safe-area-inset-bottom));animation:urca .3s cubic-bezier(.2,.8,.2,1)}
+.foaie>div{background:var(--pagina);width:100%;max-width:44rem;margin:0 auto;max-height:88vh;overflow:auto;border-radius:28px 28px 0 0;padding:.6rem 1.1rem calc(1.2rem + env(safe-area-inset-bottom));animation:urca var(--t-mediu) var(--e-iese)}
 .foaie>div::before{content:"";display:block;width:40px;height:5px;border-radius:9px;background:var(--supr2);margin:0 auto 1rem}
 .foaie h2{font-size:1.45rem;margin-bottom:.4rem}
 .foaie .rand{display:flex;gap:.5rem;margin-top:1rem}
@@ -433,6 +461,78 @@ const ceas = ms => { const s = Math.max(0, Math.ceil(ms / 1000)); const h = Math
 const azi = () => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`; };
 const acum = d => { const z = Math.floor((Date.now() - new Date(d)) / 864e5); return z <= 0 ? "azi" : z === 1 ? "ieri" : z < 60 ? `acum ${z} zile` : `acum ${Math.round(z / 30)} luni`; };
 const ic = (n, plin) => `<svg class="ic${plin ? " plin" : ""}" aria-hidden="true"><use href="#i-${n}"/></svg>`;
+
+// ---------- mișcare: aceleași durate și curbe ca în CSS (--t-*, --e-*); cu „mișcare redusă” pe telefon, nimic nu se mișcă ----------
+// Animațiile sunt doar de privit: starea se schimbă imediat, niciodată la sfârșitul unei animații.
+const redus = () => matchMedia("(prefers-reduced-motion: reduce)").matches;
+const MISCA = {scurt: 200, mediu: 320, lung: 520, iese: "cubic-bezier(.16,1,.3,1)", intra: "cubic-bezier(.4,0,1,1)"};
+const anim = (el, cadre, opt) => el && el.animate && !redus() ? el.animate(cadre, opt) : null;
+// O copie de privit a unui element care tocmai dispare, lăsată pe loc cât pleacă.
+function fantoma(el, cadre, durata = MISCA.scurt) {
+  if (!el || redus()) return null;
+  const r = el.getBoundingClientRect(); if (!r.width) return null;
+  const f = el.cloneNode(true);
+  for (const x of [f, ...f.querySelectorAll("[id]")]) x.removeAttribute("id");
+  f.classList.add("fantoma"); f.setAttribute("aria-hidden", "true"); f.inert = true;
+  Object.assign(f.style, {left: r.left + "px", top: r.top + "px", width: r.width + "px", height: r.height + "px"});
+  document.body.append(f);
+  const a = f.animate(cadre, {duration: durata, easing: MISCA.intra, fill: "forwards"});
+  a.onfinish = a.oncancel = () => f.remove(); setTimeout(() => f.remove(), durata + 300);
+  return f;
+}
+// Cronometrul zboară din pas în bara de jos, ca să vezi unde s-a dus (cât zboară, bara nu-l mai anunță și ea).
+let zboara = false;
+const aparitie = {}, zburate = new Set(), inZbor = new Set();  // când a apărut fiecare cronometru în bară; cele venite zburând; cele încă în aer
+function zbor(dinRect, text, id) {
+  const tinta = document.querySelector(`#dock-cron .cron[data-id="${id}"]`);
+  if (!tinta || redus() || !dinRect.width) return;
+  zburate.add(String(id)); inZbor.add(String(id));
+  const b = tinta.getBoundingClientRect(), z = document.createElement("div");
+  z.className = "zbor"; z.textContent = text; z.setAttribute("aria-hidden", "true");
+  Object.assign(z.style, {left: dinRect.left + "px", top: dinRect.top + "px"});
+  document.body.append(z);
+  tinta.style.opacity = "0";
+  // la aterizare caută din nou cronometrul: între timp bara poate să se fi redesenat
+  const arata2 = () => { z.remove(); inZbor.delete(String(id)); const t = document.querySelector(`#dock-cron .cron[data-id="${id}"]`); if (!t) return;
+    t.style.opacity = ""; anim(t, [{transform: "scale(.7)"}, {transform: "scale(1.05)", offset: .7}, {transform: "none"}], {duration: MISCA.mediu, easing: MISCA.iese}); };
+  const dx = b.left + 14 - dinRect.left, dy = b.top + 10 - dinRect.top;
+  const a = z.animate([{transform: "none"}, {transform: `translate(${dx * .45}px, ${dy * .45 - 60}px) scale(1.06)`, offset: .45}, {transform: `translate(${dx}px, ${dy}px) scale(.8)`, opacity: .7}],
+    {duration: MISCA.lung, easing: "cubic-bezier(.4,0,.2,1)"});
+  a.onfinish = a.oncancel = arata2; setTimeout(() => { if (z.isConnected) arata2(); }, MISCA.lung + 300);
+}
+// Cifrele se rotesc spre noua valoare (ca number-ticker din Magic UI): gramele când schimbi porțiile.
+const cifre = sel => [...document.querySelectorAll(sel)].map(e => parseInt(e.textContent));
+function rotesteCifre(sel, vechi) {
+  if (redus() || document.hidden) return;
+  const t0 = performance.now();
+  [...document.querySelectorAll(sel)].forEach((e, i) => {
+    const final = e.textContent, la = parseInt(final), de = vechi[i], suf = final.replace(/^\d+/, "");
+    if (isNaN(la) || isNaN(de) || la === de) return;
+    // valoarea adevărată se pune sigur la sfârșit, chiar dacă browserul nu desenează cadrele (pagina în fundal)
+    const pas = t => { if (!e.isConnected) return; const k = Math.min(1, (t - t0) / MISCA.lung); e.textContent = k < 1 ? Math.round(de + (la - de) * (1 - (1 - k) ** 3)) + suf : final; if (k < 1) requestAnimationFrame(pas); };
+    requestAnimationFrame(pas); setTimeout(() => { if (e.isConnected) e.textContent = final; }, MISCA.lung + 80);
+  });
+}
+// Poza de pe card crește în poza rețetei (și se întoarce în card), unde browserul știe View Transitions.
+function cuPoza(schimba, dePe, spre) {
+  if (!document.startViewTransition || redus() || !dePe) return schimba();
+  document.documentElement.classList.add("vt"); dePe.style.viewTransitionName = "poza-reteta";
+  const t = document.startViewTransition(() => { dePe.style.viewTransitionName = ""; schimba(); const s = spre(); if (s) s.style.viewTransitionName = "poza-reteta"; });
+  t.finished.finally(() => { for (const e of document.querySelectorAll(".foto, .erou-foto")) e.style.viewTransitionName = ""; document.documentElement.classList.remove("vt"); });
+}
+const fotoCard = slug => document.querySelector(`.card a[data-slug="${CSS.escape(slug)}"]`)?.closest(".card")?.querySelector(".foto");
+// Confetti la „Masa e gata” (ca confetti din Magic UI, fără bibliotecă): o dată, cu culorile cărții.
+function confetti() {
+  if (redus()) return;
+  const cv = document.createElement("canvas"), x = cv.getContext("2d"), cul = ["#E5432A", "#F5B700", "#1B7F4E", "#2F6FDB"];
+  cv.className = "confetti"; cv.width = innerWidth; cv.height = innerHeight; cv.setAttribute("aria-hidden", "true"); document.body.append(cv);
+  const b = Array.from({length: 90}, () => ({x: innerWidth / 2, y: innerHeight * .45, vx: (Math.random() - .5) * 14, vy: -Math.random() * 13 - 4, r: Math.random() * 6, c: cul[Math.floor(Math.random() * 4)], s: 6 + Math.random() * 6}));
+  const t0 = performance.now();
+  const f = t => { x.clearRect(0, 0, cv.width, cv.height);
+    for (const q of b) { q.x += q.vx; q.y += q.vy; q.vy += .32; q.vx *= .99; q.r += .15; x.save(); x.translate(q.x, q.y); x.rotate(q.r); x.fillStyle = q.c; x.fillRect(-q.s / 2, -q.s / 4, q.s, q.s / 2); x.restore(); }
+    if (t - t0 < 2200) requestAnimationFrame(f); else cv.remove(); };
+  requestAnimationFrame(f); setTimeout(() => cv.remove(), 2600);
+}
 const ultima = r => r.jurnal[r.jurnal.length - 1] || null;
 const reteta = slug => RETETE.find(r => r.slug === slug);
 const scurt = t => { const c = String(t).split(/\s+/); return c.length > 4 ? c.slice(0, 4).join(" ").replace(/[,;]$/, "") + "…" : t; };
@@ -644,6 +744,7 @@ function pornesteCron(c) {
   if (t?.memente) x.memente = t.memente.map(m => ({...m, facut: false}));
   st.cron.push(x); salveaza(); programeaza(x); cerePermisiune(); bate(true);
   anunta(`Cronometru pornit: ${c.text}`);
+  return x;
 }
 // Un setTimeout pus o singură dată, la pornire, nu e încetinit de browser ca un interval când telefonul e blocat.
 const programeaza = c => { if (!c.gata) setTimeout(() => bate(), Math.max(0, c.sfarsit - Date.now()) + 60); };
@@ -827,13 +928,13 @@ function bifeaza(slug, k) {
   if (vedere === "gatit" && b && i < 0 && r.etape[r.pasi[k].etapa].pasi.every(p => b.facute.includes(p.k))) anunta(`Etapa „${r.etape[r.pasi[k].etapa].titlu}” e gata`);
   if (curataCron()) salveaza();
   bate(true);  // redesenează și verifică dacă s-a eliberat un aparat
-  if (i < 0) $(`pas-${slug}-${k}`)?.classList.add("abia");  // doar pasul abia bifat sare puțin
+  if (i < 0) { $(`pas-${slug}-${k}`)?.classList.add("abia"); try { navigator.vibrate?.(12); } catch (e) {} }  // doar pasul abia bifat sare și își desenează bifa
 }
 const bifeDetaliu = {}, bifeIngr = {}, portiiD = {};
 
 // ---------- navigare: o vedere la un moment dat; adresa (#slug, #gatit, #cumparaturi) o reflectă ----------
 let vedere = "lista", curentaSlug = null, adancime = 0;
-const VEDERI = {lista: "v-lista", reteta: "v-reteta", gatit: "v-gatit", cos: "v-cos"}, pozitii = {};
+const VEDERI = {lista: "v-lista", reteta: "v-reteta", gatit: "v-gatit", cos: "v-cos"}, CONTINUT = {lista: "lista", reteta: "reteta", gatit: "gatit", cos: "cos"}, pozitii = {};
 function arata(v, opt = {}) {
   pozitii[vedere === "reteta" ? "r:" + curentaSlug : vedere] = scrollY;
   if (opt.slug) curentaSlug = opt.slug;
@@ -841,7 +942,10 @@ function arata(v, opt = {}) {
   if (opt.push !== false && (v !== vedere || (v === "reteta" && opt.slug))) { try { history.pushState({v, slug: curentaSlug}, "", "#" + hash); adancime++; } catch (e) {} }
   else try { history.replaceState({v, slug: curentaSlug}, "", "#" + hash); } catch (e) {}
   vedere = v;
+  document.body.dataset.dir = opt.inapoi ? "inapoi" : "inainte";  // ecranul vine din dreapta înainte, din stânga înapoi
   for (const [k, id] of Object.entries(VEDERI)) $(id).hidden = k !== v;
+  // Ecranele ascunse se golesc: altfel pașii lor au aceleași id-uri ca cei de pe ecran („pas-…-3”) și „Apoi pasul 3” ar căuta în ecranul ascuns.
+  for (const [k, id] of Object.entries(CONTINUT)) if (k !== v) $(id).innerHTML = "";
   inchideFoi();
   randeaza();
   const tinta = opt.ancora && $(opt.ancora);
@@ -853,8 +957,11 @@ function arata(v, opt = {}) {
 // Pe rețetă, bara de sus stă transparentă peste poză și devine plină (cu titlul) după ce poza iese din ecran.
 const derulare = () => document.body.classList.toggle("derulat", vedere !== "reteta" || scrollY > ($("poza")?.offsetHeight || 0) - 80);
 addEventListener("scroll", derulare, {passive: true});
-function inapoi() { if (adancime > 0) history.back(); else arata("lista", {push: false}); }
-window.addEventListener("popstate", e => { adancime = Math.max(0, adancime - 1); const s = e.state || dinAdresa(); arata(s.v, {slug: s.slug, push: false}); });
+// Înapoi de pe rețetă în listă, poza se întoarce în cardul ei.
+const inapoiLa = (v, slug) => { const din = vedere === "reteta" && v === "lista" ? $("poza") : null, s = curentaSlug;
+  cuPoza(() => arata(v, {slug, push: false, inapoi: true}), din, () => fotoCard(s)); };
+function inapoi() { if (adancime > 0) history.back(); else inapoiLa("lista"); }
+window.addEventListener("popstate", e => { adancime = Math.max(0, adancime - 1); const s = e.state || dinAdresa(); inapoiLa(s.v, s.slug); });
 function dinAdresa() {
   const h = decodeURIComponent(location.hash.slice(1));
   return h === "gatit" ? {v: "gatit"} : h === "cumparaturi" ? {v: "cos"} : reteta(h) ? {v: "reteta", slug: h} : {v: "lista"};
@@ -1032,10 +1139,16 @@ function randeazaGatit() {
     const m = st.cron.filter(x => x.slug === b.slug && x.tip === "pas" && !x.gata).sort((a, z) => a.sfarsit - z.sfarsit)[0], st2 = st.cron.find(x => x.tip === "start" && x.slug === b.slug);
     const stare = !b.pornita ? (st2 ? (st2.gata ? "e timpul să pornești" : `pornește în <span data-cron="${st2.id}">${ceas(ramas(st2))}</span>`) : "nepornită")
       : etapaCurenta(r, b) < 0 ? "gata" : c ? "a sunat cronometrul" : m ? `așteaptă <span data-cron="${m.id}">${ceas(ramas(m))}</span>` : `${b.facute.length} din ${r.pasi.length} pași`;
+    const p = b.facute.length / r.pasi.length, p0 = progresVechi[b.slug] ?? p; progresVechi[b.slug] = p;
     return `<button class="banda" type="button" data-a="banda" data-slug="${esc(b.slug)}" aria-pressed="${s.activa === b.slug}">
-      ${rotund(r, culoareBanda(b.slug))}<span><b>${esc(scurt(r.titlu))}</b><small class="${c ? "atentie" : ""}">${stare}</small></span></button>`;
+      ${rotund(r, culoareBanda(b.slug))}<span><b>${esc(scurt(r.titlu))}</b><small class="${c ? "atentie" : ""}">${stare}</small>
+      <span class="banda-bara" style="--b:${culoareBanda(b.slug)}" aria-hidden="true"><i style="--p:${p0}" data-p="${p}"></i></span></span></button>`;
   }).join("") + `<button class="chip" type="button" data-a="mergi" data-v="lista" style="min-height:60px">${ic("plus")} Rețetă</button>`;
+  // Bara de progres din filă crește de unde era până unde ai ajuns.
+  for (const i of $("benzi-lista").querySelectorAll(".banda-bara i")) { void i.offsetWidth; i.style.setProperty("--p", i.dataset.p); }
   if (s.retete.every(b => b.pornita && etapaCurenta(reteta(b.slug), b) < 0)) {
+    if (!s.sarbatorit) { s.sarbatorit = true; salveaza(); requestAnimationFrame(confetti); }
+    ultimaVedere = null;
     // Ce rămâne se poate pune la frigider; lista de pe prima pagină spune până când se mănâncă.
     const puse = s.puse ||= [];
     cont.innerHTML = `<div class="final">${ic("oala")}<h2>Masa e gata.</h2><p>Poftă bună! Scrie cum a ieșit cât îți amintești.</p>
@@ -1049,7 +1162,14 @@ function randeazaGatit() {
     return;
   }
   cont.innerHTML = randeazaBanda(banda(s.activa) || s.retete[0]);
+  // Etapa următoare intră din dreapta (cea dinainte, din stânga); altă rețetă apare cu un fade scurt.
+  const acum = {slug: s.activa, e: +(cont.querySelector(".etapa-cap .mic")?.textContent.match(/\d+/)?.[0] || 0)}, u = ultimaVedere;
+  if (u && u.slug === acum.slug && u.e !== acum.e) anim(cont, [{transform: `translateX(${!acum.e || acum.e > u.e ? 28 : -28}px)`, opacity: 0}, {transform: "none", opacity: 1}], {duration: MISCA.mediu, easing: MISCA.iese});
+  else if (u && u.slug !== acum.slug) anim(cont, [{opacity: 0}, {opacity: 1}], {duration: MISCA.scurt, easing: MISCA.iese});
+  ultimaVedere = acum;
 }
+let ultimaVedere = null;
+const progresVechi = {};
 function plan(s) {
   const sortate = [...s.retete].sort((a, b) => offset(s, a) - offset(s, b)), multe = s.retete.length > 1;
   const dinTimp = s.retete.filter(b => reteta(b.slug).din_timp);
@@ -1223,7 +1343,10 @@ function randeazaDock() {
   const act = [];
   if (s && vedere !== "gatit") act.push(`<button class="buton" type="button" data-a="mergi" data-v="gatit">${ic("oala")} ${s.pornita ? "Gătesc" : "Masa"}: ${s.retete.length} ${s.retete.length === 1 ? "rețetă" : "rețete"}</button>`);
   if (n && vedere !== "cos") act.push(`<button class="buton" type="button" data-a="mergi" data-v="cos">${ic("cos")} Cumpărături (${n})</button>`);
-  $("dock-cron").innerHTML = cron.map(c => { const a = c.gata && apoi(c); return `<div class="cron${c.gata ? " gata" : c.mesaj ? " memento" : ""}">
+  // Cronometrele noi intră în bară, cele oprite ies (ca animated-list din Magic UI); restul rămân pe loc.
+  const inainte = new Map([...$("dock-cron").querySelectorAll(".cron")].map(e => [e.dataset.id, e])), acum = new Set(cron.map(c => String(c.id)));
+  for (const [id, e] of inainte) if (!acum.has(id) && !$("dock").hidden) fantoma(e, [{opacity: 1, transform: "none"}, {opacity: 0, transform: "scale(.85)"}], MISCA.scurt);
+  $("dock-cron").innerHTML = cron.map(c => { const a = c.gata && apoi(c); return `<div class="cron${c.gata ? " gata" : c.mesaj ? " memento" : ""}" data-id="${c.id}">
     <button class="cron-du" type="button" data-a="cronDu" data-id="${c.id}" aria-label="${esc(eticheta(c))}">${inel(c, true, c.tip === "liber" || c.gata ? "" : culoareBanda(c.slug))}<span style="min-width:0"><b${c.gata ? "" : ` data-cron="${c.id}"`}>${c.gata ? "Gata!" : ceas(ramas(c))}</b><small>${esc(c.mesaj && !c.gata ? c.mesaj : eticheta(c))}</small></span></button>
     <button class="cron-x" type="button" data-a="cronX" data-id="${c.id}" aria-label="${c.gata ? "Închide" : "Oprește"} cronometrul">${ic("x")}</button>
     ${a ? `<button class="cron-apoi" type="button" data-a="cronApoi" data-id="${c.id}">${ic("play", 1)} ${esc(a.text)}</button>` : ""}</div>`; }).join("");
@@ -1231,12 +1354,26 @@ function randeazaDock() {
   $("dock-act").innerHTML = act.join("");
   $("dock-act").hidden = !act.length;
   $("dock").hidden = !cron.length && !act.length;
+  // Bara se poate redesena de câteva ori la rând; un cronometru nou își continuă intrarea de unde a rămas (după vârsta lui).
+  for (const e of $("dock-cron").querySelectorAll(".cron")) {
+    const id = e.dataset.id, varsta = performance.now() - (aparitie[id] ??= performance.now());
+    if (inZbor.has(id)) e.style.opacity = "0";
+    if (!zboara && !zburate.has(id) && varsta < MISCA.mediu)
+      anim(e, [{transform: "scale(.6)", opacity: 0}, {transform: "scale(1.04)", opacity: 1, offset: .7}, {transform: "none"}], {duration: MISCA.mediu, easing: MISCA.iese, delay: -varsta});
+  }
   requestAnimationFrame(() => document.body.style.setProperty("--dock", $("dock").hidden ? "0px" : $("dock").offsetHeight + "px"));
 }
 
 // ---------- foi ----------
 function deschideFoaie(id) { inchideFoi(); $(id).hidden = false; $(id).querySelector("button, input")?.focus(); }
-function inchideFoi() { for (const f of document.querySelectorAll(".foaie")) f.hidden = true; }
+// Foaia coboară când se închide (mai repede decât a urcat); cea adevărată e deja ascunsă, coboară doar o copie.
+function inchideFoi() {
+  for (const f of document.querySelectorAll(".foaie:not([hidden])")) {
+    const c = fantoma(f, [{opacity: 1}, {opacity: 0}], MISCA.scurt);
+    if (c) { c.firstElementChild.style.animation = "none"; c.firstElementChild.animate([{transform: "none"}, {transform: "translateY(100%)"}], {duration: MISCA.scurt, easing: MISCA.intra, fill: "forwards"}); }
+    f.hidden = true;
+  }
+}
 document.addEventListener("keydown", e => { if (e.key === "Escape") inchideFoi(); });
 for (const f of document.querySelectorAll(".foaie")) f.addEventListener("click", e => { if (e.target === f) inchideFoi(); });
 
@@ -1318,7 +1455,7 @@ async function urcaPoza(fisier) {
 
 // ---------- acțiuni: fiecare buton are data-a="nume" ----------
 const ACTIUNI = {
-  deschide: el => arata("reteta", {slug: el.dataset.slug, sus: true}),
+  deschide: el => cuPoza(() => arata("reteta", {slug: el.dataset.slug, sus: true}), fotoCard(el.dataset.slug), () => $("poza")),
   mergi: el => arata(el.dataset.v, {sus: el.dataset.v !== "lista"}),
   inapoi,
   stare: el => { const s = el.dataset.stare; if (filtru.stari.has(s) && filtru.stari.size > 1) filtru.stari.delete(s); else filtru.stari.add(s); randeazaLista(); },
@@ -1329,7 +1466,7 @@ const ACTIUNI = {
   token: async () => { await cereToken(mem.get("github_token", "") ? "Ai deja un token salvat; lipește altul ca să-l înlocuiești, sau renunță." : ""); randeazaLista(); },
   sari: el => $(el.dataset.tinta)?.scrollIntoView({behavior: "smooth", block: "start"}),
   marime: () => { st.marime = (st.marime + 1) % 3; document.body.dataset.marime = st.marime; salveaza(); },
-  portiiD: el => { portiiD[curentaSlug] = Math.max(1, portiiD[curentaSlug] + +el.dataset.d); randeazaReteta(); },
+  portiiD: el => { const v = cifre("#reteta .ingr-cant b"); portiiD[curentaSlug] = Math.max(1, portiiD[curentaSlug] + +el.dataset.d); randeazaReteta(); rotesteCifre("#reteta .ingr-cant b", v); },
   gateste: el => { const s = el.dataset.slug; if (!banda(s)) adaugaLaMasa(s, portiiD[s]); if (st.sesiune.pornita) st.sesiune.activa = s; salveaza(); arata("gatit", {sus: true}); },
   alege: deschideAlegere,
   alegeToate: () => { const r = reteta(curentaSlug), toate = alegere.size < new Set(r.ingrediente.map(i => i.id)).size; alegere = new Set(toate ? r.ingrediente.map(i => i.id) : []); for (const i of $("alege-lista").querySelectorAll("input")) i.checked = toate; },
@@ -1342,7 +1479,9 @@ const ACTIUNI = {
     randeazaReteta(); $("f-observatii").value = obs; $("f-urmatoarea").value = urm; $("f-data").value = data; $("f-jurnal").querySelector(`[data-cheie="${el.dataset.cheie}"][data-val="${el.dataset.val}"]`)?.focus({preventScroll: true}); },
   pas: el => bifeaza(el.dataset.slug, +el.dataset.k),
   timp: el => { const r = reteta(el.dataset.slug), p = r.pasi[+el.dataset.k], i = +el.dataset.i, c = cronPas(r.slug, p.k, i);
-    if (c) opresteCron(c.id); else pornesteCron({slug: r.slug, k: p.k, i, text: p.timpi[i].text, s: p.timpi[i].s, tip: "pas"}); },
+    if (c) return opresteCron(c.id);
+    const de = el.getBoundingClientRect(); zboara = true;
+    try { const x = pornesteCron({slug: r.slug, k: p.k, i, text: p.timpi[i].text, s: p.timpi[i].s, tip: "pas"}); zbor(de, p.timpi[i].text, x.id); } finally { zboara = false; } },
   foaieTimer: () => { $("presetari").innerHTML = [1, 2, 3, 5, 8, 10, 12, 15, 20, 30, 45].map(m => `<button class="chip" type="button" data-a="timerLiber" data-min="${m}">${m} min</button>`).join(""); $("timer-minute").value = ""; deschideFoaie("foaie-timer"); },
   timerLiber: el => { const m = Math.round(+(el.dataset.min || $("timer-minute").value)); if (m > 0) { pornesteCron({slug: st.sesiune?.activa || curentaSlug || "", k: -1, i: -1, text: `${m} min`, s: m * 60, tip: "liber"}); inchideFoi(); } },
   inchideFoi,
@@ -1380,7 +1519,8 @@ const ACTIUNI = {
     if (b) { if (p.etapa > etapaCurenta(r, b)) b.inainte = p.etapa; else delete b.inainte; salveaza(); } mergiLaPas(r.slug, p.k); },
   pornesteBanda: el => pornesteBanda(el.dataset.slug),
   scoateBanda: el => { scoateDeLaMasa(el.dataset.slug); randeaza(); },
-  portiiBanda: el => { const b = banda(el.dataset.slug); b.portii = Math.max(1, b.portii + +el.dataset.d); salveaza(); randeazaGatit(); },
+  portiiBanda: el => { const sel = "#gatit .plan-ordine output, #gatit .ingr-cant b", v = cifre(sel), b = banda(el.dataset.slug);
+    b.portii = Math.max(1, b.portii + +el.dataset.d); salveaza(); const y = scrollY; randeazaGatit(); window.scrollTo(0, y); rotesteCifre(sel, v); },
   incepe: incepeMasa,
   etapaGata: el => { const b = banda(el.dataset.slug), r = reteta(b.slug), ei = el.dataset.e ? +el.dataset.e : etapaCurenta(r, b); if (ei < 0) return;
     for (const p of r.etape[ei].pasi) if (!b.facute.includes(p.k)) b.facute.push(p.k);
