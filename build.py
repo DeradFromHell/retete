@@ -146,8 +146,8 @@ def valideaza_reteta(meta, corp, cale, ingrediente, erori):
                 eroare(f"jurnal #{i}: {camp} trebuie să fie un întreg între {minim} și {maxim or 'versiunea rețetei'}")
         if j.get("executie") not in ("ok", "greseala_mea"):
             eroare(f"jurnal #{i}: executie trebuie să fie „ok” sau „greseala_mea”")
-        note = j.get("pasi")  # opțional: note pe pași, „7: 3 minute e prea mult”
-        if note is not None and not (isinstance(note, dict) and all(este_numar(k, 1, intreg=True) and isinstance(v, str) and v.strip() for k, v in note.items())):
+        if (note := j.get("pasi")) is not None and not (isinstance(note, dict) and all(  # note pe pași: „7: 3 minute e prea mult”
+                este_numar(k, 1, intreg=True) and isinstance(v, str) and v.strip() for k, v in note.items())):
             eroare(f"jurnal #{i}: pasi trebuie să fie perechi „număr pas: notă”")
     if not any(RE_PAS.match(linie.strip()) for linie in corp.splitlines()):
         eroare("corpul rețetei nu are niciun pas numerotat („1. …”)")
