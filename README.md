@@ -14,6 +14,7 @@ Sursa de adevăr sunt fișierele din `retete/`. `carte/index.html` e generat și
 | `sablon.html` | șablonul cărții (HTML + CSS + JS); `build.py` îi injectează rețetele ca JSON |
 | `carte/index.html` | generat; se commit-uiește (se deschide de pe telefon, merge offline) |
 | `IDEI.md` | backlog; ideile se parchează aici, nu se construiesc |
+| `inbox/` | rețete brute trimise din carte (text, link, poză), până le transformă Claude în `retete/<slug>.md` |
 
 ## Comenzi
 
@@ -26,7 +27,11 @@ Cerințe: Python 3 și PyYAML (`pip install pyyaml`). Nimic altceva. Pe Windows,
 
 ## Fluxul de lucru
 
+**Rețetă găsită pe telefon.** În carte, butonul „+” de lângă titlu: lipești textul sau linkul rețetei (de pe net, de la alt AI, din cap) și, dacă vrei, o captură de ecran. Ajunge în repo, în `inbox/` (un `.md` și poza), cu același token ca jurnalul. Apoi îi spui lui Claude „convertește inboxul”: el face din fiecare rețetă completă, în schemă, și șterge fișierul din inbox. `build.py` nu citește `inbox/`.
+
 **Rețetă nouă.** Claude propune 2–3 surse testate (sau o rețetă clasică, `sursa: claude`), eu aleg. Claude o scrie în schemă, convertește totul în grame cu `conversii.md` (cantitatea originală merge în `nota`), adaugă ingredientele lipsă în `ingrediente.csv` cu sursă, rulează `--check`, commit `reteta <slug> v1`.
+
+**Note pe pași.** Creionul de lângă fiecare pas, în rețetă și când gătești, ține o notă („3 minute e prea mult”) doar pe telefon, până scrii în jurnal; atunci intră în intrare, la `pasi`. Data următoare, nota apare sub pas, „Data trecută: …”, cât timp versiunea rețetei e aceeași.
 
 **După gătit.** Din telefon: în rețetă, sub „Jurnal”, aleg gustul, efortul, dacă a fost greșeala mea, scriu observațiile și ce schimb data viitoare, apoi „scrie în jurnal”. Intrarea se adaugă în `retete/<slug>.md`, ca un commit făcut de mine prin API-ul GitHub (același token ca la poze), iar GitHub Actions rulează `build.py` și regenerează cartea în 2–3 minute. Sau îi scriu lui Claude o propoziție: „piept-pui-orez: gust 7, efort 3, prea sărat, data viitoare jumătate sare”; dacă am greșit eu, spun „greșeala mea: am ars ceapa”, și el adaugă intrarea, rulează build, commit `<slug> v1: gust 7 efort 3` și `git push`. Dacă propoziția e completă, nu pune întrebări.
 
@@ -67,6 +72,8 @@ jurnal:
     executie: ok               # ok | greseala_mea
     observatii: prea sărat, orezul puțin crud
     urmatoarea_data: jumătate din sare, +5 min la orez
+    pasi:                      # opțional: note pe pași, cu numărul pasului
+      4: 16 minute au fost prea multe, 14 ajung
 ---
 ## Pregătire
 1. Încinge uleiul în tigaie, ~1 min, până unduiește.
@@ -114,7 +121,9 @@ Pe telefon: https://deradfromhell.github.io/retete/carte/ (GitHub Pages din aces
 
 **Aspectul.** Poze mari, fond alb, fonturile Bricolage Grotesque (titluri) și Figtree (text), de la Google Fonts; fără internet, cartea folosește fonturile salvate la prima deschidere sau pe cele ale telefonului. Până pui o poză, rețeta are un desen pe culoarea categoriei. Roșul e pentru foc și timp, negrul pentru acțiunea principală.
 
-**Lista.** Căutare, filtre (stare, sortare, categorie, tag), carduri cu timp, kcal, gust și „din timp”; atingerea cardului deschide rețeta, butonul „Gătesc” de pe card o adaugă la gătit fără să o deschizi.
+**Lista.** Căutare, filtre (stare, sortare, categorie, tag), carduri cu timp, kcal, gust și „din timp”; atingerea cardului deschide rețeta, butonul „Gătesc” de pe card o adaugă la gătit fără să o deschizi. Mai multe ingrediente despărțite prin virgulă („pui, orez, ardei”) înseamnă „ce am în casă”: apar rețetele care folosesc cel puțin unul, întâi cele cu cele mai multe, iar cardul spune care. Catalogul pe feluri (Pui, Porc, Vită, Pește, Ouă, Fără carne) se face singur, după carnea cu cele mai multe grame, și apare sub căutare doar când există cel puțin două feluri cu câte cel puțin două rețete.
+
+**Frigiderul (opțional).** La finalul unei mese, cartea întreabă câte porții pun la frigider (implicit toate în afară de una). Pe prima pagină apare „În frigider”, cu porțiile și până când se mănâncă, după „Frigider: N zile” din „Păstrare și reîncălzire”, plus „Am mâncat una”. Din lista de cumpărături, „Gătește-le pe toate acum” pune toate rețetele din listă la aceeași masă, pentru meal prep.
 
 **Rețeta.** Cifrele mari sub titlu, bară de salt (Ingrediente, Pași, Reîncălzire, Nutriție, Jurnal), ingrediente pe grupuri cu scalare de porții (lingurile și lingurițele se recalculează, în fracții: 1/2, 3/4), pași pe etape care se bifează și pornesc cronometre, păstrare și reîncălzire, note pliate, nutriție per porție și per 100 g, jurnalul cu formularul de intrare nouă (arată pe loc în ce stare ajunge rețeta). „Aa” mărește textul.
 

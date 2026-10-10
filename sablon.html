@@ -158,12 +158,29 @@ body[data-marime="2"] .marire{font-size:1.25em}
 .surse i{width:10px;height:10px;border-radius:50%;background:var(--b)}
 .lista .sterge{min-width:44px}
 .pasi{list-style:none;margin:0;padding:0}
-.pas{display:grid;grid-template-columns:44px 1fr;gap:.9rem;padding:.95rem 0;border-bottom:1px solid var(--linie);cursor:pointer;scroll-margin-top:9rem}
+.pas{display:grid;grid-template-columns:44px 1fr 44px;gap:.6rem;padding:.95rem 0;border-bottom:1px solid var(--linie);cursor:pointer;scroll-margin-top:9rem}
 .pas:last-child{border-bottom:0}
 .pas-nr{width:44px;height:44px;border-radius:50%;border:0;background:var(--rosie-fundal);color:var(--rosie-text);display:grid;place-items:center;font:750 1.1rem var(--titluri);transition:background .15s}
 .pas.facut .pas-nr{background:var(--marar);color:var(--pe-marar)}
 .pas.abia .pas-nr{animation:pop .35s ease}
 .pas.facut .pas-text{color:var(--mut)}
+.pas-nota{width:44px;height:44px;border:0;border-radius:50%;background:none;color:var(--mut);display:grid;place-items:center}
+.nota-pas{display:block;margin-top:.45rem;padding:.4rem .7rem;border-radius:12px;background:var(--mustar-fundal);color:var(--cerneala);font-size:.92em;line-height:1.4}
+.nota-pas.veche{background:var(--supr2)}
+.frigider{grid-column:1/-1;background:var(--supr);border-radius:22px;padding:.9rem 1rem .4rem}
+.frigider h2{font-size:1.15rem;display:flex;align-items:center;gap:.4rem;margin-bottom:.3rem}
+.frig{display:flex;align-items:center;gap:.7rem;padding:.5rem 0;flex-wrap:wrap}
+.frig+.frig{border-top:1px solid var(--linie)}
+.frig-text{flex:1 1 9rem;min-width:0;line-height:1.3;text-align:left}
+.frig-text small{display:block;color:var(--mut);font-size:.88rem}
+.frig-text small.atentie{color:var(--rosie-text);font-weight:700}
+.frigider .buton{min-height:44px;padding:.4rem .9rem;background:var(--pagina)}
+.la-frigider{background:var(--supr);border-radius:22px;padding:.4rem 1rem;margin:1rem 0 1.2rem}
+.la-frigider .portii{margin:0;background:var(--pagina)}
+.la-frigider .buton{width:auto;margin:0}
+.meta.are{color:var(--marar);font-weight:600;margin-top:.3rem}
+#feluri{margin-top:.75rem}
+.cap-sus>span{display:flex}
 .pas-text{padding-top:.5rem}
 .pasi.mari .pas{background:var(--supr);border:0;border-radius:22px;padding:1rem;margin:.6rem 0}
 .pasi.mari .pas-nr{background:var(--pagina)}
@@ -300,6 +317,8 @@ a{color:var(--rosie-text)}
   <symbol id="i-foc" viewBox="0 0 24 24"><path d="M12 3c1 3.5 5 5.5 5 10a5 5 0 0 1-10 0c0-2.5 1.5-3.8 2.5-5 .2 1.8 1 2.8 2 3.2C11 9 11.5 6 12 3z"/></symbol>
   <symbol id="i-sare" viewBox="0 0 24 24"><path d="M8 9h8l1 11H7zM9 9l1-5h4l1 5"/><path d="M11 6h.01M13 6h.01" stroke-width="2.5"/></symbol>
   <symbol id="i-filtre" viewBox="0 0 24 24"><path d="M4 6h16M7 12h10M10 18h4"/></symbol>
+  <symbol id="i-creion" viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16v4zM13.5 6.5l4 4"/></symbol>
+  <symbol id="i-frig" viewBox="0 0 24 24"><rect x="6" y="3" width="12" height="18" rx="2"/><path d="M6 10h12M9 6v2M9 13v3"/></symbol>
   <symbol id="i-cauta" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></symbol>
   <symbol id="i-pulpa" viewBox="0 0 24 24"><path d="M15 3.2c3.3 0 5.8 2.6 5.8 5.8 0 3.9-3.6 6.6-7 6.9l-2.6 2.6a2 2 0 1 1-2.6 2.4 2 2 0 1 1-2.4-2.6l2.6-2.6C9.1 11.7 10.6 3.2 15 3.2z"/><path d="M14.5 7.2c1.4.2 2.3 1.1 2.5 2.4"/></symbol>
   <symbol id="i-ou" viewBox="0 0 24 24"><path d="M12 2.8c3.7 0 7 5.6 7 10.6a7 7 0 0 1-14 0C5 8.4 8.3 2.8 12 2.8z"/><circle cx="12" cy="14" r="2.8"/></symbol>
@@ -307,9 +326,10 @@ a{color:var(--rosie-text)}
 
 <section id="v-lista">
   <header class="cap"><div class="cont">
-    <div class="cap-sus"><h1>Ce gătim azi?</h1><button class="ic-btn" type="button" data-a="foaieTimer" aria-label="Cronometru">TIMER</button></div>
+    <div class="cap-sus"><h1>Ce gătim azi?</h1><span><button class="ic-btn" type="button" data-a="foaieInbox" aria-label="Adaugă o rețetă găsită">PLUS</button><button class="ic-btn" type="button" data-a="foaieTimer" aria-label="Cronometru">TIMER</button></span></div>
     <p class="sub" id="nr-retete"></p>
-    <div class="cauta"><svg class="ic" aria-hidden="true"><use href="#i-cauta"/></svg><input id="cautare" type="search" placeholder="Caută după titlu sau ingredient" autocomplete="off" aria-label="Caută după titlu sau ingredient"></div>
+    <div class="cauta"><svg class="ic" aria-hidden="true"><use href="#i-cauta"/></svg><input id="cautare" type="search" placeholder="Caută, sau scrie ce ai: pui, orez" autocomplete="off" aria-label="Caută după titlu sau ingredient; mai multe ingrediente, despărțite prin virgulă"></div>
+    <div class="chips derulant" id="feluri" role="group" aria-label="Felul" hidden></div>
     <div class="chips" role="group" aria-label="Ce rețete arăt">
       <button class="chip" type="button" data-a="stare" data-stare="carte" aria-pressed="true">În carte</button>
       <button class="chip" type="button" data-a="stare" data-stare="imbunatatire" aria-pressed="false">De îmbunătățit</button>
@@ -367,6 +387,23 @@ a{color:var(--rosie-text)}
   <div class="rand"><button class="buton" type="button" data-a="inchideFoi">Renunță</button></div>
 </div></div>
 
+<div class="foaie" id="foaie-inbox" hidden role="dialog" aria-modal="true" aria-labelledby="titlu-inbox"><div>
+  <h2 id="titlu-inbox">Adaugă o rețetă găsită</h2>
+  <p class="mic">Lipește rețeta sau linkul ei, de pe net sau de la alt AI, sau pune o captură de ecran. Ajunge în inbox, iar Claude o transformă în rețetă completă, cu grame și nutriție.</p>
+  <textarea id="inbox-text" rows="7" placeholder="Textul rețetei sau linkul" aria-label="Textul rețetei sau linkul"></textarea>
+  <div class="rand"><button class="buton" type="button" data-a="inboxPoza"><svg class="ic" aria-hidden="true"><use href="#i-poza"/></svg> <span id="inbox-poza-nume">Poză (opțional)</span></button></div>
+  <div class="rand"><button class="buton plin" type="button" data-a="trimiteInbox">Trimite în inbox</button><button class="buton" type="button" data-a="inchideFoi">Închide</button></div>
+  <p class="stare-scriere" id="inbox-stare" hidden></p>
+</div></div>
+
+<div class="foaie" id="foaie-nota" hidden role="dialog" aria-modal="true" aria-labelledby="titlu-nota"><div>
+  <h2 id="titlu-nota">Notă la pas</h2>
+  <p class="mic">Ce ai observat: un timp prea lung, o cantitate, ce ai face altfel. Intră în jurnal când scrii cum a ieșit.</p>
+  <textarea id="nota-text" rows="4" placeholder="de exemplu: 3 minute e prea mult, 2 ajung" aria-label="Nota"></textarea>
+  <div class="rand"><button class="buton plin" type="button" data-a="salveazaNota">Salvează</button><button class="buton" type="button" data-a="stergeNota">Șterge nota</button></div>
+</div></div>
+
+<input type="file" id="inbox-fisier" accept="image/*" hidden>
 <input type="file" id="poza-fisier" accept="image/*" hidden>
 <p class="sr" id="anunt" role="status" aria-live="polite"></p>
 
@@ -410,12 +447,14 @@ const mem = {
 // ---------- starea care se ține minte pe telefon ----------
 // Coșul, ce ai cumpărat, masa în curs (rețete, pași bifați) și cronometrele (cu ora de final) supraviețuiesc reîncărcării paginii.
 const st = {cos: mem.get("cos", {}), cumparate: new Set(mem.get("cumparate", [])), extra: mem.get("extra", []), marime: mem.get("marime", 0),
-            sesiune: mem.get("sesiune", null), cron: mem.get("cronometre", [])};
+            sesiune: mem.get("sesiune", null), cron: mem.get("cronometre", []),
+            note: mem.get("note", {}), frigider: mem.get("frigider", [])};  // note pe pași (până intră în jurnal), ce e gătit la frigider
 for (const s in st.cos) if (typeof st.cos[s] === "number") st.cos[s] = {portii: st.cos[s], ids: null};  // formatul vechi al coșului
 if (st.sesiune) st.sesiune.retete = st.sesiune.retete.filter(b => reteta(b.slug));
 if (st.sesiune && !st.sesiune.retete.length) st.sesiune = null;
 st.cron = st.cron.filter(c => c.tip === "liber" || reteta(c.slug));
-const salveaza = () => { mem.set("cos", st.cos); mem.set("cumparate", [...st.cumparate]); mem.set("extra", st.extra); mem.set("marime", st.marime); mem.set("sesiune", st.sesiune); mem.set("cronometre", st.cron); };
+const salveaza = () => { mem.set("cos", st.cos); mem.set("cumparate", [...st.cumparate]); mem.set("extra", st.extra); mem.set("marime", st.marime); mem.set("sesiune", st.sesiune); mem.set("cronometre", st.cron);
+  mem.set("note", st.note); mem.set("frigider", st.frigider); };
 
 // ---------- rețetele: etape, pași cu timpii lor, păstrare, note ----------
 // Orice „12 minute” / „3–4 minute” / „30–60 de secunde” dintr-un pas e un cronometru (prima cifră a intervalului).
@@ -482,6 +521,15 @@ for (const r of RETETE) {
     r.aparate[a.id] = {de: cu[0].k, pana, temp: +(cu[0].text.match(/(\d+)\s*°C/)?.[1]) || null};
   }
 }
+
+// Felul rețetei, pentru catalog: carnea (sau ouăle) cu cele mai multe grame; fără ele, „Fără carne”.
+const FELURI = [["Pui", /pui/], ["Porc", /porc/], ["Vită", /vita/], ["Pește", /peste|ton|somon|cod/], ["Ouă", /^oua$|albus/]];
+for (const r of RETETE) { let max = 0; r.fel = "Fără carne";
+  for (const i of r.ingrediente) { const f = FELURI.find(([, re]) => re.test(i.id)); if (f && i.g > max) { max = i.g; r.fel = f[0]; } } }
+// Cât ține gătită la frigider, din „Păstrare și reîncălzire” („Frigider: 3–4 zile” → 3).
+const zileFrigider = r => { const m = norm(r.pastrare.join(" ")).match(/frigider[^.;]*?(\d+)(?:[–-]\d+)?\s*zile/); return m ? +m[1] : null; };
+// Notele de data trecută pe pași, de la versiunea curentă (numerele pașilor se schimbă între versiuni).
+const noteVechi = r => Object.assign({}, ...r.jurnal.filter(j => j.versiune === r.versiune && j.pasi).map(j => j.pasi));
 
 // Aceleași reguli de stare ca în build.py, ca să vezi pe loc ce face o intrare nouă în jurnal.
 function stareDupa(r, jurnal) {
@@ -702,7 +750,13 @@ const textPas = (slug, p) => { let i = 0; const r = reteta(slug);
 function pasHtml(slug, p, facut, mare) {
   return `<li class="pas${facut ? " facut" : ""}" id="pas-${esc(slug)}-${p.k}" data-a="pas" data-slug="${esc(slug)}" data-k="${p.k}">
     <button type="button" class="pas-nr" data-a="pas" data-slug="${esc(slug)}" data-k="${p.k}" aria-pressed="${facut}" aria-label="${facut ? "Debifează" : "Bifează"} pasul ${p.n}">${facut ? ic("check") : p.n}</button>
-    <span class="pas-text">${textPas(slug, p)}</span></li>`;
+    <span class="pas-text">${textPas(slug, p)}${notePas(slug, p)}</span>
+    <button type="button" class="pas-nota" data-a="nota" data-slug="${esc(slug)}" data-n="${p.n}" aria-label="${st.note[slug]?.[p.n] ? "Schimbă nota" : "Notă"} la pasul ${p.n}">${ic("creion")}</button></li>`;
+}
+// Sub pas: nota ta de acum (până intră în jurnal) și ce ai notat data trecută la aceeași versiune.
+function notePas(slug, p) {
+  const r = reteta(slug), acum2 = st.note[slug]?.[p.n], veche = noteVechi(r)[p.n];
+  return (veche ? `<span class="nota-pas veche">Data trecută: ${esc(veche)}</span>` : "") + (acum2 ? `<span class="nota-pas">Nota ta: ${esc(acum2)}</span>` : "");
 }
 
 // ---------- masa: una sau mai multe rețete gătite deodată ----------
@@ -814,13 +868,40 @@ document.addEventListener("visibilitychange", () => { if (document.visibilitySta
 
 // ---------- lista ----------
 // La început: rețetele din carte; cât timp nu e niciuna în carte, toate, ca prima pagină să nu fie goală.
-const filtru = {stari: new Set(RETETE.some(r => r.status === "carte") ? ["carte"] : ["carte", "imbunatatire", "test"]), sort: "gust", cat: "", tag: ""};
+const filtru = {stari: new Set(RETETE.some(r => r.status === "carte") ? ["carte"] : ["carte", "imbunatatire", "test"]), sort: "gust", cat: "", tag: "", fel: ""};
+// Căutarea: un cuvânt caută în titlu și ingrediente; mai multe, despărțite prin virgulă („pui, orez, ardei”), înseamnă
+// „ce am în casă”: apar rețetele care folosesc cel puțin unul, întâi cele care le folosesc pe cele mai multe.
+let termeni = [];
 function filtrate() {
-  const q = norm($("cautare").value.trim());
+  termeni = $("cautare").value.split(",").map(t => t.trim()).filter(Boolean);
+  // Un ingredient se potrivește după id („ardei” → ardei_gras, dar nu boia de ardei) sau după primul cuvânt din nume („piept”).
+  const potriveste = (i, t) => i.id.includes(norm(t).replace(/\s+/g, "_")) || norm(i.nume).split(/\s+/)[0].startsWith(norm(t));
+  const are = r => termeni.filter(t => norm(r.titlu).includes(norm(t)) || r.ingrediente.some(i => potriveste(i, t)));
   const cheie = {gust: r => -(ultima(r)?.gust ?? -1), efort: r => ultima(r)?.efort ?? 99, timp: r => r.timp_total_min}[filtru.sort];
+  for (const r of RETETE) r.are = are(r);
   return RETETE.filter(r => filtru.stari.has(r.status) && (!filtru.cat || r.categorie === filtru.cat) && (!filtru.tag || r.tags.includes(filtru.tag))
-      && (!q || norm(r.titlu).includes(q) || r.ingrediente.some(i => norm(i.nume).includes(q))))
-    .sort((a, b) => cheie(a) - cheie(b) || a.titlu.localeCompare(b.titlu, "ro"));
+      && (!filtru.fel || r.fel === filtru.fel) && (!termeni.length || r.are.length))
+    .sort((a, b) => b.are.length - a.are.length || cheie(a) - cheie(b) || a.titlu.localeCompare(b.titlu, "ro"));
+}
+// Catalogul pe feluri apare singur când are ce sorta: cel puțin două feluri cu câte cel puțin două rețete.
+function randeazaFeluri() {
+  const n = {}; for (const r of RETETE) n[r.fel] = (n[r.fel] || 0) + 1;
+  const feluri = Object.keys(n).sort((a, b) => n[b] - n[a]), arata = feluri.filter(f => n[f] >= 2).length >= 2;
+  $("feluri").hidden = !arata;
+  if (!arata) { filtru.fel = ""; return; }
+  $("feluri").innerHTML = [["", "Toate"], ...feluri.map(f => [f, `${f} (${n[f]})`])].map(([v, t]) =>
+    `<button class="chip" type="button" data-a="fel" data-val="${esc(v)}" aria-pressed="${filtru.fel === v}">${esc(t)}</button>`).join("");
+}
+// Ce e gătit la frigider și până când se mănâncă (apare doar dacă ai pus ceva la finalul unei mese).
+const ZILE = ["duminică", "luni", "marți", "miercuri", "joi", "vineri", "sâmbătă"];
+function cartonFrigider() {
+  const l = st.frigider.filter(x => reteta(x.slug));
+  if (!l.length) return "";
+  return `<section class="frigider" aria-labelledby="titlu-frig"><h2 id="titlu-frig">${ic("frig")} În frigider</h2>${l.map(x => {
+    const r = reteta(x.slug), z = zileFrigider(r), ramas = z == null ? null : z - Math.floor((new Date(azi()) - new Date(x.gatit)) / 864e5);
+    const pana = ramas == null ? `gătit ${acum(x.gatit)}` : ramas < 0 ? "a trecut termenul, de aruncat" : ramas === 0 ? "azi e ultima zi" : ramas === 1 ? "până mâine" : `până ${ZILE[(new Date().getDay() + ramas) % 7]}`;
+    return `<div class="frig">${rotund(r, "transparent")}<span class="frig-text"><b>${esc(r.titlu)}</b><small class="${ramas != null && ramas <= 0 ? "atentie" : ""}">${x.portii} ${x.portii === 1 ? "porție" : "porții"}, ${pana}</small></span>
+      <button class="buton" type="button" data-a="mancat" data-id="${esc(x.id)}">Am mâncat una</button><button class="ic-btn" type="button" data-a="aruncat" data-id="${esc(x.id)}" aria-label="Scoate din frigider: ${esc(r.titlu)}">${ic("x")}</button></div>`; }).join("")}</section>`;
 }
 // Poza rețetei; până există una, un desen pe culoarea categoriei (pulpă pentru pui, ou pentru ouă, oală în rest).
 const ilustratie = r => { const t = norm(r.titlu + " " + r.tags.join(" ")); return /\b(oua|ou)\b/.test(t) ? "ou" : /\bpui\b/.test(t) ? "pulpa" : "oala"; };
@@ -836,6 +917,7 @@ function card(r) {
     <h2><a href="#${esc(r.slug)}" data-a="deschide" data-slug="${esc(r.slug)}">${esc(r.titlu)}</a></h2>
     <p class="meta"><span>${ic("timer")}${durata(r.timp_total_min)}</span><span>${ic("foc")}${r.nutritie.kcal} kcal</span><span>${ic("sare")}${gsare(r.nutritie.sare)} g sare</span>${u ? `<span>${gust(u.gust, true)}</span>` : "<span>negătită încă</span>"}</p>
     ${r.din_timp ? `<p class="meta din-timp-mic"><span>${ic("clepsidra")}Din timp: ${esc(r.din_timp)}</span></p>` : ""}
+    ${termeni.length > 1 ? `<p class="meta are">${ic("check")}Folosește ${r.are.length} din ${termeni.length}: ${esc(r.are.join(", "))}</p>` : ""}
   </article>`;
 }
 function randeazaLista() {
@@ -848,7 +930,8 @@ function randeazaLista() {
       ? "Nicio rețetă în carte încă. O rețetă intră în carte când îi dai gust 8 sau mai mult în jurnal."
       : "Nicio rețetă pentru căutarea și filtrele alese."}</p>${ascunse ? `<button class="buton plin" type="button" data-a="arataToate">Arată toate rețetele (${RETETE.length})</button>` : ""}</div>`;
   }
-  $("lista").innerHTML = html;
+  $("lista").innerHTML = cartonFrigider() + html;
+  randeazaFeluri();
   for (const b of document.querySelectorAll("[data-a=stare]")) b.setAttribute("aria-pressed", filtru.stari.has(b.dataset.stare));
   const t = mem.get("github_token", "");
   $("subsol").innerHTML = `<span>${t ? "Jurnalul și pozele se trimit în repo." : "Ca să scrii în jurnal și să pui poze din telefon, cartea are nevoie de un token GitHub."}</span><button class="buton" type="button" data-a="token">${t ? "Schimbă token-ul" : "Pune token-ul"}</button>`;
@@ -912,7 +995,7 @@ function randeazaReteta() {
     <h2 class="sectiune" id="s-jurnal">Jurnal</h2>
     ${r.jurnal.length ? [...r.jurnal].reverse().map(j => `<div class="intrare${j.executie === "greseala_mea" ? " greseala" : ""}">
       <p class="mic">${esc(j.data)}, versiunea ${j.versiune}${j.executie === "greseala_mea" ? ", greșeala mea (nu se numără)" : ""}</p>
-      <p>${gust(j.gust)}, efort ${j.efort} din 5</p>${j.observatii ? `<p>${esc(j.observatii)}</p>` : ""}${j.urmatoarea_data ? `<p><b>Data viitoare:</b> ${esc(j.urmatoarea_data)}</p>` : ""}</div>`).join("") : `<p class="mic">Încă nicio intrare. După ce o gătești, scrie aici cum a ieșit.</p>`}
+      <p>${gust(j.gust)}, efort ${j.efort} din 5</p>${j.observatii ? `<p>${esc(j.observatii)}</p>` : ""}${j.urmatoarea_data ? `<p><b>Data viitoare:</b> ${esc(j.urmatoarea_data)}</p>` : ""}${j.pasi ? Object.entries(j.pasi).map(([n, t]) => `<p><b>Pasul ${esc(n)}:</b> ${esc(t)}</p>`).join("") : ""}</div>`).join("") : `<p class="mic">Încă nicio intrare. După ce o gătești, scrie aici cum a ieșit.</p>`}
     <form class="formular" id="f-jurnal">
       <fieldset><legend>Gust</legend><ul class="ancore"><li><b>5</b> mâncabil, nu repet</li><li><b>7</b> bun, aș schimba ceva</li><li><b>8</b> aș face-o la fel</li><li><b>10</b> pentru oaspeți</li></ul>
         <div class="grila">${[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(g => `<button class="chip" type="button" data-a="form" data-cheie="gust" data-val="${g}" aria-pressed="${formular.gust === g}" aria-label="gust ${g}">${g}</button>`).join("")}</div></fieldset>
@@ -923,6 +1006,9 @@ function randeazaReteta() {
         <button class="chip" type="button" data-a="form" data-cheie="executie" data-val="greseala_mea" aria-pressed="${formular.executie === "greseala_mea"}">Greșeala mea, nu se numără</button></div></fieldset>
       <label><span>Observații</span><textarea id="f-observatii" placeholder="ce a fost bine, ce nu"></textarea></label>
       <label><span>Data viitoare (ce schimbi la versiunea ${r.versiune + 1})</span><textarea id="f-urmatoarea" placeholder="de exemplu: jumătate din sare, încă 5 minute la orez"></textarea></label>
+      <fieldset><legend>Note pe pași</legend>
+        ${Object.keys(st.note[r.slug] || {}).length ? Object.entries(st.note[r.slug]).sort((a, b) => a[0] - b[0]).map(([n, t]) => `<label><span>Pasul ${esc(n)}</span><textarea data-nota="${esc(n)}" rows="2">${esc(t)}</textarea></label>`).join("")
+          : `<p class="mic">Atinge creionul de lângă un pas, și când gătești, ca să notezi ce ai observat acolo. Notele apar aici și intră în jurnal.</p>`}</fieldset>
       <label><span>Data</span><input type="date" id="f-data" value="${azi()}"></label>
       ${previzStare ? `<p class="previz">Cu intrarea asta, rețeta va fi: <b>${STARI[previzStare]}</b>${previzStare === "carte" && formular.efort >= 4 ? ", cu eticheta „ocazie”" : ""}.</p>` : ""}
       <button class="buton plin mare" type="submit">Scrie în jurnal</button>
@@ -950,7 +1036,14 @@ function randeazaGatit() {
       ${rotund(r, culoareBanda(b.slug))}<span><b>${esc(scurt(r.titlu))}</b><small class="${c ? "atentie" : ""}">${stare}</small></span></button>`;
   }).join("") + `<button class="chip" type="button" data-a="mergi" data-v="lista" style="min-height:60px">${ic("plus")} Rețetă</button>`;
   if (s.retete.every(b => b.pornita && etapaCurenta(reteta(b.slug), b) < 0)) {
+    // Ce rămâne se poate pune la frigider; lista de pe prima pagină spune până când se mănâncă.
+    const puse = s.puse ||= [];
     cont.innerHTML = `<div class="final">${ic("oala")}<h2>Masa e gata.</h2><p>Poftă bună! Scrie cum a ieșit cât îți amintești.</p>
+      <div class="la-frigider">${s.retete.map(b => { const r = reteta(b.slug), n = (s.ramase ||= {})[b.slug] ?? Math.max(0, b.portii - 1);
+        return `<div class="frig">${rotund(r, culoareBanda(b.slug))}<span class="frig-text"><b>${esc(scurt(r.titlu))}</b><small>${puse.includes(b.slug) ? `${n} ${n === 1 ? "porție" : "porții"} la frigider` : "rămân la frigider"}</small></span>
+          ${puse.includes(b.slug) ? ic("check") : `<span class="portii"><button class="rotund" type="button" data-a="ramase" data-slug="${esc(b.slug)}" data-d="-1" aria-label="Mai puține porții">${ic("minus")}</button><output>${n}</output>
+          <button class="rotund" type="button" data-a="ramase" data-slug="${esc(b.slug)}" data-d="1" aria-label="Mai multe porții">${ic("plus")}</button></span>
+          <button class="buton" type="button" data-a="laFrigider" data-slug="${esc(b.slug)}"${n ? "" : " hidden"}>Pune</button>`}</div>`; }).join("")}</div>
       ${s.retete.map(b => `<button class="buton plin" type="button" data-a="laJurnal" data-slug="${esc(b.slug)}">Scrie în jurnal: ${esc(scurt(reteta(b.slug).titlu))}</button>`).join("")}
       <button class="buton" type="button" data-a="inchideMasa" style="margin-top:1rem">Închide masa</button></div>`;
     return;
@@ -1113,7 +1206,8 @@ function randeazaCos() {
   $("cos").innerHTML = `
     ${slugs.length ? `<h2 class="sectiune" style="margin-top:1.2rem">Pentru</h2><ul class="lista">${slugs.map((s, i) => `<li style="display:flex;align-items:center;gap:.8rem;padding:.6rem 0">
       ${rotund(reteta(s), slugs.length > 1 ? BENZI[i % BENZI.length] : "transparent")}<span style="flex:1"><b>${esc(reteta(s).titlu)}</b><br><span class="mic">${st.cos[s].portii} porții</span></span>
-      <button class="ic-btn" type="button" data-a="scoateDinCos" data-slug="${esc(s)}" aria-label="Scoate ${esc(reteta(s).titlu)} din listă">${ic("x")}</button></li>`).join("")}</ul>` : ""}
+      <button class="ic-btn" type="button" data-a="scoateDinCos" data-slug="${esc(s)}" aria-label="Scoate ${esc(reteta(s).titlu)} din listă">${ic("x")}</button></li>`).join("")}</ul>
+      <button class="buton" type="button" data-a="gatesteCos" style="width:100%;margin-top:.7rem">${ic("oala")} Gătește-le ${slugs.length > 1 ? "pe toate " : ""}acum</button>` : ""}
     <h2 class="sectiune" style="margin-top:1.2rem">De cumpărat (${de.length})</h2>
     ${de.length ? `<ul class="lista">${de.map(rand).join("")}</ul>` : `<p class="mic">Nimic de cumpărat. Din orice rețetă, butonul „Cumpărături” adaugă ce-ți lipsește.</p>`}
     <form class="rand-extra" id="f-extra"><input type="text" id="extra-nume" placeholder="Altceva: pâine, detergent…" aria-label="Adaugă altceva în listă" style="flex:1">
@@ -1160,6 +1254,7 @@ function adaugaInYaml(text, intrare) {
   const bloc = [`  - data: ${intrare.data}`, `    versiune: ${intrare.versiune}`, `    gust: ${intrare.gust}`, `    efort: ${intrare.efort}`, `    executie: ${intrare.executie}`];
   if (intrare.observatii) bloc.push(`    observatii: ${JSON.stringify(intrare.observatii)}`);
   if (intrare.urmatoarea_data) bloc.push(`    urmatoarea_data: ${JSON.stringify(intrare.urmatoarea_data)}`);
+  if (intrare.pasi) { bloc.push("    pasi:"); for (const [n, t] of Object.entries(intrare.pasi)) bloc.push(`      ${n}: ${JSON.stringify(t)}`); }
   linii.splice(j, 0, ...bloc);
   return "---" + nl + linii.join(nl) + nl + "---" + nl + text.slice(m[0].length);
 }
@@ -1168,12 +1263,15 @@ async function trimiteJurnal() {
   if (!formular.gust || !formular.efort) return arataStare("f-stare", "Alege întâi gustul și efortul.", "eroare");
   const intrare = {data: $("f-data").value || azi(), versiune: r.versiune, gust: formular.gust, efort: formular.efort, executie: formular.executie,
                    observatii: $("f-observatii").value.trim(), urmatoarea_data: $("f-urmatoarea").value.trim()};
+  const pasi = Object.fromEntries(Object.entries(st.note[r.slug] || {}).map(([n, t]) => [n, t.trim()]).filter(([, t]) => t));
+  if (Object.keys(pasi).length) intrare.pasi = pasi;
   arataStare("f-stare", "Se scrie în repo…");
   try {
     const cale = `retete/${r.slug}.md`, fisier = await github(cale);
     if (!fisier) throw new Error("fișierul rețetei nu e în repo");
     await github(cale, "PUT", {message: `${r.slug} v${r.versiune}: gust ${intrare.gust} efort ${intrare.efort}`, content: b64text(adaugaInYaml(text64(fisier.content), intrare)), sha: fisier.sha});
     r.jurnal.push(intrare); r.status = stareDupa(r, r.jurnal);
+    delete st.note[r.slug]; salveaza();  // notele pe pași sunt acum în jurnal
     Object.assign(formular, {gust: null, efort: null, executie: "ok"});
     randeazaReteta();
     arataStare("f-stare", `Scris. Rețeta e acum: ${STARI[r.status]}. Pe celelalte telefoane apare în 2–3 minute.`, "ok");
@@ -1188,6 +1286,22 @@ async function micsoreaza(fisier, max = 1200) {
   c.width = Math.round(img.width * f); c.height = Math.round(img.height * f);
   c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
   return c.toDataURL("image/jpeg", 0.82);
+}
+// Inbox: o rețetă brută (text, link, captură de ecran) ajunge în repo, în inbox/, cu același token ca jurnalul.
+// Cartea nu o transformă; Claude o face rețetă completă când i se spune „convertește inboxul”.
+let inboxPoza = null, notaDeschisa = null;
+async function trimiteInbox() {
+  const text = $("inbox-text").value.trim();
+  if (!text && !inboxPoza) return arataStare("inbox-stare", "Lipește textul rețetei sau alege o poză.", "eroare");
+  const d = new Date(), id = `${azi()}-${[d.getHours(), d.getMinutes(), d.getSeconds()].map(x => String(x).padStart(2, "0")).join("")}`;
+  const titlu = (text.split("\n").find(l => l.trim()) || "rețetă din poză").trim().slice(0, 70);
+  arataStare("inbox-stare", "Se trimite…");
+  try {
+    if (inboxPoza) await github(`inbox/${id}.jpg`, "PUT", {message: `inbox: poza pentru ${titlu}`, content: (await micsoreaza(inboxPoza, 1600)).split(",")[1]});
+    await github(`inbox/${id}.md`, "PUT", {message: `inbox: ${titlu}`, content: b64text(`# ${titlu}\n\nTrimis din carte pe ${azi()}.${inboxPoza ? ` Poza: ${id}.jpg.` : ""}\n\n${text}\n`)});
+    $("inbox-text").value = ""; inboxPoza = null; $("inbox-poza-nume").textContent = "Poză (opțional)";
+    arataStare("inbox-stare", "E în inbox. Spune-i lui Claude „convertește inboxul” și rețeta intră în carte.", "ok");
+  } catch (e) { arataStare("inbox-stare", "Nu s-a putut trimite: " + e.message, "eroare"); }
 }
 async function urcaPoza(fisier) {
   const r = reteta(curentaSlug);
@@ -1240,6 +1354,24 @@ const ACTIUNI = {
   cronApoi: el => { const c = st.cron.find(x => x.id === +el.dataset.id), a = c && apoi(c); if (!a) return; opresteCron(c.id); a.fa(); },
   banda: el => { st.sesiune.activa = el.dataset.slug; salveaza(); randeazaGatit(); window.scrollTo(0, 0); },
   // Un pas din altă etapă (sau altă rețetă) făcut cât aștepți: ecranul arată etapa lui.
+  fel: el => { filtru.fel = el.dataset.val; randeazaLista(); },
+  // inbox: rețete brute trimise în repo, în inbox/, ca să le transforme Claude
+  foaieInbox: () => { deschideFoaie("foaie-inbox"); $("inbox-text").focus(); },
+  inboxPoza: () => { $("inbox-fisier").value = ""; $("inbox-fisier").click(); },
+  trimiteInbox,
+  // note pe pași
+  nota: el => { notaDeschisa = {slug: el.dataset.slug, n: el.dataset.n}; $("titlu-nota").textContent = `Notă la pasul ${el.dataset.n}`;
+    deschideFoaie("foaie-nota"); $("nota-text").value = st.note[el.dataset.slug]?.[el.dataset.n] || ""; $("nota-text").focus(); },
+  salveazaNota: () => { const {slug, n} = notaDeschisa, t = $("nota-text").value.trim(); if (t) (st.note[slug] ||= {})[n] = t; else if (st.note[slug]) delete st.note[slug][n];
+    if (st.note[slug] && !Object.keys(st.note[slug]).length) delete st.note[slug]; salveaza(); inchideFoi(); const y = scrollY; randeaza(); window.scrollTo(0, y); anunta(t ? "Notă salvată" : "Notă ștearsă"); },
+  stergeNota: () => { $("nota-text").value = ""; ACTIUNI.salveazaNota(); },
+  // frigider
+  ramase: el => { const s = st.sesiune, b = banda(el.dataset.slug); (s.ramase ||= {})[b.slug] = Math.max(0, (s.ramase[b.slug] ?? Math.max(0, b.portii - 1)) + +el.dataset.d); salveaza(); randeazaGatit(); },
+  laFrigider: el => { const s = st.sesiune, b = banda(el.dataset.slug), n = (s.ramase ||= {})[b.slug] ?? Math.max(0, b.portii - 1); if (!n) return;
+    st.frigider.push({id: Date.now().toString(36), slug: b.slug, portii: n, gatit: azi()}); (s.puse ||= []).push(b.slug); salveaza(); randeazaGatit(); anunta("Pus la frigider"); },
+  mancat: el => { const x = st.frigider.find(y => y.id === el.dataset.id); if (!x) return; x.portii--; if (x.portii <= 0) st.frigider = st.frigider.filter(y => y !== x); salveaza(); randeazaLista(); },
+  aruncat: el => { st.frigider = st.frigider.filter(y => y.id !== el.dataset.id); salveaza(); randeazaLista(); },
+  gatesteCos: () => { for (const s of Object.keys(st.cos).filter(reteta)) adaugaLaMasa(s, st.cos[s].portii); arata("gatit", {sus: true}); },
   laPas: el => { const r = reteta(el.dataset.slug), p = r.pasi.find(q => q.n === +el.dataset.n); if (!p) return;
     const b = banda(r.slug); if (b && b.pornita) { if (p.etapa > etapaCurenta(r, b)) b.inainte = p.etapa; else delete b.inainte; }
     mergiLaPas(r.slug, p.k); const t = $(`pas-${r.slug}-${p.k}`); if (!t) return;
@@ -1280,6 +1412,7 @@ document.addEventListener("change", e => {
   else if (c === "deodata") { st.sesiune.deodata = el.checked; salveaza(); randeazaGatit(); }
   else if (c === "unAparat") { const a = mem.get("aparate", {}); a[el.dataset.id] = el.checked ? 1 : 2; mem.set("aparate", a); const y = scrollY; randeazaGatit(); window.scrollTo(0, y); }
   else if (el.id === "poza-fisier" && el.files[0]) urcaPoza(el.files[0]);
+  else if (el.id === "inbox-fisier" && el.files[0]) { inboxPoza = el.files[0]; $("inbox-poza-nume").textContent = "Poză aleasă: " + el.files[0].name; }
 });
 document.addEventListener("submit", e => {
   e.preventDefault();
@@ -1287,10 +1420,13 @@ document.addEventListener("submit", e => {
   if (e.target.id === "f-extra") { const n = $("extra-nume").value.trim(); if (!n) return; st.extra.push({id: "x_" + Date.now().toString(36), nume: n}); salveaza(); randeaza(); $("extra-nume").focus(); }
 });
 $("cautare").addEventListener("input", randeazaLista);
+// Notele pe pași din formularul de jurnal se țin minte pe loc, ca să nu se piardă când formularul se redesenează.
+document.addEventListener("input", e => { const n = e.target.dataset?.nota; if (n == null || !curentaSlug) return;
+  const t = e.target.value; if (t.trim()) (st.note[curentaSlug] ||= {})[n] = t; else if (st.note[curentaSlug]) delete st.note[curentaSlug][n]; salveaza(); });
 
 // ---------- pornire ----------
 // Iconițele din HTML-ul static sunt scrise ca text (TIMER, INAPOI, …) și înlocuite aici cu SVG, ca să nu le repet de mână.
-for (const el of document.querySelectorAll(".ic-btn, #btn-filtre")) el.innerHTML = el.innerHTML.replace(/\b(TIMER|INAPOI|TEXT|FILTRE)\b/g, m => ic({TIMER: "timer", INAPOI: "inapoi", TEXT: "text", FILTRE: "filtre"}[m]));
+for (const el of document.querySelectorAll(".ic-btn, #btn-filtre")) el.innerHTML = el.innerHTML.replace(/\b(TIMER|INAPOI|TEXT|FILTRE|PLUS)\b/g, m => ic({TIMER: "timer", INAPOI: "inapoi", TEXT: "text", FILTRE: "filtre", PLUS: "plus"}[m]));
 document.body.dataset.marime = st.marime;
 randeazaFiltre();
 st.cron.forEach(programeaza);
