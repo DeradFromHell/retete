@@ -518,7 +518,7 @@ function cuPoza(schimba, dePe, spre) {
   if (!document.startViewTransition || redus() || !dePe) return schimba();
   document.documentElement.classList.add("vt"); dePe.style.viewTransitionName = "poza-reteta";
   const t = document.startViewTransition(() => { dePe.style.viewTransitionName = ""; schimba(); const s = spre(); if (s) s.style.viewTransitionName = "poza-reteta"; });
-  t.finished.finally(() => { for (const e of document.querySelectorAll(".foto, .erou-foto")) e.style.viewTransitionName = ""; document.documentElement.classList.remove("vt"); });
+  t.finished.catch(() => {}).finally(() => { for (const e of document.querySelectorAll(".foto, .erou-foto")) e.style.viewTransitionName = ""; document.documentElement.classList.remove("vt"); });
 }
 const fotoCard = slug => document.querySelector(`.card a[data-slug="${CSS.escape(slug)}"]`)?.closest(".card")?.querySelector(".foto");
 // Confetti la „Masa e gata” (ca confetti din Magic UI, fără bibliotecă): o dată, cu culorile cărții.
@@ -621,6 +621,11 @@ for (const r of RETETE) {
     r.aparate[a.id] = {de: cu[0].k, pana, temp: +(cu[0].text.match(/(\d+)\s*°C/)?.[1]) || null};
   }
 }
+
+// O rețetă poate primi o versiune nouă cât masa e salvată pe telefon (alți pași): cronometrele și bifele pașilor care
+// nu mai există se uită, ca să nu strice ecranul de gătit. (Aici, după ce pașii rețetelor sunt pregătiți.)
+st.cron = st.cron.filter(c => c.tip !== "pas" || reteta(c.slug).pasi[c.k]);
+for (const b of st.sesiune?.retete || []) { const r = reteta(b.slug); b.facute = b.facute.filter(k => k >= 0 && k < r.pasi.length); if (b.inainte >= r.etape.length) delete b.inainte; }
 
 // Felul rețetei, pentru catalog: carnea (sau ouăle) cu cele mai multe grame; fără ele, „Fără carne”.
 const FELURI = [["Pui", /pui/], ["Porc", /porc/], ["Vită", /vita/], ["Pește", /peste|ton|somon|cod/], ["Ouă", /^oua$|albus/]];
@@ -768,7 +773,9 @@ function apoi(c) {
   const merge = q => st.cron.some(x => x.slug === c.slug && x.k === q.k && x.tip === "pas" && !x.gata);
   const rest = r.pasi.filter(q => q.k !== c.k && !b.facute.includes(q.k)), u = rest.find(q => q.k > c.k && !merge(q)) || rest.find(q => !merge(q)) || rest[0];
   const bifat = () => { if (!b.facute.includes(c.k)) b.facute.push(c.k); salveaza(); };
-  return u ? {text: `Apoi pasul ${u.n}`, fa: () => { bifat(); mergiLaPas(c.slug, u.k); }} : {text: `Gata, bifez pasul ${p.n}`, fa: () => { bifat(); randeaza(); }};
+  // dacă pasul următor e într-o etapă de după cea curentă (ai lăsat un pas nebifat mai devreme), ecranul arată etapa lui, nu un pas ascuns
+  const spre = () => { if (u.etapa > etapaCurenta(r, b)) b.inainte = u.etapa; else delete b.inainte; mergiLaPas(c.slug, u.k); };
+  return u ? {text: `Apoi pasul ${u.n}`, fa: () => { bifat(); spre(); }} : {text: `Gata, bifez pasul ${p.n}`, fa: () => { bifat(); randeaza(); }};
 }
 // O alarmă care a sunat rămâne până o atingi, până bifezi pasul ei după ce a sunat (vezi bifeaza) sau până e gata rețeta.
 // Nu dispare doar pentru că ai bifat alt pas: când lucrezi înainte (orezul cât e puiul în air fryer), alarma puiului trebuie să se vadă.
@@ -813,7 +820,8 @@ function bate(structura) {
 }
 // Memento: două bipuri scurte, notificare dacă telefonul e blocat, și textul pe ecran (în bara de jos).
 function memento(text) {
-  suna(true); anunta(text); (window.MEMENTE ||= []).push(text);
+  suna(true); anunta(text);
+  (window.MEMENTE ||= []).push(text);  // lista mementourilor date, citită de simularea de gătit (scratchpad/sofer.js)
   if (document.hidden && swReg && "Notification" in window && Notification.permission === "granted")
     swReg.showNotification(text, {tag: "memento", renotify: true, vibrate: [200, 100, 200], icon: "icon.svg"}).catch(() => {});
 }
@@ -945,7 +953,7 @@ function arata(v, opt = {}) {
   document.body.dataset.dir = opt.inapoi ? "inapoi" : "inainte";  // ecranul vine din dreapta înainte, din stânga înapoi
   for (const [k, id] of Object.entries(VEDERI)) $(id).hidden = k !== v;
   // Ecranele ascunse se golesc: altfel pașii lor au aceleași id-uri ca cei de pe ecran („pas-…-3”) și „Apoi pasul 3” ar căuta în ecranul ascuns.
-  for (const [k, id] of Object.entries(CONTINUT)) if (k !== v) $(id).innerHTML = "";
+  for (const [k, id] of Object.entries(CONTINUT)) if (k !== v) { $(id).innerHTML = ""; delete $(id).dataset.cheie; }
   inchideFoi();
   randeaza();
   const tinta = opt.ancora && $(opt.ancora);
@@ -966,7 +974,20 @@ function dinAdresa() {
   const h = decodeURIComponent(location.hash.slice(1));
   return h === "gatit" ? {v: "gatit"} : h === "cumparaturi" ? {v: "cos"} : reteta(h) ? {v: "reteta", slug: h} : {v: "lista"};
 }
-const randeaza = () => { ({lista: randeazaLista, reteta: randeazaReteta, gatit: randeazaGatit, cos: randeazaCos})[vedere](); randeazaDock(); };
+// Ecranul se redesenează des (un cronometru sună, revii în aplicație); ce ai scris în câmpuri și ce ai deschis rămân cum erau,
+// dacă ecranul e același (aceeași rețetă). Un ecran nou pornește curat.
+const randeaza = () => {
+  const cont = $(CONTINUT[vedere]), cheie = vedere + ":" + (curentaSlug || ""), acelasi = cont.dataset.cheie === cheie && cont.innerHTML;
+  const campuri = acelasi ? [...cont.querySelectorAll("textarea[id], input[id]")].map(e => [e.id, e.value]) : [];
+  const deschise = acelasi ? new Set([...cont.querySelectorAll("details[open] > summary")].map(s => s.textContent.trim().slice(0, 24))) : new Set();
+  const activ = acelasi && cont.contains(document.activeElement) && document.activeElement.id ? [document.activeElement.id, document.activeElement.selectionStart, document.activeElement.selectionEnd] : null;
+  ({lista: randeazaLista, reteta: randeazaReteta, gatit: randeazaGatit, cos: randeazaCos})[vedere]();
+  cont.dataset.cheie = cheie;
+  for (const [id, v] of campuri) { const e = $(id); if (e && cont.contains(e) && e.type !== "file") e.value = v; }
+  for (const s of cont.querySelectorAll("details > summary")) if (deschise.has(s.textContent.trim().slice(0, 24))) s.parentNode.open = true;
+  if (activ && $(activ[0])) { const e = $(activ[0]); e.focus({preventScroll: true}); try { e.setSelectionRange(activ[1], activ[2]); } catch (x) {} }
+  randeazaDock();
+};
 let veghe = null;
 async function ecran(aprins) {
   try { if (aprins && !veghe) veghe = await navigator.wakeLock.request("screen"); else if (!aprins && veghe) { veghe.release(); veghe = null; } } catch (e) { veghe = null; }
@@ -1054,10 +1075,11 @@ function randeazaFiltre() {
 }
 
 // ---------- rețeta ----------
-const formular = {gust: null, efort: null, executie: "ok"};
+const formular = {gust: null, efort: null, executie: "ok", slug: null};  // alegerile din formularul de jurnal, ale rețetei „slug”
 function randeazaReteta() {
   const r = reteta(curentaSlug);
   if (!r) return arata("lista", {push: false});
+  if (formular.slug !== r.slug) Object.assign(formular, {gust: null, efort: null, executie: "ok", slug: r.slug});  // altă rețetă, formular curat
   $("reteta-titlu").textContent = r.titlu;
   const p = portiiD[r.slug] ||= r.portii, f = p / r.portii, n = nutritie(r), u = ultima(r), b = banda(r.slug), inCos = st.cos[r.slug];
   const facute = b && b.pornita ? b.facute : bifeDetaliu[r.slug] || [], luate = bifeIngr[r.slug] || [];
@@ -1135,7 +1157,7 @@ function randeazaGatit() {
   }
   if (!s.pornita) { cont.innerHTML = plan(s); return; }
   $("benzi-lista").innerHTML = s.retete.map(b => {
-    const r = reteta(b.slug), c = st.cron.find(x => x.slug === b.slug && x.gata);
+    const r = reteta(b.slug), c = st.cron.find(x => x.slug === b.slug && x.gata && x.tip !== "liber");  // cronometrul liber (ouă, ceai) nu e al rețetei
     const m = st.cron.filter(x => x.slug === b.slug && x.tip === "pas" && !x.gata).sort((a, z) => a.sfarsit - z.sfarsit)[0], st2 = st.cron.find(x => x.tip === "start" && x.slug === b.slug);
     const stare = !b.pornita ? (st2 ? (st2.gata ? "e timpul să pornești" : `pornește în <span data-cron="${st2.id}">${ceas(ramas(st2))}</span>`) : "nepornită")
       : etapaCurenta(r, b) < 0 ? "gata" : c ? "a sunat cronometrul" : m ? `așteaptă <span data-cron="${m.id}">${ceas(ramas(m))}</span>` : `${b.facute.length} din ${r.pasi.length} pași`;
@@ -1402,6 +1424,8 @@ async function trimiteJurnal() {
                    observatii: $("f-observatii").value.trim(), urmatoarea_data: $("f-urmatoarea").value.trim()};
   const pasi = Object.fromEntries(Object.entries(st.note[r.slug] || {}).map(([n, t]) => [n, t.trim()]).filter(([, t]) => t));
   if (Object.keys(pasi).length) intrare.pasi = pasi;
+  if (seTrimite.jurnal) return;  // o atingere dublă nu scrie intrarea de două ori
+  seTrimite.jurnal = true;
   arataStare("f-stare", "Se scrie în repo…");
   try {
     const cale = `retete/${r.slug}.md`, fisier = await github(cale);
@@ -1410,11 +1434,14 @@ async function trimiteJurnal() {
     r.jurnal.push(intrare); r.status = stareDupa(r, r.jurnal);
     delete st.note[r.slug]; salveaza();  // notele pe pași sunt acum în jurnal
     Object.assign(formular, {gust: null, efort: null, executie: "ok"});
+    delete $("reteta").dataset.cheie;  // după ce s-a scris, formularul se golește (nu se mai păstrează ce era în câmpuri)
     randeazaReteta();
     arataStare("f-stare", `Scris. Rețeta e acum: ${STARI[r.status]}. Pe celelalte telefoane apare în 2–3 minute.`, "ok");
     $("s-jurnal").scrollIntoView({behavior: "smooth"});
   } catch (e) { arataStare("f-stare", "Nu s-a putut scrie: " + e.message, "eroare"); }
+  finally { seTrimite.jurnal = false; }
 }
+const seTrimite = {jurnal: false, inbox: false};
 async function micsoreaza(fisier, max = 1200) {
   let img;
   try { img = await createImageBitmap(fisier, {imageOrientation: "from-image"}); }
@@ -1432,6 +1459,8 @@ async function trimiteInbox() {
   if (!text && !inboxPoza) return arataStare("inbox-stare", "Lipește textul rețetei sau alege o poză.", "eroare");
   const d = new Date(), id = `${azi()}-${[d.getHours(), d.getMinutes(), d.getSeconds()].map(x => String(x).padStart(2, "0")).join("")}`;
   const titlu = (text.split("\n").find(l => l.trim()) || "rețetă din poză").trim().slice(0, 70);
+  if (seTrimite.inbox) return;  // o atingere dublă nu trimite rețeta de două ori
+  seTrimite.inbox = true;
   arataStare("inbox-stare", "Se trimite…");
   try {
     if (inboxPoza) await github(`inbox/${id}.jpg`, "PUT", {message: `inbox: poza pentru ${titlu}`, content: (await micsoreaza(inboxPoza, 1600)).split(",")[1]});
@@ -1439,6 +1468,7 @@ async function trimiteInbox() {
     $("inbox-text").value = ""; inboxPoza = null; $("inbox-poza-nume").textContent = "Poză (opțional)";
     arataStare("inbox-stare", "E în inbox. Spune-i lui Claude „convertește inboxul” și rețeta intră în carte.", "ok");
   } catch (e) { arataStare("inbox-stare", "Nu s-a putut trimite: " + e.message, "eroare"); }
+  finally { seTrimite.inbox = false; }
 }
 async function urcaPoza(fisier) {
   const r = reteta(curentaSlug);
@@ -1485,7 +1515,10 @@ const ACTIUNI = {
   foaieTimer: () => { $("presetari").innerHTML = [1, 2, 3, 5, 8, 10, 12, 15, 20, 30, 45].map(m => `<button class="chip" type="button" data-a="timerLiber" data-min="${m}">${m} min</button>`).join(""); $("timer-minute").value = ""; deschideFoaie("foaie-timer"); },
   timerLiber: el => { const m = Math.round(+(el.dataset.min || $("timer-minute").value)); if (m > 0) { pornesteCron({slug: st.sesiune?.activa || curentaSlug || "", k: -1, i: -1, text: `${m} min`, s: m * 60, tip: "liber"}); inchideFoi(); } },
   inchideFoi,
-  cronX: el => opresteCron(+el.dataset.id),
+  // Închis după ce a sunat: timpul pasului s-a terminat, deci pasul se bifează, ca la „Apoi…”. Oprit înainte, nu.
+  cronX: el => { const c = st.cron.find(x => x.id === +el.dataset.id), b = c && banda(c.slug);
+    if (c?.gata && c.tip === "pas" && b?.pornita && !b.facute.includes(c.k)) b.facute.push(c.k);
+    opresteCron(+el.dataset.id); },
   cronDu: el => { const c = st.cron.find(x => x.id === +el.dataset.id); if (!c) return;
     if (c.tip === "liber") { if (c.gata) opresteCron(c.id); return; }
     if (c.tip === "start") { if (c.gata) { opresteCron(c.id); pornesteBanda(c.slug); } else mergiLaPas(c.slug, -1); return; }
@@ -1541,7 +1574,6 @@ document.addEventListener("click", e => {
   if (el.tagName === "A") e.preventDefault();
   ACTIUNI[el.dataset.a](el, e);
 });
-document.addEventListener("keydown", e => { if ((e.key === "Enter" || e.key === " ") && e.target.matches("li.pas")) { e.preventDefault(); bifeaza(e.target.dataset.slug, +e.target.dataset.k); } });
 document.addEventListener("change", e => {
   const el = e.target, c = el.dataset.c;
   if (c === "ingr") { const l = bifeIngr[curentaSlug] ||= [], k = +el.dataset.k; el.checked ? l.push(k) : l.splice(l.indexOf(k), 1); el.closest(".ingr").classList.toggle("luat", el.checked); }
@@ -1557,7 +1589,7 @@ document.addEventListener("change", e => {
 document.addEventListener("submit", e => {
   e.preventDefault();
   if (e.target.id === "f-jurnal") trimiteJurnal();
-  if (e.target.id === "f-extra") { const n = $("extra-nume").value.trim(); if (!n) return; st.extra.push({id: "x_" + Date.now().toString(36), nume: n}); salveaza(); randeaza(); $("extra-nume").focus(); }
+  if (e.target.id === "f-extra") { const n = $("extra-nume").value.trim(); if (!n) return; st.extra.push({id: "x_" + Date.now().toString(36), nume: n}); salveaza(); randeaza(); $("extra-nume").value = ""; $("extra-nume").focus(); }
 });
 $("cautare").addEventListener("input", randeazaLista);
 // Notele pe pași din formularul de jurnal se țin minte pe loc, ca să nu se piardă când formularul se redesenează.
