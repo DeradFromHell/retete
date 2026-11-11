@@ -33,7 +33,7 @@ Cerințe: Python 3 și PyYAML (`pip install pyyaml`). Nimic altceva. Pe Windows,
 
 **Note pe pași.** Creionul de lângă fiecare pas, în rețetă și când gătești, ține o notă („3 minute e prea mult”) doar pe telefon, până scrii în jurnal; atunci intră în intrare, la `pasi`. Data următoare, nota apare sub pas, „Data trecută: …”, cât timp versiunea rețetei e aceeași.
 
-**După gătit.** Din telefon: în rețetă, sub „Jurnal”, aleg gustul, efortul, dacă a fost greșeala mea, scriu observațiile și ce schimb data viitoare, apoi „scrie în jurnal”. Intrarea se adaugă în `retete/<slug>.md`, ca un commit făcut de mine prin API-ul GitHub (același token ca la poze), iar GitHub Actions rulează `build.py` și regenerează cartea în 2–3 minute. Sau îi scriu lui Claude o propoziție: „piept-pui-orez: gust 7, efort 3, prea sărat, data viitoare jumătate sare”; dacă am greșit eu, spun „greșeala mea: am ars ceapa”, și el adaugă intrarea, rulează build, commit `<slug> v1: gust 7 efort 3` și `git push`. Dacă propoziția e completă, nu pune întrebări.
+**După gătit.** Din telefon: în rețetă, sub „Jurnal”, aleg gustul, efortul, dacă a fost greșeala mea, scriu observațiile și ce schimb data viitoare, apoi „scrie în jurnal”. Intrarea se adaugă în `retete/<slug>.md`, ca un commit făcut de mine prin API-ul GitHub (același token ca la poze), iar GitHub Actions rulează `build.py` și regenerează cartea în 2–3 minute. Ce aleg și ce scriu în formular se ține pe telefon ca ciornă, pe rețetă, până reușește trimiterea: dacă nu e internet sau pagina se reîncarcă, nu se pierde. Token-ul se șterge doar când GitHub spune că e invalid sau expirat (401), nu la alte refuzuri. Sau îi scriu lui Claude o propoziție: „piept-pui-orez: gust 7, efort 3, prea sărat, data viitoare jumătate sare”; dacă am greșit eu, spun „greșeala mea: am ars ceapa”, și el adaugă intrarea, rulează build, commit `<slug> v1: gust 7 efort 3` și `git push`. Dacă propoziția e completă, nu pune întrebări.
 
 **Versiune nouă.** Se aplică `urmatoarea_data` din ultima intrare, se incrementează `versiune`, se modifică ingredientele și pașii în același fișier; git păstrează istoricul. Commit `<slug> v2`.
 
@@ -113,7 +113,7 @@ Calculată de `build.py` din ultima intrare în jurnal:
 - gust ≤ 5 (cu `executie: ok`) → `gunoi`
 - `status_manual` completat suprascrie orice
 
-Cartea arată implicit doar `carte`; `imbunatatire` și `test` se pot afișa cu un comutator; `gunoi` nu apare.
+Cartea arată la început toate rețetele (`carte`, `imbunatatire`, `test`), cu starea pe poză; comutatoarele de stare le restrâng. `gunoi` nu apare. (Până în noiembrie 2026 arăta implicit doar `carte`; cu puține rețete, primul gust 8 le-ar fi ascuns pe cele încă de gătit.)
 
 ## Cartea (`carte/index.html`)
 

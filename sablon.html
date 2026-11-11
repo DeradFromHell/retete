@@ -548,13 +548,14 @@ const mem = {
 // Coșul, ce ai cumpărat, masa în curs (rețete, pași bifați) și cronometrele (cu ora de final) supraviețuiesc reîncărcării paginii.
 const st = {cos: mem.get("cos", {}), cumparate: new Set(mem.get("cumparate", [])), extra: mem.get("extra", []), marime: mem.get("marime", 0),
             sesiune: mem.get("sesiune", null), cron: mem.get("cronometre", []),
-            note: mem.get("note", {}), frigider: mem.get("frigider", [])};  // note pe pași (până intră în jurnal), ce e gătit la frigider
+            note: mem.get("note", {}), frigider: mem.get("frigider", []),  // note pe pași (până intră în jurnal), ce e gătit la frigider
+            ciorne: mem.get("ciorne", {})};  // jurnalul început și netrimis, pe rețetă: nu se pierde dacă trimiterea eșuează sau pagina se reîncarcă
 for (const s in st.cos) if (typeof st.cos[s] === "number") st.cos[s] = {portii: st.cos[s], ids: null};  // formatul vechi al coșului
 if (st.sesiune) st.sesiune.retete = st.sesiune.retete.filter(b => reteta(b.slug));
 if (st.sesiune && !st.sesiune.retete.length) st.sesiune = null;
 st.cron = st.cron.filter(c => c.tip === "liber" || reteta(c.slug));
 const salveaza = () => { mem.set("cos", st.cos); mem.set("cumparate", [...st.cumparate]); mem.set("extra", st.extra); mem.set("marime", st.marime); mem.set("sesiune", st.sesiune); mem.set("cronometre", st.cron);
-  mem.set("note", st.note); mem.set("frigider", st.frigider); };
+  mem.set("note", st.note); mem.set("frigider", st.frigider); mem.set("ciorne", st.ciorne); };
 
 // ---------- rețetele: etape, pași cu timpii lor, păstrare, note ----------
 // Orice „12 minute” / „3–4 minute” / „30–60 de secunde” dintr-un pas e un cronometru (prima cifră a intervalului).
@@ -726,7 +727,9 @@ async function github(cale, metoda = "GET", corp) {
     r = await fetch(`https://api.github.com/repos/${REPO}/contents/${cale}${metoda === "GET" ? "?ref=" + RAMURA : ""}`,
       {method: metoda, headers: antetGitHub(token), body: corp ? JSON.stringify({branch: RAMURA, ...corp}) : undefined});
   } catch (e) { throw new Error("nu s-a putut contacta GitHub (fără internet?)"); }
-  if (r.status === 401 || r.status === 403) { mem.set("github_token", ""); throw new Error(`token refuzat (${r.status}); atinge din nou și pune altul`); }
+  // Doar 401 înseamnă sigur token invalid sau expirat; 403 vine și la prea multe cereri, deci token-ul se păstrează.
+  if (r.status === 401) { mem.set("github_token", ""); throw new Error("token invalid sau expirat; atinge din nou și pune altul"); }
+  if (r.status === 403) throw new Error("GitHub a refuzat cererea (403): prea multe cereri sau token fără drept de scriere. Încearcă din nou peste un minut; dacă se repetă, schimbă token-ul din subsolul listei");
   if (r.status === 404 && metoda === "GET") return null;
   const date = await r.json();
   if (!r.ok) throw new Error(date.message || r.status);
@@ -995,8 +998,7 @@ async function ecran(aprins) {
 document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") { veghe = null; ecran(vedere === "reteta" || vedere === "gatit"); bate(true); } });
 
 // ---------- lista ----------
-// La început: rețetele din carte; cât timp nu e niciuna în carte, toate, ca prima pagină să nu fie goală.
-const filtru = {stari: new Set(RETETE.some(r => r.status === "carte") ? ["carte"] : ["carte", "imbunatatire", "test"]), sort: "gust", cat: "", tag: "", fel: ""};
+const filtru = {stari: new Set(["carte", "imbunatatire", "test"]), sort: "gust", cat: "", tag: "", fel: ""};  // la început, toate: altfel primul gust 8 ar ascunde rețetele încă de gătit
 // Căutarea: un cuvânt caută în titlu și ingrediente; mai multe, despărțite prin virgulă („pui, orez, ardei”), înseamnă
 // „ce am în casă”: apar rețetele care folosesc cel puțin unul, întâi cele care le folosesc pe cele mai multe.
 let termeni = [];
@@ -1079,7 +1081,8 @@ const formular = {gust: null, efort: null, executie: "ok", slug: null};  // aleg
 function randeazaReteta() {
   const r = reteta(curentaSlug);
   if (!r) return arata("lista", {push: false});
-  if (formular.slug !== r.slug) Object.assign(formular, {gust: null, efort: null, executie: "ok", slug: r.slug});  // altă rețetă, formular curat
+  const ciorna = st.ciorne[r.slug] || {};
+  if (formular.slug !== r.slug) Object.assign(formular, {gust: ciorna.gust ?? null, efort: ciorna.efort ?? null, executie: ciorna.executie || "ok", slug: r.slug});  // altă rețetă: formularul ei, din ciornă dacă are
   $("reteta-titlu").textContent = r.titlu;
   const p = portiiD[r.slug] ||= r.portii, f = p / r.portii, n = nutritie(r), u = ultima(r), b = banda(r.slug), inCos = st.cos[r.slug];
   const facute = b && b.pornita ? b.facute : bifeDetaliu[r.slug] || [], luate = bifeIngr[r.slug] || [];
@@ -1133,8 +1136,8 @@ function randeazaReteta() {
       <fieldset><legend>Cum a ieșit</legend><div class="chips">
         <button class="chip" type="button" data-a="form" data-cheie="executie" data-val="ok" aria-pressed="${formular.executie === "ok"}">Am respectat rețeta</button>
         <button class="chip" type="button" data-a="form" data-cheie="executie" data-val="greseala_mea" aria-pressed="${formular.executie === "greseala_mea"}">Greșeala mea, nu se numără</button></div></fieldset>
-      <label><span>Observații</span><textarea id="f-observatii" placeholder="ce a fost bine, ce nu"></textarea></label>
-      <label><span>Data viitoare (ce schimbi la versiunea ${r.versiune + 1})</span><textarea id="f-urmatoarea" placeholder="de exemplu: jumătate din sare, încă 5 minute la orez"></textarea></label>
+      <label><span>Observații</span><textarea id="f-observatii" placeholder="ce a fost bine, ce nu">${esc(ciorna.observatii || "")}</textarea></label>
+      <label><span>Data viitoare (ce schimbi la versiunea ${r.versiune + 1})</span><textarea id="f-urmatoarea" placeholder="de exemplu: jumătate din sare, încă 5 minute la orez">${esc(ciorna.urmatoarea || "")}</textarea></label>
       <fieldset><legend>Note pe pași</legend>
         ${Object.keys(st.note[r.slug] || {}).length ? Object.entries(st.note[r.slug]).sort((a, b) => a[0] - b[0]).map(([n, t]) => `<label><span>Pasul ${esc(n)}</span><textarea data-nota="${esc(n)}" rows="2">${esc(t)}</textarea></label>`).join("")
           : `<p class="mic">Atinge creionul de lângă un pas, și când gătești, ca să notezi ce ai observat acolo. Notele apar aici și intră în jurnal.</p>`}</fieldset>
@@ -1432,14 +1435,21 @@ async function trimiteJurnal() {
     if (!fisier) throw new Error("fișierul rețetei nu e în repo");
     await github(cale, "PUT", {message: `${r.slug} v${r.versiune}: gust ${intrare.gust} efort ${intrare.efort}`, content: b64text(adaugaInYaml(text64(fisier.content), intrare)), sha: fisier.sha});
     r.jurnal.push(intrare); r.status = stareDupa(r, r.jurnal);
-    delete st.note[r.slug]; salveaza();  // notele pe pași sunt acum în jurnal
+    delete st.note[r.slug]; delete st.ciorne[r.slug]; salveaza();  // notele pe pași și ciorna sunt acum în jurnal
     Object.assign(formular, {gust: null, efort: null, executie: "ok"});
     delete $("reteta").dataset.cheie;  // după ce s-a scris, formularul se golește (nu se mai păstrează ce era în câmpuri)
     randeazaReteta();
     arataStare("f-stare", `Scris. Rețeta e acum: ${STARI[r.status]}. Pe celelalte telefoane apare în 2–3 minute.`, "ok");
     $("s-jurnal").scrollIntoView({behavior: "smooth"});
-  } catch (e) { arataStare("f-stare", "Nu s-a putut scrie: " + e.message, "eroare"); }
+  } catch (e) { tineCiorna(); arataStare("f-stare", "Nu s-a putut scrie: " + e.message + ". Ce ai completat rămâne salvat pe telefon; încearcă din nou când vrei.", "eroare"); }
   finally { seTrimite.jurnal = false; }
+}
+// Ciorna jurnalului: ce ai ales și ce ai scris se ține pe telefon, pe rețetă, până reușește trimiterea.
+function tineCiorna() {
+  if (!$("f-observatii") || formular.slug !== curentaSlug) return;
+  const c = {gust: formular.gust, efort: formular.efort, executie: formular.executie, observatii: $("f-observatii").value, urmatoarea: $("f-urmatoarea").value};
+  if (c.gust || c.efort || c.observatii.trim() || c.urmatoarea.trim()) st.ciorne[curentaSlug] = c; else delete st.ciorne[curentaSlug];
+  mem.set("ciorne", st.ciorne);
 }
 const seTrimite = {jurnal: false, inbox: false};
 async function micsoreaza(fisier, max = 1200) {
@@ -1506,7 +1516,7 @@ const ACTIUNI = {
   poza: () => { $("poza-fisier").value = ""; $("poza-fisier").click(); },
   form: el => { formular[el.dataset.cheie] = el.dataset.cheie === "executie" ? el.dataset.val : +el.dataset.val;
     const obs = $("f-observatii").value, urm = $("f-urmatoarea").value, data = $("f-data").value;
-    randeazaReteta(); $("f-observatii").value = obs; $("f-urmatoarea").value = urm; $("f-data").value = data; $("f-jurnal").querySelector(`[data-cheie="${el.dataset.cheie}"][data-val="${el.dataset.val}"]`)?.focus({preventScroll: true}); },
+    randeazaReteta(); $("f-observatii").value = obs; $("f-urmatoarea").value = urm; $("f-data").value = data; tineCiorna(); $("f-jurnal").querySelector(`[data-cheie="${el.dataset.cheie}"][data-val="${el.dataset.val}"]`)?.focus({preventScroll: true}); },
   pas: el => bifeaza(el.dataset.slug, +el.dataset.k),
   timp: el => { const r = reteta(el.dataset.slug), p = r.pasi[+el.dataset.k], i = +el.dataset.i, c = cronPas(r.slug, p.k, i);
     if (c) return opresteCron(c.id);
@@ -1593,7 +1603,8 @@ document.addEventListener("submit", e => {
 });
 $("cautare").addEventListener("input", randeazaLista);
 // Notele pe pași din formularul de jurnal se țin minte pe loc, ca să nu se piardă când formularul se redesenează.
-document.addEventListener("input", e => { const n = e.target.dataset?.nota; if (n == null || !curentaSlug) return;
+document.addEventListener("input", e => { if (e.target.id === "f-observatii" || e.target.id === "f-urmatoarea") return tineCiorna();
+  const n = e.target.dataset?.nota; if (n == null || !curentaSlug) return;
   const t = e.target.value; if (t.trim()) (st.note[curentaSlug] ||= {})[n] = t; else if (st.note[curentaSlug]) delete st.note[curentaSlug][n]; salveaza(); });
 
 // ---------- pornire ----------
