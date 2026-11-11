@@ -61,14 +61,14 @@ jurnal:
 1. Scoate mozzarella din zer, rupe-o în bucăți mici și preseaz-o între două prosoape de hârtie ca să scoți apa. Rade cheddarul. Ține-le separat, la frigider, până la final.
 2. Taie pieptul în felii de ~1 cm grosime (ies 3 porții a ~215 g). Acoperă-le cu folie și bate-le ușor, până au grosime egală peste tot. Șterge-le cu prosop de hârtie; trebuie să fie uscate, altfel pane-ul nu se prinde. Condimentează cu sare, piper și boia pe ambele fețe.
 3. Trei farfurii, în ordinea asta: făina, albușul bătut bine cu furculița, panko.
-4. Trece fiecare felie prin făină și scutur-o de surplus, apoi prin albuș lăsând excesul să se scurgă, apoi prin panko; presează fulgii cu palma pe ambele fețe. O mână pentru uscate, una pentru albuș.
+4. Trece fiecare felie prin făină și scutur-o de surplus, apoi prin albuș lăsând excesul să se scurgă, apoi prin panko; presează fulgii cu palma pe ambele fețe. O mână pentru uscate, una pentru albuș. La final, spală-te pe mâini cu săpun până să atingi telefonul; ce a rămas în cele trei farfurii a atins pui crud și se aruncă.
 5. Porțiile pe care nu le gătești azi: pe o tavă, separate cu hârtie de copt, la congelator. Cum le gătești din congelat scrie la „Păstrare și reîncălzire”.
 
 ## Gătit
 6. Preîncălzește air fryer-ul la 200 °C, gol, 3 minute, până simți aer fierbinte când tragi sertarul.
-7. Un singur strat în coș, fără să se atingă. Pulverizează uleiul uniform, inclusiv pe margini: unde nu ajunge ulei, panko rămâne alb și are gust de făină crudă.
+7. Un singur strat în coș, fără să se atingă; dacă nu încap toate feliile, fă-le în două ture și repetă pașii 7–9 pentru a doua. Pulverizează uleiul uniform, inclusiv pe margini: unde nu ajunge ulei, panko rămâne alb și are gust de făină crudă.
 8. 12–14 minute la 200 °C; întoarce la jumătate și dă din nou cu spray. Verifică prima dată la 10 minute: pane-ul auriu, carnea fără roz, sucul limpede; cu termometru, 74 °C în centru.
-9. Coboară la 180 °C. Pune mozzarella, apoi cheddarul deasupra, și presează cu mâna ca să nu zboare de la ventilator; lasă brânza la ~1 cm de margini, ca să nu curgă în coș. 3–4 minute, doar până se topește și face bule; cheddarul cu grăsime redusă devine cauciucos dacă stă prea mult.
+9. Coboară la 180 °C. Pune mozzarella, apoi cheddarul deasupra, și presează ușor cu dosul unei linguri, nu cu mâna (coșul e fierbinte), ca să nu zboare de la ventilator; lasă brânza la ~1 cm de margini, ca să nu curgă în coș. 3–4 minute, doar până se topește și face bule; cheddarul cu grăsime redusă devine cauciucos dacă stă prea mult.
 10. Scoate feliile pe o grilă, nu pe farfurie (aburul de dedesubt înmoaie pane-ul). 2 minute, apoi servește.
 
 ## Păstrare și reîncălzire
@@ -83,4 +83,5 @@ jurnal:
 - Nu pune hârtie de copt neperforată în coș: blochează aerul pe dedesubt și partea de jos rămâne moale.
 - Merge cu: cartofi wedges la air fryer, 200 °C, 25–30 de minute, întorși la jumătate; se reîncălzesc bine tot în air fryer (3–4 minute la 200 °C), nu la microunde.
 - v2 (după prima gătire, 2026-09-19): din congelator la 180 °C, 14 minute plus brânza, în loc de 200 °C, 20 de minute; cele 6 minute de gratinat se adună la timpul total.
+- Corecturi de text la v2 (2026-11-11, înainte de prima gătire a v2): spălat pe mâini după panare, brânza presată cu lingura, nu cu mâna, și ce faci dacă feliile nu încap într-un strat.
 - De testat la v3: cheddar ras fin amestecat în panko, fără mozzarella, tot la 180 °C (la 200 °C cheddarul din pane se arde); saramură uscată (la pasul 2 pui doar sarea și lași feliile descoperite la frigider 30–40 de minute înainte de panare: carne mai suculentă, suprafață mai uscată); 10 ml ulei spray în loc de 15, dacă pane-ul iese destul de rumen.

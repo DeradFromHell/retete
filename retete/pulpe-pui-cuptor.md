@@ -39,17 +39,17 @@ jurnal:
 1. Cu 40 de minute până la câteva ore înainte: sărează pulpele peste tot, inclusiv sub piele dacă poți strecura degetul, și lasă-le pe o farfurie, cu pielea în sus, descoperite, la frigider. Sarea trage umezeala din piele; piele uscată înseamnă piele crocantă. Fără pasul ăsta iese moale și palidă, indiferent ce faci după.
 
 ## Cuptorul și condimentarea
-2. Pune tava cu grătarul de sârmă în cuptor și încălzește la 200 °C, 10–15 minute, până e complet încins. Toarnă apă cât un deget în tavă, sub grătar: grăsimea care picură pe tavă goală fumegă, cu apă nu.
+2. Toarnă apă cât un deget în tava rece, pune grătarul de sârmă deasupra și bagă-le în cuptor; încălzește la 200 °C, 10–15 minute, până e complet încins. Apa se pune de la început, nu în tava încinsă, unde ar sări și te-ar opări; fără ea, grăsimea care picură pe tava goală fumegă.
 3. Șterge umezeala vizibilă de pe piele (fără să tamponezi insistent, ca la piept) și freacă pielea cu piper, boia dulce și boia afumată; spray scurt de ulei deasupra. Fără sare (ai pus deja) și fără usturoi granulat (se arde sub glazură).
 
 ## Gătit
-4. Spray de ulei pe grătarul încins, pulpele deasupra cu pielea în sus și cu spațiu între ele; dacă se ating, fac abur și nu se rumenesc acolo.
+4. Spray de ulei pe grătarul încins, pulpele deasupra cu pielea în sus și cu spațiu între ele; dacă se ating, fac abur și nu se rumenesc acolo. Apoi spală-te pe mâini cu săpun; vasul în care au stat crude merge direct la spălat.
 5. 35 de minute: nu le atingi, nu le întorci, nu le acoperi, până pielea e aurie și întinsă.
 6. Scoate, pensulează pielea cu sos teriyaki și pune-le înapoi 4 minute, până sosul se lipește de piele.
 7. Mai pensulează o dată și mai lasă 4 minute, până glazura e lucioasă și maro-aurie; total ~43 de minute.
 
 ## Verificare
-8. Gata când pielea e maro-auriu lucios și, la înțepat lângă os, zeama iese limpede, nu roz.
+8. Gata când pielea e maro-auriu lucios și, la înțepat lângă os, zeama iese limpede, nu roz; cu termometru, 75 °C lângă os.
 9. Dacă nu sunt gata: încă 8–10 minute, acoperite lejer cu folie (altfel zahărul din sos se arde); scoate folia în ultimele 3 minute.
 
 ## Păstrare și reîncălzire
@@ -65,4 +65,4 @@ jurnal:
 - Nutriția e calculată pe carne cu piele, fără os: 450 g din ~600 g cu os. Sosul teriyaki e valoarea generică USDA; pentru exact, de pe eticheta sticlei.
 - Indiciile senzoriale de la pașii 5, 6 și 7 sunt propuse de Claude, nu din experiența ta; corectează-le după prima gătire.
 - Merge cu (sugestii): cartofi la cuptor în aceeași tavă de dedesubt sau pe alt raft, tot la 200 °C; orez sau piure; salată de varză, de castraveți sau murături, care taie grăsimea pielii.
-- Dacă le faci împreună cu pieptul teriyaki, în aceeași seară: T−15 cuptorul la 200 °C cu tava și grătarul, apă în tavă, condimentezi pulpele; T0 pulpele pe grătar, cu pielea în sus; T25 scoți pieptul din marinadă, tamponezi, air fryer 190 °C, 8 min; T33 întorci pieptul, 3 min, și începi glazura în crăticioară; T35 pulpele: primul strat de sos, înapoi 4 min; T36 pieptul: pensulezi cu glazură, înapoi 2 min; T39 scoți pieptul, mai pensulezi, îl lași să se odihnească; pulpele: al doilea strat, 4 min; T43 scoți pulpele; orez cu legume în tigaie 8 min, cât se odihnesc.
+- Dacă le faci împreună cu pieptul teriyaki, în aceeași seară: T−15 cuptorul la 200 °C cu tava și grătarul, apă în tavă, condimentezi pulpele; T0 pulpele pe grătar, cu pielea în sus; T25 scoți pieptul din marinadă, tamponezi, air fryer 190 °C, 8 min; T33 întorci pieptul, 3 min (glazura e făcută dinainte, vezi rețeta pieptului); T35 pulpele: primul strat de sos, înapoi 4 min; T36 pieptul: pensulezi cu glazură, înapoi 2 min; T39 scoți pieptul, mai pensulezi, îl lași să se odihnească; pulpele: al doilea strat, 4 min; T43 scoți pulpele; orez cu legume în tigaie 8 min, cât se odihnesc.

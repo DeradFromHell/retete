@@ -43,7 +43,7 @@ jurnal:
 3. Tamponează pulpele cu prosop de hârtie până sunt uscate la atingere (aici da, ca la piept: nu mai e piele de protejat). Freacă-le cu uleiul, boiaua dulce, boiaua afumată și piperul. Fără sare, ai pus deja.
 
 ## Gătit
-4. Pune hârtie de copt pe tava încinsă și așază pulpele desfăcute, întinse, cu spațiu între ele; dacă se ating, fac abur. Trebuie să sfârâie când ating tava.
+4. Cu mănuși de bucătărie, pune hârtie de copt pe tava încinsă și așază pulpele desfăcute, întinse, cu spațiu între ele; dacă se ating, fac abur. Trebuie să sfârâie când ating tava. Apoi spală-te pe mâini cu săpun; vasul în care au stat crude merge direct la spălat.
 5. Fără os: 10 minute, până marginile prind culoare. Cu os: 20 minute.
 6. Întoarce-le și mai lasă 6 minute (cu os: 10 minute), până și partea a doua e rumenită.
 7. Pensulează cu sos teriyaki și pune-le înapoi 3 minute, până sosul se lipește de carne.
